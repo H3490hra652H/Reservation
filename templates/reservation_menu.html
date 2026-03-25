@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reservation Menu</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800,
+body.theme-light .bg-slate-700{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800{border-color:#dbeafe !important;}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="mx-auto max-w-6xl p-6 h-[calc(100vh-2rem)] flex flex-col gap-6">
+
+<div class="sticky top-0 z-30 bg-slate-950/95 backdrop-blur pb-2 flex flex-wrap items-center justify-between gap-4">
+<div>
+<a href="/reservations?date={{ reservation_back_date }}" class="text-blue-400 hover:text-blue-300">Back</a>
+<h1 class="mt-2 text-3xl font-bold">Ordered Menu</h1>
+<p class="mt-1 text-slate-200 font-semibold">{{ reservation_info.customer_name }}</p>
+<p class="mt-1 text-slate-400">Meja {{ reservation_info.table_number }} · {{ reservation_info.people_count }} pax · {{ reservation_info.reservation_datetime }}</p>
+{% if reservation_info.description %}
+<p class="mt-1 text-sm text-slate-400">{{ reservation_info.description }}</p>
+{% endif %}
+</div>
+<div class="flex flex-wrap gap-3">
+<a href="/" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
+<a href="/reservations?date={{ reservation_back_date }}" class="rounded-xl bg-slate-800 px-4 py-3 font-semibold text-white hover:bg-slate-700">Reservation List</a>
+<a href="/reservation_history?reservation_id={{ reservation_id }}" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">History</a>
+<a href="/add_dish/{{ reservation_id }}" class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">Add Dish</a>
+</div>
+</div>
+
+<form method="GET" class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4 shadow-xl">
+<input
+type="text"
+name="search"
+value="{{ search_query or '' }}"
+placeholder="Cari menu, type, ikan, ukuran, atau dish description"
+class="min-w-[320px] flex-1 rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white">
+<button type="submit" class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">Cari</button>
+{% if search_query %}
+<a href="{{ url_for('reservation_menu', reservation_id=reservation_id) }}" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Reset</a>
+{% endif %}
+</form>
+
+<div class="flex-1 min-h-0 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="h-full overflow-auto">
+<table class="w-full text-left">
+<thead class="sticky top-0 z-10 bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4">Menu</th>
+<th class="p-4">Type</th>
+<th class="p-4">Price</th>
+<th class="p-4">Qty</th>
+<th class="p-4">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for item in reservation_menus %}
+<tr class="border-t border-slate-800 align-top">
+<td class="p-4">
+<div class="font-semibold text-white">{{ item.display_menu_name or item.name }}</div>
+{% if item.fish_info %}
+<div class="mt-2 text-sm text-blue-400">{{ item.fish_info }}</div>
+{% endif %}
+{% if item.display_note %}
+<div class="mt-2 text-sm text-amber-300">{{ item.display_note }}</div>
+{% endif %}
+</td>
+<td class="p-4">{{ item.serving_type }}</td>
+<td class="p-4">
+{% if item.price_display %}
+Rp {{ item.price_display }}
+{% else %}
+Rp -
+{% endif %}
+</td>
+<td class="p-4">{{ item.quantity }}</td>
+<td class="p-4">
+<div class="flex flex-wrap gap-2">
+<a href="/edit_menu/{{ item.id }}" class="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Edit</a>
+<a href="/delete_menu/{{ item.id }}" class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</a>
+</div>
+</td>
+</tr>
+{% endfor %}
+{% if not reservation_menus %}
+<tr>
+<td colspan="5" class="p-8 text-center text-slate-400">
+{% if search_query %}
+Tidak ada menu yang cocok dengan kata kunci "{{ search_query }}".
+{% else %}
+Belum ada menu untuk reservasi ini.
+{% endif %}
+</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    button.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+  });
+});
+})();
+</script>
+</body>
+</html>

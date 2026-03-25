@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fish Stock</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800,
+body.theme-light .border-slate-700{border-color:#dbeafe !important;}
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-300,
+body.theme-light .text-slate-400{color:#475569 !important;}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="mx-auto max-w-7xl space-y-6 p-6">
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<a href="/update_stock?date={{ selected_date }}" class="rounded-lg bg-slate-800 px-4 py-2 transition hover:bg-slate-700">
+Back
+</a>
+<a href="/" class="rounded-lg bg-slate-700 px-4 py-2 transition hover:bg-slate-600">
+Home
+</a>
+<div>
+<h1 class="text-3xl font-bold">Fish Stock</h1>
+<p class="mt-1 text-slate-400">Kelola stok ikan laut dan Rahang Tuna. Jika tanggal ini belum pernah diubah, sistem memakai stok terakhir yang tersimpan.</p>
+</div>
+</div>
+
+<form method="GET" class="flex items-center gap-3">
+<input type="date" name="date" value="{{ selected_date }}" class="rounded border border-slate-700 bg-slate-900 px-3 py-2">
+<button class="rounded-lg bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700">
+Tampilkan
+</button>
+</form>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-2">
+
+<div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+<h2 class="mb-4 text-xl font-bold">Stock Ikan Laut</h2>
+
+<form method="POST" action="/fish_stock" class="grid gap-4 md:grid-cols-2" id="sea-stock-form">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="hidden" name="stock_kind" value="sea">
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Jenis Ikan</label>
+<select name="fish_type_id" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+{% for fish in sea_fish_inputs %}
+<option value="{{ fish.id }}">{{ fish.name|capitalize }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Status</label>
+<select name="status" class="sea-status-select w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<option value="ready">Ready</option>
+<option value="not_ready">Not Ready</option>
+</select>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Berat</label>
+<div class="grid grid-cols-[1fr_110px] gap-2">
+<input type="number" step="0.1" min="0" name="weight_ons" placeholder="Contoh: 4.5" class="sea-weight-input w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<select name="weight_unit" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<option value="ons">ons</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Jumlah</label>
+<input type="number" min="0" name="fish_count" placeholder="Contoh: 3" class="sea-count-input w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+</div>
+
+<p class="md:col-span-2 text-sm text-slate-400">Jika status `Not Ready`, berat dan jumlah boleh dikosongkan.</p>
+
+<button class="md:col-span-2 rounded-xl bg-green-600 px-5 py-3 font-semibold hover:bg-green-700">
+Save Fish Stock
+</button>
+</form>
+
+<div class="mt-6 overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="border-b border-slate-800 text-slate-300">
+<tr>
+<th class="p-2 text-left">Ikan</th>
+<th class="p-2 text-left">Berat</th>
+<th class="p-2 text-left">Jumlah</th>
+<th class="p-2 text-left">Status</th>
+<th class="p-2 text-left">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for fish in fish_stock_today %}
+<tr class="border-b border-slate-800">
+<td class="p-2 capitalize">{{ fish.name }}</td>
+<td class="p-2">{{ fish.display_weight }}</td>
+<td class="p-2">{{ fish.fish_count or 0 }}</td>
+<td class="p-2">{{ fish.status }}</td>
+<td class="p-2">
+<form method="POST" action="/fish_stock/update/{{ fish.id }}" class="flex flex-wrap items-center gap-2">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="number" step="0.1" min="0" name="weight_ons" value="{{ fish.weight_ons or 0 }}" class="w-24 rounded-lg border border-slate-700 bg-slate-950 p-2">
+<select name="weight_unit" class="rounded-lg border border-slate-700 bg-slate-950 p-2">
+<option value="ons" {% if fish.weight_unit == "ons" %}selected{% endif %}>ons</option>
+<option value="kg" {% if fish.weight_unit == "kg" %}selected{% endif %}>kg</option>
+</select>
+<input type="number" min="0" name="fish_count" value="{{ fish.fish_count or 0 }}" class="w-20 rounded-lg border border-slate-700 bg-slate-950 p-2">
+<select name="status" class="rounded-lg border border-slate-700 bg-slate-950 p-2">
+<option value="ready" {% if fish.status == "ready" %}selected{% endif %}>Ready</option>
+<option value="not_ready" {% if fish.status == "not_ready" %}selected{% endif %}>Not Ready</option>
+</select>
+<button class="rounded-lg bg-emerald-600 px-3 py-2 hover:bg-emerald-700">Save</button>
+<a href="/fish_stock/delete/{{ fish.id }}?date={{ selected_date }}" class="rounded-lg bg-red-600 px-3 py-2 hover:bg-red-700">Delete</a>
+</form>
+</td>
+</tr>
+{% endfor %}
+{% if not fish_stock_today %}
+<tr>
+<td colspan="5" class="p-6 text-center text-slate-400">Belum ada stock ikan laut untuk tanggal ini.</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+<h2 class="mb-4 text-xl font-bold">Stock Rahang Tuna</h2>
+
+<form method="POST" action="/fish_stock" class="grid gap-4 md:grid-cols-2" id="rahang-stock-form">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="hidden" name="stock_kind" value="rahang_tuna">
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Status</label>
+<select name="rahang_status" class="rahang-status-select w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<option value="ready">Ready</option>
+<option value="not_ready">Not Ready</option>
+</select>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Ringkasan</label>
+<div class="rounded-xl border border-slate-800 bg-slate-950 p-3 text-sm text-slate-300">
+{{ rahang_tuna_summary.available_qty or 0 }} pcs tersedia
+</div>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Berat</label>
+<div class="grid grid-cols-[1fr_110px] gap-2">
+<input type="number" step="0.1" min="0" name="rahang_weight" placeholder="Contoh: 5.0" class="rahang-weight-input w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<select name="rahang_weight_unit" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+<option value="ons">ons</option>
+<option value="kg">kg</option>
+</select>
+</div>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Jumlah</label>
+<input type="number" min="0" name="rahang_qty" placeholder="Contoh: 4" class="rahang-qty-input w-full rounded-xl border border-slate-700 bg-slate-950 p-3">
+</div>
+
+<p class="md:col-span-2 text-sm text-slate-400">Jika status `Not Ready`, berat dan jumlah boleh dikosongkan. Input ready akan dipakai untuk stok Rahang Tuna PCS di home dan update stock.</p>
+
+<button class="md:col-span-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold hover:bg-blue-700">
+Save Rahang Tuna
+</button>
+</form>
+
+<div class="mt-6 overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="border-b border-slate-800 text-slate-300">
+<tr>
+<th class="p-2 text-left">Menu</th>
+<th class="p-2 text-left">Berat</th>
+<th class="p-2 text-left">Jumlah</th>
+<th class="p-2 text-left">Status</th>
+<th class="p-2 text-left">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for item in rahang_tuna_stock %}
+<tr class="border-b border-slate-800">
+<td class="p-2">Rahang Tuna</td>
+<td class="p-2">{{ item.display_weight }}</td>
+<td class="p-2">{{ item.available_qty or 0 }}</td>
+<td class="p-2">{{ item.status }}</td>
+<td class="p-2">
+<form method="POST" action="/tuna_stock/update/{{ item.id }}" class="flex flex-wrap items-center gap-2">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="number" step="0.1" min="0" name="weight_ons" value="{{ item.weight_ons or 0 }}" class="w-24 rounded-lg border border-slate-700 bg-slate-950 p-2">
+<select name="weight_unit" class="rounded-lg border border-slate-700 bg-slate-950 p-2">
+<option value="ons" {% if item.weight_unit == "ons" %}selected{% endif %}>ons</option>
+<option value="kg" {% if item.weight_unit == "kg" %}selected{% endif %}>kg</option>
+</select>
+<input type="number" min="0" name="available_qty" value="{{ item.available_qty or 0 }}" class="w-20 rounded-lg border border-slate-700 bg-slate-950 p-2">
+<select name="status" class="rounded-lg border border-slate-700 bg-slate-950 p-2">
+<option value="ready" {% if item.status == "ready" %}selected{% endif %}>Ready</option>
+<option value="not_ready" {% if item.status == "not_ready" %}selected{% endif %}>Not Ready</option>
+</select>
+<button class="rounded-lg bg-emerald-600 px-3 py-2 hover:bg-emerald-700">Save</button>
+<a href="/tuna_stock/delete/{{ item.id }}?date={{ selected_date }}" class="rounded-lg bg-red-600 px-3 py-2 hover:bg-red-700">Delete</a>
+</form>
+</td>
+</tr>
+{% endfor %}
+{% if not rahang_tuna_stock %}
+<tr>
+<td colspan="5" class="p-6 text-center text-slate-400">Belum ada stock Rahang Tuna untuk tanggal ini.</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    button.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+  });
+});
+})();
+</script>
+<script>
+function toggleOptionalFields(statusSelector, weightSelector, qtySelector){
+const statusField = document.querySelector(statusSelector);
+const weightField = document.querySelector(weightSelector);
+const qtyField = document.querySelector(qtySelector);
+if(!statusField || !weightField || !qtyField){
+  return;
+}
+
+function sync(){
+  const isReady = statusField.value === "ready";
+  weightField.required = isReady;
+  qtyField.required = isReady;
+  weightField.placeholder = isReady ? "Contoh: 4.5" : "Opsional";
+  qtyField.placeholder = isReady ? "Contoh: 3" : "Opsional";
+}
+
+statusField.addEventListener("change", sync);
+sync();
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+toggleOptionalFields(".sea-status-select", ".sea-weight-input", ".sea-count-input");
+toggleOptionalFields(".rahang-status-select", ".rahang-weight-input", ".rahang-qty-input");
+});
+</script>
+
+</body>
+</html>

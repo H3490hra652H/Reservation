@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manna Bakery and Cafe Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{
+background:
+radial-gradient(circle at top left, rgba(14,165,233,0.22), transparent 28%),
+radial-gradient(circle at bottom right, rgba(251,191,36,0.16), transparent 32%),
+linear-gradient(135deg, #020617 0%, #08152c 48%, #0f172a 100%);
+}
+
+.form-shell{
+min-height:100%;
+}
+
+@media (max-width: 1024px){
+.showcase-panel{
+display:none;
+}
+
+.login-grid{
+grid-template-columns:1fr !important;
+max-width:34rem;
+margin:0 auto;
+}
+}
+
+@media (max-width: 640px){
+body{
+padding:0;
+}
+
+.app-wrap{
+padding:1rem;
+}
+
+.login-card{
+padding:1.35rem;
+border-radius:1.5rem;
+}
+
+.login-card h2{
+font-size:2rem;
+}
+
+.login-card input,
+.login-card button,
+.login-card a{
+min-height:52px;
+}
+}
+</style>
+</head>
+
+<body class="min-h-screen text-white">
+<div class="app-wrap mx-auto flex min-h-screen max-w-7xl items-center px-6 py-10">
+<div class="login-grid grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+
+<section class="showcase-panel hidden rounded-[2rem] border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur lg:block">
+<div class="max-w-xl">
+<p class="text-sm uppercase tracking-[0.35em] text-cyan-300/80">Manna Bakery and Cafe Panel</p>
+<h1 class="mt-6 text-6xl font-black leading-none text-white">MANNA</h1>
+<p class="mt-6 text-xl text-slate-300">Kelola reservasi, pantau kitchen, dan rapikan operasional harian dari satu tempat.</p>
+
+<div class="mt-10 grid gap-4 sm:grid-cols-2">
+<div class="rounded-3xl border border-cyan-400/20 bg-slate-950/50 p-5">
+<div class="text-sm font-semibold text-cyan-300">Reservations</div>
+<p class="mt-2 text-sm text-slate-400">Kelola tamu, meja, waktu reservasi, dan detail menu yang dipesan.</p>
+</div>
+<div class="rounded-3xl border border-amber-300/20 bg-slate-950/50 p-5">
+<div class="text-sm font-semibold text-amber-300">Kitchen Checklist</div>
+<p class="mt-2 text-sm text-slate-400">Pantau progress masakan per reservasi dengan tampilan yang lebih jelas.</p>
+</div>
+<div class="rounded-3xl border border-emerald-300/20 bg-slate-950/50 p-5">
+<div class="text-sm font-semibold text-emerald-300">Stock Control</div>
+<p class="mt-2 text-sm text-slate-400">Sinkronkan kebutuhan ikan, nasi, dan stock harian dengan lebih rapi.</p>
+</div>
+<div class="rounded-3xl border border-fuchsia-300/20 bg-slate-950/50 p-5">
+<div class="text-sm font-semibold text-fuchsia-300">Smart Tools</div>
+<p class="mt-2 text-sm text-slate-400">Gunakan smart paste assistant lokal untuk merapikan list menu lebih cepat.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="login-card form-shell rounded-[2rem] border border-white/10 bg-slate-950/70 p-8 shadow-2xl backdrop-blur">
+<div class="mx-auto max-w-md">
+<div class="mb-8">
+<p class="text-sm uppercase tracking-[0.3em] text-slate-400">Welcome Back</p>
+<h2 class="mt-3 text-4xl font-bold text-white">Login to Manna Bakery and Cafe</h2>
+<p class="mt-3 text-sm text-slate-400">Masuk untuk mengakses dashboard reservasi dan kitchen.</p>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="mb-6 space-y-2">
+{% for message in messages %}
+<div class="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200">
+{{ message }}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<form method="POST" class="space-y-5">
+<div>
+<label class="mb-2 block text-sm font-semibold text-slate-300">Username</label>
+<input
+name="username"
+placeholder="Masukkan username"
+class="w-full rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20">
+</div>
+
+<div>
+<label class="mb-2 block text-sm font-semibold text-slate-300">Password</label>
+<input
+type="password"
+name="password"
+placeholder="Masukkan password"
+class="w-full rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20">
+</div>
+
+<button class="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 px-4 py-3 text-base font-bold text-white shadow-lg shadow-cyan-900/30 transition hover:scale-[1.01]">
+Masuk ke Dashboard
+</button>
+</form>
+
+<div class="mt-8 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
+<div class="font-semibold text-slate-200">Akses Internal</div>
+<p class="mt-2">Halaman ini dipakai untuk operasional reservasi, kitchen checklist, stock, dan export laporan harian.</p>
+</div>
+
+<a
+href="{{ url_for('restaurant_landing') }}"
+class="mt-4 inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10">
+Buka Halaman User Restoran
+</a>
+</div>
+</section>
+
+</div>
+</div>
+</body>
+</html>

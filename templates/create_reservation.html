@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Create Reservation</title>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<style>
+body{
+font-family:Arial, Helvetica, sans-serif;
+background:radial-gradient(circle at top, #0f274d 0%, #081120 55%, #050b16 100%);
+margin:0;
+padding:32px;
+color:#e5e7eb;
+transition:background-color .2s ease,color .2s ease;
+}
+
+.page{
+max-width:1700px;
+margin:0 auto;
+}
+
+.hero{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+margin-bottom:24px;
+flex-wrap:wrap;
+}
+
+.hero h1{
+margin:0;
+font-size:34px;
+}
+
+.badge{
+padding:10px 14px;
+border-radius:999px;
+background:rgba(59,130,246,0.16);
+color:#bfdbfe;
+font-weight:700;
+}
+
+.layout{
+display:grid;
+grid-template-columns:minmax(300px,0.9fr) minmax(360px,1.05fr) minmax(760px,1.8fr);
+gap:24px;
+align-items:start;
+}
+
+.card{
+background:rgba(30,41,59,0.94);
+border:1px solid rgba(148,163,184,0.18);
+padding:30px;
+border-radius:20px;
+box-shadow:0 25px 50px rgba(2,6,23,0.45);
+}
+
+.card h2{
+margin:0 0 18px;
+font-size:28px;
+}
+
+label{
+display:block;
+font-size:13px;
+color:#94a3b8;
+margin-bottom:8px;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px 14px;
+border:1px solid #334155;
+background:#0f172a;
+color:white;
+border-radius:12px;
+box-sizing:border-box;
+}
+
+textarea{
+resize:vertical;
+min-height:110px;
+}
+
+.field{
+margin-bottom:16px;
+}
+
+.actions{
+display:flex;
+gap:12px;
+margin-top:18px;
+flex-wrap:wrap;
+}
+
+.btn{
+border:none;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+text-decoration:none;
+display:inline-flex;
+justify-content:center;
+align-items:center;
+}
+
+.btn-primary{
+background:#2563eb;
+color:white;
+flex:1;
+}
+
+.btn-secondary{
+background:#334155;
+color:white;
+}
+
+.menu-scroll{
+flex:1;
+min-height:360px;
+max-height:840px;
+overflow-y:auto;
+overflow-x:hidden;
+padding-right:10px;
+}
+
+.menu-card{
+display:flex;
+flex-direction:column;
+min-height:920px;
+}
+
+.menu-row{
+background:#111c30;
+border:1px solid rgba(148,163,184,0.16);
+border-radius:18px;
+padding:18px;
+margin-bottom:14px;
+overflow:hidden;
+}
+
+.ts-wrapper,
+.ts-control,
+.ts-dropdown{
+width:100%;
+}
+
+.row-grid{
+display:grid;
+grid-template-columns:minmax(240px,1.6fr) repeat(3,minmax(150px,1fr)) 64px;
+gap:14px;
+align-items:start;
+}
+
+.row-grid > div{
+min-width:0;
+}
+
+.stock-warning{
+margin-top:10px;
+font-size:13px;
+font-weight:600;
+display:none;
+}
+
+.stock-warning.pending{
+display:block;
+color:#facc15;
+}
+
+.stock-warning.blocked{
+display:block;
+color:#f87171;
+}
+
+.row-actions{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:14px;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.special-grid{
+display:grid;
+grid-template-columns:220px minmax(240px,1fr);
+gap:14px;
+align-items:center;
+flex:1;
+}
+
+.menu-options-wrap{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+gap:14px;
+grid-column:1 / -1;
+padding:16px;
+border:1px solid rgba(148,163,184,0.12);
+border-radius:14px;
+background:rgba(15,23,42,0.45);
+}
+
+.menu-options-wrap .field{
+margin-bottom:0;
+}
+
+.option-helper{
+margin-top:8px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.option-check-list{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+gap:12px;
+margin-top:8px;
+}
+
+.option-check{
+display:flex;
+align-items:center;
+gap:10px;
+padding:10px 12px;
+border-radius:12px;
+border:1px solid rgba(148,163,184,0.18);
+background:rgba(2,6,23,0.72);
+color:#e5e7eb;
+font-size:14px;
+cursor:pointer;
+}
+
+.option-check input{
+width:16px;
+height:16px;
+accent-color:#f59e0b;
+}
+
+.option-check.disabled{
+opacity:0.55;
+cursor:not-allowed;
+}
+
+.option-summary{
+margin-top:8px;
+padding:10px 12px;
+border-radius:10px;
+border:1px solid rgba(245, 158, 11, 0.2);
+background:rgba(15, 23, 42, 0.75);
+color:#fcd34d;
+font-size:13px;
+line-height:1.5;
+}
+
+.hidden{
+display:none;
+}
+
+.remove-btn{
+background:#dc2626;
+color:white;
+padding:10px 12px;
+}
+
+.add-btn{
+background:#16a34a;
+color:white;
+margin-top:8px;
+}
+
+.helper{
+font-size:13px;
+color:#94a3b8;
+margin-top:-6px;
+margin-bottom:18px;
+}
+
+.assistant-card{
+background:#0b1427;
+border:1px solid rgba(148,163,184,0.16);
+border-radius:18px;
+padding:16px;
+margin-bottom:16px;
+}
+
+.assistant-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:12px;
+}
+
+.assistant-preview{
+margin-top:16px;
+padding:14px;
+border-radius:16px;
+background:#08101f;
+border:1px solid rgba(148,163,184,0.12);
+}
+
+.assistant-preview h4{
+margin:0 0 10px;
+font-size:14px;
+color:#cbd5e1;
+}
+
+.assistant-preview ul{
+margin:0;
+padding-left:18px;
+color:#cbd5e1;
+}
+
+.assistant-preview li{
+margin-bottom:6px;
+}
+
+.assistant-feedback{
+margin-top:10px;
+font-size:13px;
+color:#93c5fd;
+}
+
+.assistant-feedback.error{
+color:#fdba74;
+}
+
+.assistant-feedback.success{
+color:#86efac;
+}
+
+.assistant-feedback.info{
+color:#93c5fd;
+}
+
+.theme-toggle{
+border:none;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+font-weight:700;
+background:#0f172a;
+color:white;
+}
+
+body.theme-light{
+background:linear-gradient(180deg,#f8fafc 0%, #e2e8f0 100%);
+color:#0f172a;
+}
+
+body.theme-light .card,
+body.theme-light .menu-row{
+background:white;
+border-color:#cbd5e1;
+box-shadow:0 20px 40px rgba(15,23,42,0.08);
+}
+
+body.theme-light .assistant-card,
+body.theme-light .assistant-preview{
+background:#f8fafc;
+border-color:#cbd5e1;
+}
+
+body.theme-light label,
+body.theme-light .helper{
+color:#475569;
+}
+
+body.theme-light input,
+body.theme-light select,
+body.theme-light textarea{
+background:#f8fafc;
+color:#0f172a;
+border-color:#cbd5e1;
+}
+
+body.theme-light .badge{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+@media (max-width: 960px){
+body{
+padding:18px;
+}
+
+.layout{
+grid-template-columns:1fr;
+}
+
+.row-grid{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.special-grid{
+grid-template-columns:1fr;
+}
+
+.menu-options-wrap{
+grid-template-columns:repeat(2,minmax(0,1fr));
+grid-column:1 / -1;
+}
+}
+
+@media (max-width: 640px){
+body{
+padding:12px;
+}
+
+.card{
+padding:18px;
+border-radius:16px;
+}
+
+.hero h1{
+font-size:28px;
+}
+
+.row-grid{
+grid-template-columns:1fr;
+}
+
+.menu-options-wrap{
+grid-template-columns:1fr;
+}
+
+.option-check-list{
+grid-template-columns:1fr;
+}
+
+.actions .btn,
+.assistant-actions .btn{
+width:100%;
+}
+
+.remove-btn{
+width:100%;
+padding:12px 14px;
+}
+}
+</style>
+</head>
+
+<body data-default-theme="dark">
+
+<div class="page">
+
+<div class="hero">
+<div>
+<h1>Create Reservation</h1>
+<p class="helper">Stock menu, nila, ikan laut, Rahang Tuna, dan Paket Dada Tuna mengambil data update stock tanggal {{ selected_date }}.</p>
+</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+<a href="/" class="btn btn-secondary">Home</a>
+<div class="badge">Stock Date: {{ selected_date }}</div>
+</div>
+</div>
+
+<form action="/add_reservation" method="POST" id="reservation-form">
+<div class="layout">
+
+<div class="card">
+<h2>Reservation Info</h2>
+
+<div class="field">
+<label>Customer Name</label>
+<input type="text" name="customer_name" required>
+</div>
+
+<div class="field">
+<label>Table Number</label>
+<input type="text" name="table_number" placeholder="Example: 1-3 or VIP-1" required>
+</div>
+
+<div class="field">
+<label>People Count</label>
+<input type="number" name="people_count" min="1" required>
+</div>
+
+<div class="field">
+<label>Reservation Time</label>
+<input type="datetime-local" name="reservation_datetime" required>
+</div>
+
+<div class="field">
+<label>Reservation Description</label>
+<textarea name="description" placeholder="Example: Birthday party, VIP guest, special request..."></textarea>
+</div>
+
+<div class="actions">
+<button type="submit" class="btn btn-primary">Create Reservation</button>
+<a href="/reservations?date={{ selected_date }}" class="btn btn-secondary">Back</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Smart Paste Assistant</h2>
+<p class="helper">Paste list menu bebas, lalu Smart Assistant lokal akan merapikan dish, minuman, dessert, dan jumlahnya.</p>
+
+<div class="assistant-card" style="margin-bottom:0;">
+<h3 style="margin:0 0 10px;font-size:18px;">Smart Paste Assistant</h3>
+<p class="helper" style="margin:0 0 12px;">Paste list menu mentah, lalu helper lokal ini akan merapikan qty dan mengelompokkan dish, minuman, serta dessert sebelum dimasukkan ke menu order.</p>
+<textarea id="bulk-menu-input" placeholder="Contoh:
+2 ayam crispy
+nasi goreng kampung x3
+es teh 4
+pudding coklat 2"></textarea>
+<div class="assistant-actions">
+<button type="button" class="btn btn-secondary" id="bulk-parse-btn">Rapikan List</button>
+<button type="button" class="btn add-btn" id="bulk-apply-btn" disabled>Tambahkan ke Menu Order</button>
+</div>
+<div id="bulk-menu-feedback" class="assistant-feedback"></div>
+<div id="bulk-menu-preview" class="assistant-preview hidden"></div>
+</div>
+</div>
+
+<div class="card menu-card">
+<h2>Menu Order</h2>
+<p class="helper">Menu `pending` dan `not ready` akan menampilkan pengingat saat dipilih.</p>
+
+<div class="menu-scroll">
+<div id="menu-list"></div>
+</div>
+
+<div class="actions" style="margin-top:16px;">
+<button type="button" class="btn add-btn" onclick="addMenuRow()">+ Add Menu</button>
+</div>
+</div>
+
+</div>
+</form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const defaultTheme = body.dataset.defaultTheme || "dark";
+const savedTheme = localStorage.getItem(storageKey);
+const theme = savedTheme || defaultTheme;
+
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+
+function syncButtons(){
+  document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+    button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  });
+}
+
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    syncButtons();
+  });
+});
+
+syncButtons();
+})();
+</script>
+<script id="reservation-bootstrap" type="application/json">
+{{ {
+  "menus": menus,
+  "nila_sizes": nila_sizes,
+  "sea_fish": sea_fish,
+  "tuna_piece_stock": tuna_piece_stock,
+  "rahang_tuna_stock": rahang_tuna_stock,
+  "selected_date": selected_date
+}|tojson }}
+</script>
+<script>
+const reservationBootstrap = JSON.parse(document.getElementById("reservation-bootstrap").textContent || "{}");
+const menuCatalog = reservationBootstrap.menus || [];
+const nilaSizes = reservationBootstrap.nila_sizes || [];
+const seaFishStock = reservationBootstrap.sea_fish || [];
+const tunaPieceStock = reservationBootstrap.tuna_piece_stock || {};
+const rahangTunaStock = reservationBootstrap.rahang_tuna_stock || {};
+let parsedBulkMenuState = [];
+
+function escapeHtml(value){
+return String(value)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;");
+}
+
+function getMenuDisplayLabel(menu){
+if(!menu){
+  return "";
+}
+
+const servingType = String(menu.serving_type || "").trim().toLowerCase();
+const servingLabels = {
+  paket: "Paket",
+  pcs: "PCS",
+  porsi: "Porsi",
+  dish: "Dish"
+};
+const suffix = servingLabels[servingType];
+
+if(!suffix){
+  return menu.name || "";
+}
+
+const label = String(menu.name || "");
+return label.toLowerCase().includes(`(${suffix.toLowerCase()})`) ? label : `${label} (${suffix})`;
+}
+
+function menuOptionsMarkup(){
+return menuCatalog.map(function(menu){
+  const status = menu.status || "ready";
+  let label = getMenuDisplayLabel(menu);
+
+  if(status === "pending"){
+    label += " - PENDING";
+  }else if(status === "not_ready" || status === "out"){
+    label += " - NOT READY";
+  }
+
+  return `<option value="${menu.id}" data-stock-source="${menu.stock_source || menu.stock_type}" data-status="${status}">${escapeHtml(label)}</option>`;
+}).join("");
+}
+
+function serializeComboKey(optionValues, comboKeys){
+if(!(comboKeys || []).length){
+  return "__default__";
+}
+
+return comboKeys.map(function(key){
+  return `${key}=${String(optionValues[key] || "").toLowerCase()}`;
+}).join("|");
+}
+
+function resolveMenuChoice(menu, optionValues){
+if(!menu){
+  return null;
+}
+
+if((menu.combo_keys || []).length){
+  const comboKey = serializeComboKey(optionValues || {}, menu.combo_keys || []);
+  const comboMap = menu.combo_map || {};
+  return comboMap[comboKey] || Object.values(comboMap)[0] || null;
+}
+
+return {
+  menu_id: menu.menu_id,
+  menu_name: menu.actual_menu_name || menu.name,
+  serving_type: menu.serving_type || "",
+  stock_source: menu.stock_source || menu.stock_type || "",
+  status: menu.status || "ready"
+};
+}
+
+function normalizeGroupSelection(group, rawValue){
+const choices = group.choices || [];
+const fallbackValue = group.default !== undefined ? group.default : ((choices[0] || {}).value || "");
+
+if(group.multiple){
+  const sourceValues = Array.isArray(rawValue)
+    ? rawValue
+    : (rawValue === undefined || rawValue === null || rawValue === "" ? fallbackValue : [rawValue]);
+  return (Array.isArray(sourceValues) ? sourceValues : [sourceValues])
+    .map(function(value){
+      return String(value || "").trim();
+    })
+    .filter(Boolean);
+}
+
+if(Array.isArray(rawValue)){
+  return rawValue[0] || fallbackValue;
+}
+
+return rawValue || fallbackValue;
+}
+
+function getSelectControlValue(select){
+if(!select){
+  return "";
+}
+
+if(select.multiple){
+  return Array.from(select.selectedOptions).map(function(option){
+    return option.value;
+  });
+}
+
+return select.value;
+}
+
+function getCheckedOptionValues(menuOptionsWrap, optionKey){
+return Array.from(menuOptionsWrap.querySelectorAll(`.menu-option-checkbox[data-option-key="${optionKey}"]:checked`)).map(function(input){
+  return input.value;
+});
+}
+
+function formatSelectedOptionText(values, group){
+const selectedValues = Array.isArray(values) ? values : [];
+if(!selectedValues.length){
+  return "Belum ada pilihan dipilih";
+}
+
+const labelMap = new Map((group.choices || []).map(function(choice){
+  return [String(choice.value), choice.label];
+}));
+
+return selectedValues.map(function(value){
+  return labelMap.get(String(value)) || value;
+}).join(", ");
+}
+
+function buildOptionsPayload(menu, optionValues){
+if(!menu || !(menu.option_groups || []).length){
+  return "";
+}
+
+const payload = {
+  display_menu_id: menu.id,
+  display_name: getMenuDisplayLabel(menu),
+  selected_options: {}
+};
+
+(menu.option_groups || []).forEach(function(group){
+  const groupChoices = group.choices || [];
+  const normalizedValue = normalizeGroupSelection(group, optionValues[group.key]);
+
+  if(group.multiple){
+    const selectedChoices = groupChoices.filter(function(choice){
+      return normalizedValue.includes(String(choice.value));
+    });
+
+    if(!selectedChoices.length){
+      return;
+    }
+
+    payload.selected_options[group.key] = {
+      label: group.label,
+      value: selectedChoices.map(function(choice){ return choice.value; }),
+      display: selectedChoices.map(function(choice){ return choice.label; })
+    };
+    return;
+  }
+
+  const selectedChoice = groupChoices.find(function(choice){
+    return String(choice.value) === String(normalizedValue);
+  }) || groupChoices[0];
+
+  if(!selectedChoice){
+    return;
+  }
+
+  payload.selected_options[group.key] = {
+    label: group.label,
+    value: selectedChoice.value,
+    display: selectedChoice.label
+  };
+});
+
+return JSON.stringify(payload);
+}
+
+function nilaOptionsMarkup(selectedValue){
+if(!nilaSizes.length){
+  return `<option value="">Stock nila belum ready</option>`;
+}
+
+return `<option value="">Pilih ukuran nila</option>` + nilaSizes.map(function(size){
+  const selected = String(size) === String(selectedValue || "") ? "selected" : "";
+  return `<option value="${size}" ${selected}>${escapeHtml(size.replace(/_/g, " "))}</option>`;
+}).join("");
+}
+
+function shouldUseNilaSize(menu, resolvedChoice, stockSource){
+  const menuName = String((resolvedChoice && resolvedChoice.actual_menu_name) || (menu && menu.name) || "").toLowerCase();
+  const menuCategory = String((menu && menu.category) || "").toLowerCase();
+  return stockSource === "size" || menuCategory === "ikan nila" || menuName.includes("nila");
+}
+
+function seaOptionsMarkup(){
+if(!seaFishStock.length){
+  return `<option value="">Stock ikan laut belum ready</option>`;
+}
+
+return `<option value="">Pilih jenis ikan laut</option>` + seaFishStock.map(function(fish){
+  return `<option value="${fish.id}" data-fish-type="${fish.name}" data-weight="${fish.weight_ons}" data-max-qty="${fish.fish_count}">${escapeHtml(fish.label)}</option>`;
+}).join("");
+}
+
+function rahangOptionsMarkup(){
+const rows = rahangTunaStock.rows || [];
+
+if(!rows.length){
+  return `<option value="">Stock Rahang Tuna belum ready</option>`;
+}
+
+return `<option value="">Pilih Rahang Tuna</option>` + rows.map(function(row){
+  return `<option value="${row.id}" data-fish-type="rahang tuna" data-weight="${row.weight_ons}" data-max-qty="${row.available_qty}">${escapeHtml(row.label)}</option>`;
+}).join("");
+}
+
+function normalizeText(value){
+return String(value || "")
+  .toLowerCase()
+  .replace(/[()]/g, " ")
+  .replace(/[^\w\s/-]/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+}
+
+function normalizeAssistantText(value){
+const aliasMap = {
+  "alpokat": "alpukat",
+  "alvokat": "alpukat",
+  "chilin": "chilin",
+  "chilliin": "chilin",
+  "chillin": "chilin",
+  "bbq": "barbeque",
+  "barbequee": "barbeque",
+  "saos": "saus",
+  "sauss": "saus",
+  "sapo": "sapo",
+  "tahuu": "tahu",
+  "teh maniss": "teh manis"
+};
+
+let normalized = normalizeText(value)
+  .replace(/\b(\d+)\.(?=\s|$)/g, " ")
+  .replace(/\bnovel\b|\bathirah\b|\blana\b|\bguest\b|\btamu\b/g, " ")
+  .replace(/\bpcs\b/g, " pcs ")
+  .replace(/\bporsi\b/g, " porsi ")
+  .replace(/\bpaket nasi\b/g, " paket ")
+  .replace(/\bjus alpokat\b/g, " jus alpukat ");
+
+Object.keys(aliasMap).forEach(function(key){
+  normalized = normalized.replace(new RegExp(`\\b${key}\\b`, "g"), aliasMap[key]);
+});
+
+return normalized.replace(/\s+/g, " ").trim();
+}
+
+function tokenizeText(value){
+return normalizeAssistantText(value).split(" ").filter(Boolean);
+}
+
+function buildMenuLookup(){
+const lookup = {};
+menuCatalog.forEach(function(menu){
+  lookup[normalizeAssistantText(menu.name)] = menu;
+  lookup[normalizeAssistantText(`${menu.name} ${menu.serving_type || ""}`)] = menu;
+});
+return lookup;
+}
+
+const menuLookup = buildMenuLookup();
+
+function inferGroupLabel(menu){
+const category = normalizeText(menu.category);
+const divisi = normalizeText(menu.divisi);
+
+if(category.includes("dessert") || divisi.includes("dessert")){
+  return "Dessert";
+}
+if(divisi.includes("bar") || divisi.includes("jus") || category.includes("minuman") || category.includes("drink")){
+  return "Minuman";
+}
+return "Dish";
+}
+
+function titleGroupLabel(group){
+const normalized = normalizeText(group);
+if(normalized === "minuman"){
+  return "Minuman";
+}
+if(normalized === "dessert"){
+  return "Dessert";
+}
+if(normalized === "dish"){
+  return "Dish";
+}
+return "Tidak Cocok";
+}
+
+function setBulkFeedback(message, type){
+const feedback = document.getElementById("bulk-menu-feedback");
+feedback.className = "assistant-feedback";
+if(type){
+  feedback.classList.add(type);
+}
+feedback.textContent = message || "";
+}
+
+function levenshteinDistance(a, b){
+const source = normalizeAssistantText(a);
+const target = normalizeAssistantText(b);
+
+if(source === target){
+  return 0;
+}
+if(!source.length){
+  return target.length;
+}
+if(!target.length){
+  return source.length;
+}
+
+const matrix = Array.from({ length: source.length + 1 }, function(_, rowIndex){
+  return Array.from({ length: target.length + 1 }, function(__, columnIndex){
+    if(rowIndex === 0){
+      return columnIndex;
+    }
+    if(columnIndex === 0){
+      return rowIndex;
+    }
+    return 0;
+  });
+});
+
+for(let i = 1; i <= source.length; i += 1){
+  for(let j = 1; j <= target.length; j += 1){
+    const cost = source[i - 1] === target[j - 1] ? 0 : 1;
+    matrix[i][j] = Math.min(
+      matrix[i - 1][j] + 1,
+      matrix[i][j - 1] + 1,
+      matrix[i - 1][j - 1] + cost
+    );
+  }
+}
+
+return matrix[source.length][target.length];
+}
+
+function cleanSegmentText(text){
+return String(text || "")
+  .replace(/\([^)]*\d[^)]*\)/g, " ")
+  .replace(/\b(?:rp|idr)\s*[\d.,]+\b/gi, " ")
+  .replace(/\b(?:harga|price|total)\b.*$/gi, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+}
+
+function stripGuestPrefix(line){
+let text = String(line || "").trim();
+text = text.replace(/^\s*\d+\s*[.)-]?\s*/g, "").trim();
+text = text.replace(/^\s*[-*]\s*/g, "").trim();
+
+if(text.includes(":")){
+  const parts = text.split(":");
+  const tail = parts.slice(1).join(":").trim();
+  if(tail){
+    return tail;
+  }
+}
+
+return text;
+}
+
+function splitCompoundLine(line){
+const cleaned = cleanSegmentText(stripGuestPrefix(line));
+if(!cleaned){
+  return [];
+}
+
+return cleaned
+  .split(/\s+(?:\+|dan|&)\s+|,/gi)
+  .map(function(part){ return part.trim(); })
+  .filter(Boolean);
+}
+
+function extractQuantity(segment){
+const trimmed = String(segment || "").trim();
+if(!trimmed){
+  return null;
+}
+
+const patterns = [
+  /^(\d+)\s*(?:x|pcs|porsi)?\s+(.+)$/i,
+  /^(.+?)\s+(?:x\s*)?(\d+)$/i,
+  /^(.+?)\s*\((\d+)\)$/i,
+  /^(.+?)\s*qty\s*(\d+)$/i
+];
+
+for(const pattern of patterns){
+  const match = trimmed.match(pattern);
+  if(match){
+    if(pattern === patterns[0]){
+      return { qty: Number(match[1]) || 1, rawName: match[2].trim() };
+    }
+    return { qty: Number(match[2]) || 1, rawName: match[1].trim() };
+  }
+}
+
+return { qty: 1, rawName: trimmed };
+}
+
+function scoreMenuMatch(rawName, menu){
+const inputTokens = tokenizeText(rawName);
+const menuTokens = tokenizeText(menu.name);
+const inputSet = new Set(inputTokens);
+const menuSet = new Set(menuTokens);
+
+let overlap = 0;
+menuSet.forEach(function(token){
+  if(inputSet.has(token)){
+    overlap += 1;
+  }
+});
+
+const tokenCoverage = menuSet.size ? overlap / menuSet.size : 0;
+const inputCoverage = inputSet.size ? overlap / inputSet.size : 0;
+const normalizedInput = normalizeAssistantText(rawName);
+const normalizedMenu = normalizeAssistantText(menu.name);
+const directHit = normalizedInput === normalizedMenu ? 1 : 0;
+const containment = normalizedMenu.includes(normalizedInput) || normalizedInput.includes(normalizedMenu) ? 1 : 0;
+const distance = levenshteinDistance(normalizedInput, normalizedMenu);
+const maxLength = Math.max(normalizedInput.length, normalizedMenu.length, 1);
+const similarity = 1 - (distance / maxLength);
+
+return (
+    (directHit * 5)
+  + (containment * 2)
+  + (tokenCoverage * 4)
+  + (inputCoverage * 3)
+  + similarity
+);
+}
+
+function findMenuMatch(rawName){
+const normalized = normalizeAssistantText(rawName);
+if(!normalized){
+  return null;
+}
+
+if(menuLookup[normalized]){
+  return menuLookup[normalized];
+}
+
+const scoredCandidates = menuCatalog.map(function(menu){
+  return {
+    menu: menu,
+    score: scoreMenuMatch(rawName, menu)
+  };
+}).sort(function(a, b){
+  return b.score - a.score;
+});
+
+if(!scoredCandidates.length || scoredCandidates[0].score < 2.2){
+  return null;
+}
+
+return scoredCandidates[0].menu;
+}
+
+function renderBulkPreview(entries, sourceLabel){
+const preview = document.getElementById("bulk-menu-preview");
+const applyButton = document.getElementById("bulk-apply-btn");
+
+if(!entries.length){
+  parsedBulkMenuState = [];
+  preview.classList.add("hidden");
+  preview.innerHTML = "";
+  setBulkFeedback("Belum ada list yang bisa diproses.", "");
+  applyButton.disabled = true;
+  return;
+}
+
+parsedBulkMenuState = entries.filter(function(entry){ return Boolean(entry.menu); });
+applyButton.disabled = !parsedBulkMenuState.length;
+
+const groups = { Dish: [], Minuman: [], Dessert: [], "Tidak Cocok": [] };
+entries.forEach(function(entry){
+  if(entry.menu){
+    const groupName = titleGroupLabel(entry.group);
+    groups[groupName].push(entry);
+  }else{
+    groups["Tidak Cocok"].push(entry);
+  }
+});
+
+let html = "";
+["Dish", "Minuman", "Dessert", "Tidak Cocok"].forEach(function(groupName){
+  const items = groups[groupName];
+  if(!items.length){
+    return;
+  }
+  html += `<div style="margin-bottom:14px;"><h4>${groupName}</h4><ul>`;
+  items.forEach(function(entry){
+    if(entry.menu){
+      const noteSuffix = entry.notes ? ` <span style="color:#fcd34d;">- ${escapeHtml(entry.notes)}</span>` : "";
+      html += `<li><strong>${entry.qty}x</strong> ${escapeHtml(getMenuDisplayLabel(entry.menu))}${noteSuffix}</li>`;
+    }else{
+      html += `<li><strong>${entry.qty}x</strong> ${escapeHtml(entry.rawName)} <span style="color:#fca5a5;">(menu tidak ditemukan)</span></li>`;
+    }
+  });
+  html += "</ul></div>";
+});
+
+preview.innerHTML = html;
+preview.classList.remove("hidden");
+
+const matchedCount = parsedBulkMenuState.length;
+const unmatchedCount = entries.length - matchedCount;
+setBulkFeedback(`${sourceLabel}: ${matchedCount} item cocok${unmatchedCount ? `, ${unmatchedCount} item belum dikenali` : ""}.`, matchedCount ? "success" : "error");
+}
+
+function fallbackParseBulkMenuEntries(rawText){
+const aggregateMap = {};
+
+rawText.split(/\r?\n/).forEach(function(line){
+  splitCompoundLine(line).forEach(function(segment){
+    const parsed = extractQuantity(segment);
+    if(!parsed || !parsed.rawName){
+      return;
+    }
+
+    const menu = findMenuMatch(parsed.rawName);
+    const aggregateKey = menu
+      ? `menu:${menu.id}`
+      : `raw:${normalizeAssistantText(parsed.rawName)}`;
+
+    if(!aggregateMap[aggregateKey]){
+      aggregateMap[aggregateKey] = {
+        rawName: parsed.rawName,
+        qty: 0,
+        menu: menu,
+        group: menu ? inferGroupLabel(menu).toLowerCase() : "unknown",
+        notes: ""
+      };
+    }
+
+    aggregateMap[aggregateKey].qty += parsed.qty;
+    if(menu){
+      aggregateMap[aggregateKey].menu = menu;
+      aggregateMap[aggregateKey].group = inferGroupLabel(menu).toLowerCase();
+      aggregateMap[aggregateKey].rawName = menu.name;
+    }
+  });
+});
+
+return Object.values(aggregateMap).sort(function(a, b){
+  if(Boolean(b.menu) !== Boolean(a.menu)){
+    return Boolean(b.menu) - Boolean(a.menu);
+  }
+  if(a.menu && b.menu){
+    return a.menu.name.localeCompare(b.menu.name);
+  }
+  return a.rawName.localeCompare(b.rawName);
+});
+}
+
+function parseBulkMenu(){
+const rawText = document.getElementById("bulk-menu-input").value || "";
+const parseButton = document.getElementById("bulk-parse-btn");
+
+if(!rawText.trim()){
+  renderBulkPreview([], "Smart Assistant");
+  return;
+}
+
+parseButton.disabled = true;
+setBulkFeedback("Mode lokal pintar sedang merapikan list menu...", "info");
+
+const localEntries = fallbackParseBulkMenuEntries(rawText);
+renderBulkPreview(localEntries, "Mode Lokal Pintar");
+setBulkFeedback(`Mode lokal pintar aktif. ${localEntries.length} item berhasil dianalisis.`, localEntries.length ? "success" : "info");
+parseButton.disabled = false;
+}
+
+function initTomSelect(select){
+if(!select || typeof TomSelect !== "function"){
+  return null;
+}
+if(select.tomselect){
+  return select.tomselect;
+}
+
+return new TomSelect(select,{
+  create:false,
+  sortField:{ field:"text", direction:"asc" },
+  searchField:["text"],
+  maxOptions:null,
+  placeholder:"Cari menu...",
+  dropdownParent:"body"
+});
+}
+
+function buildRowMarkup(){
+return `
+<div class="menu-row">
+  <div class="row-grid">
+    <div>
+      <label>Menu</label>
+      <select class="menu-select" name="display_menu_id[]">
+        ${menuOptionsMarkup()}
+      </select>
+    </div>
+
+    <div class="menu-options-wrap hidden"></div>
+
+    <div class="nila-wrapper hidden">
+      <label>Size Nila</label>
+      <select name="fish_size[]" class="nila-select">
+        ${nilaOptionsMarkup()}
+      </select>
+    </div>
+
+    <div class="sea-wrapper hidden">
+      <label>Ikan Laut</label>
+      <select class="sea-select">
+        ${seaOptionsMarkup()}
+      </select>
+    </div>
+
+    <div class="piece-wrapper hidden">
+      <label>Stock Paket Dada Tuna</label>
+      <select class="piece-select">
+        <option value="">Pilih stok menu</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Qty</label>
+      <input type="number" name="qty[]" class="qty-input" min="1" required>
+    </div>
+
+    <button type="button" class="btn remove-btn">x</button>
+  </div>
+
+  <div class="stock-warning"></div>
+
+  <div class="row-actions">
+    <div class="special-grid">
+      <div>
+        <label>Special Request</label>
+        <select name="special_request[]" class="special-select">
+          <option value="no_special">No Special Req</option>
+          <option value="with_special">With Special Req</option>
+        </select>
+      </div>
+
+      <div class="special-desc-wrapper hidden">
+        <label>Dish Description</label>
+        <input type="text" name="dish_description[]" class="special-desc" placeholder="Dish description">
+      </div>
+    </div>
+  </div>
+
+  <input type="hidden" name="fish_type[]" class="fish-type-hidden">
+  <input type="hidden" name="fish_weight[]" class="fish-weight-hidden">
+  <input type="hidden" name="fish_stock_id[]" class="fish-stock-id-hidden">
+  <input type="hidden" name="special_stock_id[]" class="special-stock-id-hidden">
+  <input type="hidden" name="menu_id[]" class="menu-id-hidden">
+  <input type="hidden" name="menu_options_json[]" class="menu-options-json-hidden">
+</div>
+`;
+}
+
+function applyMenuBehavior(row, defaults){
+const menuSelect = row.querySelector(".menu-select");
+const menuOptionsWrap = row.querySelector(".menu-options-wrap");
+const nilaWrapper = row.querySelector(".nila-wrapper");
+const nilaSelect = row.querySelector(".nila-select");
+const seaWrapper = row.querySelector(".sea-wrapper");
+const seaSelect = row.querySelector(".sea-select");
+const pieceWrapper = row.querySelector(".piece-wrapper");
+const pieceSelect = row.querySelector(".piece-select");
+const fishTypeHidden = row.querySelector(".fish-type-hidden");
+const fishWeightHidden = row.querySelector(".fish-weight-hidden");
+const fishStockIdHidden = row.querySelector(".fish-stock-id-hidden");
+const specialStockIdHidden = row.querySelector(".special-stock-id-hidden");
+const menuIdHidden = row.querySelector(".menu-id-hidden");
+const menuOptionsJsonHidden = row.querySelector(".menu-options-json-hidden");
+const warning = row.querySelector(".stock-warning");
+const qtyInput = row.querySelector(".qty-input");
+let optionDefaults = Object.assign({}, (defaults && defaults.optionValues) || {});
+
+function getSelectedMenu(){
+  return menuCatalog.find(function(menu){
+    return String(menu.id) === String(menuSelect.value);
+  }) || null;
+}
+
+function refreshMultiSelectSummaries(){
+  const selectedMenu = getSelectedMenu() || {};
+  ((selectedMenu.option_groups) || []).filter(function(group){
+    return group.multiple;
+  }).forEach(function(group){
+    const summary = menuOptionsWrap.querySelector(`[data-option-summary="${group.key}"]`);
+    if(!summary){
+      return;
+    }
+    summary.textContent = `Terpilih: ${formatSelectedOptionText(getCheckedOptionValues(menuOptionsWrap, group.key), group)}`;
+  });
+}
+
+function renderOptionGroups(menu, presetValues){
+  const existingOptionValues = presetValues !== undefined ? presetValues : collectCurrentOptionValues();
+  if(!menu || !(menu.option_groups || []).length){
+    menuOptionsWrap.classList.add("hidden");
+    menuOptionsWrap.innerHTML = "";
+    return;
+  }
+
+  menuOptionsWrap.innerHTML = (menu.option_groups || []).map(function(group){
+    const selectedValue = normalizeGroupSelection(
+      group,
+      existingOptionValues[group.key] !== undefined ? existingOptionValues[group.key] : optionDefaults[group.key]
+    );
+    const choicesMarkup = (group.choices || []).map(function(choice){
+      const selected = group.multiple
+        ? selectedValue.includes(String(choice.value))
+        : String(choice.value) === String(selectedValue);
+      const choiceStatus = choice.status || "ready";
+      const statusSuffix = choiceStatus === "ready" ? "" : " - NOT READY";
+      const disabled = choiceStatus !== "ready" && !selected ? "disabled" : "";
+      if(group.multiple){
+        const wrapperClass = disabled ? "option-check disabled" : "option-check";
+        return `
+          <label class="${wrapperClass}">
+            <input type="checkbox" class="menu-option-checkbox" data-option-key="${group.key}" value="${choice.value}" ${selected ? "checked" : ""} ${disabled}>
+            <span>${escapeHtml(choice.label + statusSuffix)}</span>
+          </label>
+        `;
+      }
+      return `<option value="${choice.value}" ${selected} ${disabled}>${escapeHtml(choice.label + statusSuffix)}</option>`;
+    }).join("");
+    const labelText = group.multiple ? `${group.label} (centang bisa lebih dari 1)` : group.label;
+    const helperMarkup = group.multiple ? `
+        <div class="option-check-list">${choicesMarkup}</div>
+        <div class="option-helper">Centang satu atau lebih pilihan, lalu lihat ringkasan di bawah.</div>
+        <div class="option-summary" data-option-summary="${group.key}"></div>
+      ` : "";
+
+    return `
+      <div class="field">
+        <label>${escapeHtml(labelText)}</label>
+        ${group.multiple ? "" : `
+        <select class="menu-option-select" data-option-key="${group.key}">
+          ${choicesMarkup}
+        </select>`}
+        ${helperMarkup}
+      </div>
+    `;
+  }).join("");
+
+  menuOptionsWrap.classList.remove("hidden");
+  refreshMultiSelectSummaries();
+  menuOptionsWrap.querySelectorAll(".menu-option-select, .menu-option-checkbox").forEach(function(control){
+    control.addEventListener("change", function(){
+      refreshMultiSelectSummaries();
+      syncMenuState(false, false);
+    });
+  });
+}
+
+function collectCurrentOptionValues(){
+  const values = {};
+  menuOptionsWrap.querySelectorAll(".menu-option-select").forEach(function(select){
+    values[select.dataset.optionKey] = getSelectControlValue(select);
+  });
+  menuOptionsWrap.querySelectorAll(".menu-option-checkbox:checked").forEach(function(input){
+    if(!Array.isArray(values[input.dataset.optionKey])){
+      values[input.dataset.optionKey] = [];
+    }
+    values[input.dataset.optionKey].push(input.value);
+  });
+  return values;
+}
+
+function getSelectedOptionValues(menu){
+  const optionValues = {};
+  if(!menu){
+    return optionValues;
+  }
+
+  const currentValues = collectCurrentOptionValues();
+  (menu.option_groups || []).forEach(function(group){
+    const fallbackValue = currentValues[group.key] !== undefined ? currentValues[group.key] : optionDefaults[group.key];
+    optionValues[group.key] = normalizeGroupSelection(
+      group,
+      group.multiple ? getCheckedOptionValues(menuOptionsWrap, group.key) : (menuOptionsWrap.querySelector(`[data-option-key="${group.key}"]`) ? getSelectControlValue(menuOptionsWrap.querySelector(`[data-option-key="${group.key}"]`)) : fallbackValue)
+    );
+  });
+
+  return optionValues;
+}
+
+function syncSeaSelection(){
+  const selected = seaSelect.selectedOptions[0];
+  if(!selected || !selected.dataset.fishType){
+    fishTypeHidden.value = "";
+    fishWeightHidden.value = "";
+    fishStockIdHidden.value = "";
+    qtyInput.max = "";
+    return;
+  }
+
+  fishTypeHidden.value = selected.dataset.fishType;
+  fishWeightHidden.value = selected.dataset.weight || "";
+  fishStockIdHidden.value = selected.value || "";
+  specialStockIdHidden.value = "";
+  qtyInput.max = selected.dataset.maxQty || "";
+}
+
+function syncPieceSelection(){
+  const selected = pieceSelect.selectedOptions[0];
+  if(!selected || !selected.value){
+    specialStockIdHidden.value = "";
+    qtyInput.max = "";
+    return;
+  }
+
+  specialStockIdHidden.value = selected.value;
+  fishStockIdHidden.value = "";
+  fishTypeHidden.value = "";
+  fishWeightHidden.value = "";
+  qtyInput.max = selected.dataset.maxQty || "";
+}
+
+function syncMenuState(showAlert){
+  const selectedMenu = getSelectedMenu();
+  const shouldRenderOptions = arguments.length > 1 ? Boolean(arguments[1]) : true;
+  const currentOptionValues = collectCurrentOptionValues();
+  optionDefaults = Object.assign({}, optionDefaults, currentOptionValues);
+  if(shouldRenderOptions){
+    renderOptionGroups(selectedMenu, currentOptionValues);
+  }
+  const optionValues = getSelectedOptionValues(selectedMenu);
+  const resolvedChoice = resolveMenuChoice(selectedMenu, optionValues) || {};
+  const stockSource = resolvedChoice.stock_source || (selectedMenu ? (selectedMenu.stock_source || selectedMenu.stock_type) : "");
+  const status = resolvedChoice.status || (selectedMenu ? selectedMenu.status : "ready");
+                const menuId =
+                    resolvedChoice.menu_id !== undefined && resolvedChoice.menu_id !== null
+                        ? String(resolvedChoice.menu_id)
+                        : "";
+
+  const previousNilaValue = nilaSelect.value || "";
+  const previousSeaValue = seaSelect.value || fishStockIdHidden.value || specialStockIdHidden.value || "";
+  const previousPieceValue = pieceSelect.value || specialStockIdHidden.value || "";
+  nilaWrapper.classList.add("hidden");
+  seaWrapper.classList.add("hidden");
+  pieceWrapper.classList.add("hidden");
+  nilaSelect.value = "";
+  seaSelect.value = "";
+  pieceSelect.innerHTML = `<option value="">Pilih stok menu</option>`;
+  fishTypeHidden.value = "";
+  fishWeightHidden.value = "";
+  fishStockIdHidden.value = "";
+  specialStockIdHidden.value = "";
+  menuIdHidden.value = menuId;
+  menuOptionsJsonHidden.value = buildOptionsPayload(selectedMenu, optionValues);
+  qtyInput.max = "";
+  warning.className = "stock-warning";
+  warning.textContent = "";
+
+  if(status === "pending"){
+    warning.className = "stock-warning pending";
+    warning.textContent = "Menu ini statusnya masih pending di update stock.";
+  }else if(status === "not_ready" || status === "out"){
+    warning.className = "stock-warning blocked";
+    warning.textContent = "Menu ini sedang not ready di update stock.";
+  }
+
+  if(shouldUseNilaSize(selectedMenu, resolvedChoice, stockSource)){
+    nilaWrapper.classList.remove("hidden");
+    nilaSelect.innerHTML = nilaOptionsMarkup(previousNilaValue);
+    nilaSelect.value = previousNilaValue;
+  }else if(stockSource === "weight"){
+    seaWrapper.classList.remove("hidden");
+    seaSelect.innerHTML = seaOptionsMarkup();
+    if(previousSeaValue && Array.from(seaSelect.options).some(function(option){
+      return String(option.value) === String(previousSeaValue);
+    })){
+      seaSelect.value = previousSeaValue;
+    }
+    syncSeaSelection();
+  }else if(stockSource === "tuna_weight"){
+    seaWrapper.classList.remove("hidden");
+    seaSelect.innerHTML = rahangOptionsMarkup();
+    if(previousSeaValue && Array.from(seaSelect.options).some(function(option){
+      return String(option.value) === String(previousSeaValue);
+    })){
+      seaSelect.value = previousSeaValue;
+    }
+    syncSeaSelection();
+  }else if(stockSource === "menu_piece"){
+    pieceWrapper.classList.remove("hidden");
+    const stockInfo = tunaPieceStock[String(menuId)];
+    if(stockInfo && stockInfo.available_qty > 0 && stockInfo.status === "ready"){
+      pieceSelect.innerHTML = `<option value="${stockInfo.id}" data-max-qty="${stockInfo.available_qty}" selected>${escapeHtml(stockInfo.display_name || "Paket Dada Tuna")} - ${stockInfo.available_qty} stok</option>`;
+      if(previousPieceValue && Array.from(pieceSelect.options).some(function(option){
+        return String(option.value) === String(previousPieceValue);
+      })){
+        pieceSelect.value = previousPieceValue;
+      }
+      syncPieceSelection();
+    }else{
+      pieceSelect.innerHTML = `<option value="">Stock Paket Dada Tuna belum ready</option>`;
+    }
+  }
+
+  if(showAlert && status === "pending"){
+    alert("Menu ini masih pending di update stock.");
+  }else if(showAlert && (status === "not_ready" || status === "out")){
+    alert("Menu ini sedang not ready di update stock.");
+  }
+
+  optionDefaults = optionValues;
+  return optionValues;
+}
+
+row.__syncMenuState = function(){
+  syncMenuState(false, false);
+};
+
+menuSelect.addEventListener("change", function(){
+  syncMenuState(true, true);
+});
+
+seaSelect.addEventListener("change", syncSeaSelection);
+pieceSelect.addEventListener("change", syncPieceSelection);
+
+syncMenuState(false, true);
+}
+
+function applySpecialRequestBehavior(row){
+const specialSelect = row.querySelector(".special-select");
+const descWrapper = row.querySelector(".special-desc-wrapper");
+const descInput = row.querySelector(".special-desc");
+
+function sync(){
+  if(specialSelect.value === "with_special"){
+    descWrapper.classList.remove("hidden");
+  }else{
+    descWrapper.classList.add("hidden");
+    descInput.value = "";
+  }
+}
+
+specialSelect.addEventListener("change", sync);
+sync();
+}
+
+function attachRowEvents(row, defaults){
+ const menuSelect = row.querySelector(".menu-select");
+ const qtyInput = row.querySelector(".qty-input");
+ defaults = defaults || {};
+
+ initTomSelect(menuSelect);
+
+ if(defaults.menuId){
+   if(menuSelect.tomselect){
+     menuSelect.tomselect.setValue(String(defaults.menuId), true);
+   }else{
+     menuSelect.value = String(defaults.menuId);
+   }
+ }
+
+ qtyInput.value = defaults.qty || 1;
+
+ applyMenuBehavior(row, defaults);
+ applySpecialRequestBehavior(row);
+
+ row.querySelector(".remove-btn").addEventListener("click", function(){
+   const list = document.getElementById("menu-list");
+  if(list.children.length > 1){
+    row.remove();
+  }
+ });
+}
+
+function addMenuRow(defaults){
+const row = document.createElement("div");
+row.innerHTML = buildRowMarkup().trim();
+const element = row.firstElementChild;
+document.getElementById("menu-list").appendChild(element);
+attachRowEvents(element, defaults);
+}
+
+function applyBulkMenuToRows(){
+if(!parsedBulkMenuState.length){
+  return;
+}
+
+parsedBulkMenuState.forEach(function(entry){
+  addMenuRow({
+    menuId: entry.menu.id,
+    qty: entry.qty
+  });
+});
+
+setBulkFeedback(`${parsedBulkMenuState.length} item berhasil ditambahkan ke Menu Order.`, "success");
+document.getElementById("bulk-menu-input").value = "";
+document.getElementById("bulk-menu-preview").innerHTML = "";
+document.getElementById("bulk-menu-preview").classList.add("hidden");
+document.getElementById("bulk-apply-btn").disabled = true;
+parsedBulkMenuState = [];
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+ const reservationForm = document.getElementById("reservation-form");
+ document.getElementById("bulk-parse-btn").addEventListener("click", parseBulkMenu);
+ document.getElementById("bulk-apply-btn").addEventListener("click", applyBulkMenuToRows);
+addMenuRow();
+ reservationForm.addEventListener("submit", function(event){
+  const rows = Array.from(document.querySelectorAll("#menu-list .menu-row"));
+  let invalidRow = false;
+  rows.forEach(function(row){
+    if(typeof row.__syncMenuState === "function"){
+      row.__syncMenuState();
+    }
+    const resolvedMenuId = row.querySelector(".menu-id-hidden");
+    if(!String((resolvedMenuId && resolvedMenuId.value) || "").trim()){
+      invalidRow = true;
+    }
+  });
+  if(invalidRow){
+    event.preventDefault();
+    alert("Masih ada menu yang belum valid. Silakan cek pilihan menu pada form order.");
+  }
+ });
+});
+</script>
+
+</body>
+</html>

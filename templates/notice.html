@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{
+min-height:100vh;
+background:
+radial-gradient(circle at top left, rgba(59,130,246,0.22), transparent 32%),
+radial-gradient(circle at bottom right, rgba(16,185,129,0.18), transparent 28%),
+linear-gradient(135deg, #020617 0%, #081229 45%, #0f172a 100%);
+}
+</style>
+</head>
+<body class="flex items-center justify-center px-6 py-10 text-white">
+
+<div class="w-full max-w-lg rounded-[28px] border border-white/10 bg-slate-950/80 p-8 shadow-2xl backdrop-blur">
+<div class="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400/15 text-3xl text-amber-300">
+!
+</div>
+
+<h1 class="text-3xl font-extrabold tracking-tight">{{ title }}</h1>
+<p class="mt-3 text-base leading-7 text-slate-300">{{ message }}</p>
+
+<div class="mt-8 flex flex-wrap gap-3">
+<button
+  type="button"
+  id="backButton"
+  data-back-url="{{ back_url }}"
+  class="inline-flex min-w-[170px] items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 font-bold text-white shadow-lg shadow-blue-900/40 transition hover:-translate-y-0.5 hover:bg-blue-500"
+>
+  OK, Kembali
+</button>
+<a
+  href="/"
+  class="inline-flex min-w-[140px] items-center justify-center rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 font-semibold text-slate-200 transition hover:border-slate-500 hover:bg-slate-800"
+>
+  Home
+</a>
+</div>
+</div>
+
+<script>
+(function(){
+const backButton = document.getElementById("backButton");
+if(!backButton) return;
+
+backButton.addEventListener("click", function(){
+  const fallbackUrl = backButton.dataset.backUrl || "/reservations";
+
+  if(window.history.length > 1){
+    const fallbackTimer = window.setTimeout(function(){
+      window.location.href = fallbackUrl;
+    }, 250);
+
+    window.addEventListener("pagehide", function(){
+      window.clearTimeout(fallbackTimer);
+    }, { once:true });
+
+    window.history.back();
+    return;
+  }
+
+  window.location.href = fallbackUrl;
+});
+})();
+</script>
+
+</body>
+</html>

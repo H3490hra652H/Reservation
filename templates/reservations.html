@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Reservations</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800,
+body.theme-light .border-slate-700{border-color:#dbeafe !important;}
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-300,
+body.theme-light .text-slate-400{color:#475569 !important;}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="max-w-7xl mx-auto p-6 h-[calc(100vh-2rem)] flex flex-col gap-6">
+
+<div class="sticky top-0 z-30 bg-slate-950/95 backdrop-blur pb-2 flex flex-wrap items-center justify-between gap-4">
+<div>
+<h1 class="text-4xl font-bold">Reservation List</h1>
+<p class="text-slate-400 mt-2">Pilih tanggal untuk melihat reservasi yang aktif pada hari itu.</p>
+</div>
+
+<form method="GET" class="flex flex-wrap items-center gap-3">
+<label for="date" class="text-slate-300 font-medium">Pilih tanggal:</label>
+<input
+id="date"
+type="date"
+name="date"
+value="{{ selected_date }}"
+class="bg-slate-900 text-white border border-slate-700 px-3 py-2 rounded-xl">
+<input
+type="text"
+name="search"
+value="{{ search_query or '' }}"
+placeholder="Cari nama, meja, deskripsi, atau ID reservasi"
+class="min-w-[280px] bg-slate-900 text-white border border-slate-700 px-3 py-2 rounded-xl">
+<button
+type="submit"
+class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-semibold">
+Tampilkan
+</button>
+{% if search_query %}
+<a href="{{ url_for('reservations', date=selected_date) }}" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl font-semibold">Reset</a>
+{% endif %}
+</form>
+</div>
+
+<div class="flex flex-wrap gap-3">
+<a href="/reservation_history?action_type=update" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl font-semibold">History Reservasi</a>
+</div>
+
+<div class="flex-1 min-h-0 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+<div class="h-full overflow-auto">
+<table class="w-full text-left">
+<thead class="sticky top-0 z-10 bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4">ID</th>
+<th class="p-4">Name</th>
+<th class="p-4">Table</th>
+<th class="p-4">People</th>
+<th class="p-4">Time</th>
+<th class="p-4">Description</th>
+<th class="p-4">Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for r in data %}
+<tr class="border-t border-slate-800 hover:bg-slate-900/80 transition">
+<td class="p-4 font-semibold text-white">{{ r.id }}</td>
+<td class="p-4">{{ r.customer_name }}</td>
+<td class="p-4">{{ r.table_number }}</td>
+<td class="p-4">{{ r.people_count }}</td>
+<td class="p-4 text-slate-400">{{ r.reservation_datetime }}</td>
+<td class="p-4 text-slate-300">{{ r.description or '-' }}</td>
+<td class="p-4">
+<div class="flex flex-wrap gap-2">
+<a href="/reservation_menu/{{ r.id }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold">View Menu</a>
+<a href="/reservation_history?reservation_id={{ r.id }}&action_type=update" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">History</a>
+<a href="/edit/{{ r.id }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-semibold">Edit</a>
+<a href="/delete/{{ r.id }}" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-semibold">Delete</a>
+</div>
+</td>
+</tr>
+{% endfor %}
+
+{% if not data %}
+<tr>
+<td colspan="7" class="p-8 text-center text-slate-400">
+{% if search_query %}
+Tidak ada reservasi untuk tanggal {{ selected_date }} dengan kata kunci "{{ search_query }}".
+{% else %}
+Tidak ada reservasi untuk tanggal {{ selected_date }}.
+{% endif %}
+</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="sticky bottom-0 z-20 bg-slate-950/95 backdrop-blur pt-2 flex flex-wrap gap-3">
+<a href="/" class="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-semibold">Home Dashboard</a>
+<a href="{{ url_for('create_reservation', date=selected_date) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold">Add Reservation</a>
+<a href="{{ url_for('delete_all_reservations') }}" class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold">Delete All List</a>
+</div>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    button.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+  });
+});
+})();
+</script>
+</body>
+</html>

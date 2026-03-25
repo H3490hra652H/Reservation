@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitchen Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1220;
+  --bg-soft:#121c2f;
+  --panel:#172338;
+  --panel-strong:#1c2940;
+  --line:rgba(173, 188, 214, 0.18);
+  --text:#e9eef7;
+  --muted:#9fb0c8;
+  --accent:#5aa9ff;
+  --accent-soft:rgba(90, 169, 255, 0.16);
+  --success:#31c48d;
+  --warning:#f4b740;
+}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(90,169,255,0.16), transparent 26%),
+    radial-gradient(circle at top right, rgba(49,196,141,0.10), transparent 24%),
+    linear-gradient(180deg, #0a1120 0%, #0d1525 45%, #0b1220 100%);
+  color:var(--text);
+}
+.dashboard-shell{
+  max-width:1880px;
+}
+.hero-card,
+.panel-card,
+.table-card{
+  background:linear-gradient(180deg, rgba(23,35,56,0.96), rgba(17,27,44,0.98));
+  border:1px solid var(--line);
+  box-shadow:0 20px 60px rgba(0, 0, 0, 0.24);
+}
+.hero-card{
+  border-radius:28px;
+  overflow:hidden;
+}
+.hero-strip{
+  height:6px;
+  background:linear-gradient(90deg, #4f8cff 0%, #31c48d 52%, #f4b740 100%);
+}
+.hero-kicker{
+  color:#8fc2ff;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  font-size:.75rem;
+  font-weight:700;
+}
+.hero-title{
+  font-size:clamp(2rem, 4vw, 3.15rem);
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+.hero-subtitle{
+  color:var(--muted);
+  max-width:860px;
+}
+.toolbar-btn{
+  border-radius:16px;
+  font-weight:600;
+  padding:.85rem 1.1rem;
+}
+.toolbar-btn.btn-light{
+  background:#ecf3ff;
+  border-color:#ecf3ff;
+  color:#10203a;
+}
+.toolbar-btn.btn-success{
+  background:#1f9d66;
+  border-color:#1f9d66;
+}
+.toolbar-btn.btn-primary{
+  background:#2f78ff;
+  border-color:#2f78ff;
+}
+.pill-stat{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.55rem .9rem;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.04);
+  color:#dce8fb;
+  font-size:.92rem;
+}
+.pill-stat .bi{
+  color:#8fc2ff;
+}
+.section-title{
+  font-size:1.15rem;
+  font-weight:700;
+  margin-bottom:.2rem;
+}
+.section-subtitle{
+  color:var(--muted);
+  font-size:.92rem;
+}
+.panel-card{
+  border-radius:24px;
+}
+.filter-label{
+  color:#cbd8eb;
+  font-size:.85rem;
+  font-weight:600;
+  margin-bottom:.4rem;
+}
+.form-control,
+.form-select{
+  background-color:#0f1828;
+  border:1px solid rgba(163, 184, 214, 0.18);
+  color:#eef4ff;
+  border-radius:14px;
+  min-height:48px;
+}
+.form-control:focus,
+.form-select:focus{
+  background-color:#111c2e;
+  border-color:#5aa9ff;
+  box-shadow:0 0 0 .2rem rgba(90, 169, 255, 0.18);
+  color:#fff;
+}
+.form-control::placeholder{
+  color:#8295b3;
+}
+.filter-btn{
+  border-radius:14px;
+  min-height:48px;
+  font-weight:700;
+}
+.settings-summary{
+  color:#d9e6fb;
+}
+.settings-badge{
+  background:var(--accent-soft);
+  color:#9fcbff;
+  border:1px solid rgba(90, 169, 255, 0.22);
+}
+.chip-check{
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.7rem .95rem;
+  border-radius:999px;
+  background:#0f1828;
+  border:1px solid rgba(173,188,214,0.14);
+  color:#d9e6fb;
+  font-size:.9rem;
+}
+.chip-check input{
+  accent-color:#5aa9ff;
+}
+.accordion-item{
+  background:#111b2c;
+  border:1px solid rgba(173,188,214,0.1) !important;
+}
+.accordion-button{
+  background:#162135;
+  color:#eef4ff;
+  box-shadow:none !important;
+}
+.accordion-button:not(.collapsed){
+  background:#1d2a41;
+  color:#ffffff;
+}
+.accordion-button::after{
+  filter:invert(1) brightness(1.3);
+}
+.accordion-body{
+  background:#101827;
+}
+.table-card{
+  border-radius:24px;
+  overflow:hidden;
+}
+.table-card .card-body{
+  background:#121c2d;
+}
+.table-card .card-header{
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid var(--line);
+  padding:1.35rem 1.5rem 1.1rem;
+}
+.table-card .card-title{
+  font-size:1.35rem;
+  font-weight:800;
+  margin:0;
+}
+.table-card .card-text{
+  color:var(--muted);
+  margin-top:.45rem;
+  margin-bottom:0;
+}
+.table-responsive{
+  max-height:none;
+}
+.dashboard-table{
+  margin-bottom:0;
+  color:var(--text);
+  min-width:1100px;
+  --bs-table-bg:#121c2d;
+  --bs-table-color:var(--text);
+  --bs-table-border-color:rgba(173,188,214,0.08);
+  --bs-table-striped-bg:rgba(255,255,255,0.025);
+  --bs-table-striped-color:var(--text);
+  --bs-table-hover-bg:rgba(90,169,255,0.08);
+  --bs-table-hover-color:#ffffff;
+}
+.dashboard-table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#243247;
+  color:#eef4ff;
+  font-size:.88rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  white-space:nowrap;
+}
+.dashboard-table tbody td{
+  padding:1rem .95rem;
+  border-color:rgba(173,188,214,0.08);
+  vertical-align:top;
+  background:#121c2d;
+}
+.dashboard-table tbody tr:nth-child(even){
+  background:rgba(255,255,255,0.025);
+}
+.dashboard-table tbody tr:hover{
+  background:rgba(90,169,255,0.08);
+}
+.dashboard-table tbody tr:hover td{
+  background:rgba(90,169,255,0.08);
+}
+.dashboard-table .menu-cell{
+  font-weight:700;
+  color:#f4f8ff;
+}
+.dashboard-table .amount-cell{
+  color:#6df0b3;
+  font-weight:800;
+}
+.white-space-pre-line{
+  white-space:pre-line;
+}
+.empty-row{
+  color:#aab9cd;
+  text-align:center;
+  padding:1.5rem 1rem;
+  background:#121c2d !important;
+}
+.subtle-card{
+  background:#111b2c;
+  border:1px solid rgba(173,188,214,0.1);
+  border-radius:18px;
+}
+.muted-link{
+  color:#c8d8ef;
+  text-decoration:none;
+}
+.muted-link:hover{
+  color:#fff;
+}
+.accordion{
+  --bs-accordion-bg:#111b2c;
+  --bs-accordion-color:#eef4ff;
+  --bs-accordion-border-color:rgba(173,188,214,0.1);
+  --bs-accordion-btn-bg:#162135;
+  --bs-accordion-btn-color:#eef4ff;
+  --bs-accordion-active-bg:#1d2a41;
+  --bs-accordion-active-color:#ffffff;
+  --bs-accordion-btn-focus-box-shadow:none;
+}
+@media (max-width: 991.98px){
+  .hero-card{
+    border-radius:22px;
+  }
+  .panel-card,
+  .table-card{
+    border-radius:20px;
+  }
+  .dashboard-table{
+    min-width:900px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container-fluid px-3 px-lg-4 py-4 py-lg-5">
+  <div class="dashboard-shell mx-auto">
+    <section class="hero-card mb-4">
+      <div class="hero-strip"></div>
+      <div class="p-4 p-lg-5">
+        <div class="row g-4 align-items-center">
+          <div class="col-xl-8">
+            <div class="hero-kicker mb-3">Operational Panel</div>
+            <h1 class="hero-title mb-3">Kitchen Dashboard</h1>
+            <p class="hero-subtitle mb-4">Pantau rekap kitchen dan plating dalam satu halaman, filter cepat berdasarkan tanggal, divisi, dan nama menu, lalu export sesuai tampilan yang sedang aktif.</p>
+            <div class="d-flex flex-wrap gap-3">
+              <a href="/" class="btn btn-light toolbar-btn"><i class="bi bi-house-door me-2"></i>Home Dashboard</a>
+              <a href="{{ url_for('create_reservation') }}" class="btn btn-success toolbar-btn"><i class="bi bi-plus-circle me-2"></i>Add Reservation</a>
+              <button type="button" onclick="window.location.reload()" class="btn btn-primary toolbar-btn"><i class="bi bi-arrow-clockwise me-2"></i>Refresh Data</button>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="d-flex flex-column gap-2">
+              <div class="pill-stat"><i class="bi bi-calendar-event"></i><span>Tanggal aktif: {{ selected_date }}</span></div>
+              <div class="pill-stat"><i class="bi bi-diagram-3"></i><span>Divisi: {{ selected_divisi or 'Semua Divisi' }}</span></div>
+              <div class="pill-stat"><i class="bi bi-layout-text-window-reverse"></i><span>{{ ordered_selected_tables|length }} tabel aktif</span></div>
+              <div class="pill-stat"><i class="bi bi-search"></i><span>Pencarian: {{ search_query or 'Semua menu' }}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card p-4 p-lg-4 mb-4">
+      <div class="row g-4 align-items-start">
+        <div class="col-xl-8">
+          <div class="section-title">Filter Dashboard</div>
+          <div class="section-subtitle">Gunakan pencarian nama menu, tanggal, dan divisi tanpa pindah halaman.</div>
+        </div>
+        <div class="col-xl-4 text-xl-end">
+          <a href="{{ url_for('dashboard', date=selected_date) }}" class="btn btn-outline-light filter-btn px-4"><i class="bi bi-arrow-counterclockwise me-2"></i>Reset Tampilan</a>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-1">
+        <div class="col-lg-8">
+          <form method="GET" class="subtle-card p-3 p-lg-4 h-100">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-4">
+                <label class="filter-label" for="dashboard-date">Tanggal</label>
+                <input id="dashboard-date" type="date" name="date" value="{{ selected_date }}" class="form-control">
+              </div>
+              <div class="col-md-5">
+                <label class="filter-label" for="dashboard-search">Cari Menu</label>
+                <input id="dashboard-search" type="text" name="search" value="{{ search_query or '' }}" placeholder="Contoh: ayam iloni, tuna, nasi goreng" class="form-control">
+              </div>
+              <div class="col-md-3 d-grid">
+                <button class="btn btn-primary filter-btn"><i class="bi bi-funnel me-2"></i>Tampilkan</button>
+              </div>
+            </div>
+            {% if selected_divisi %}
+            <input type="hidden" name="divisi" value="{{ selected_divisi }}">
+            {% endif %}
+            {% if selected_tables %}
+            <input type="hidden" name="use_table_filters" value="1">
+            {% for table_key in ordered_selected_tables %}
+            <input type="hidden" name="tables" value="{{ table_key }}">
+            {% for column_key in selected_table_columns.get(table_key, []) %}
+            <input type="hidden" name="columns_{{ table_key }}" value="{{ column_key }}">
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <form method="GET" class="subtle-card p-3 p-lg-4 h-100">
+            <div class="row g-3 align-items-end">
+              <div class="col-12">
+                <label class="filter-label" for="dashboard-divisi">Filter Divisi</label>
+                <select id="dashboard-divisi" name="divisi" class="form-select">
+                  <option value="">All Division</option>
+                  <option value="lokal" {% if selected_divisi=="lokal" %}selected{% endif %}>Lokal</option>
+                  <option value="bakar" {% if selected_divisi=="bakar" %}selected{% endif %}>Bakar</option>
+                  <option value="seafood" {% if selected_divisi=="seafood" %}selected{% endif %}>Seafood</option>
+                  <option value="jus" {% if selected_divisi=="jus" %}selected{% endif %}>Jus</option>
+                  <option value="bar" {% if selected_divisi=="bar" %}selected{% endif %}>Bar</option>
+                  <option value="plating" {% if selected_divisi=="plating" %}selected{% endif %}>Plating</option>
+                  <option value="taiwan_snack" {% if selected_divisi=="taiwan_snack" or selected_divisi=="Taiwan_snack" %}selected{% endif %}>Taiwan Snack</option>
+                </select>
+              </div>
+              <div class="col-12 d-grid">
+                <button class="btn btn-outline-info filter-btn"><i class="bi bi-diagram-3 me-2"></i>Filter Divisi</button>
+              </div>
+            </div>
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            {% if search_query %}
+            <input type="hidden" name="search" value="{{ search_query }}">
+            {% endif %}
+            {% if selected_tables %}
+            <input type="hidden" name="use_table_filters" value="1">
+            {% for table_key in ordered_selected_tables %}
+            <input type="hidden" name="tables" value="{{ table_key }}">
+            {% for column_key in selected_table_columns.get(table_key, []) %}
+            <input type="hidden" name="columns_{{ table_key }}" value="{{ column_key }}">
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card p-4 p-lg-4 mb-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+          <div class="section-title">Atur Tabel dan Kolom</div>
+          <div class="section-subtitle">Tampilkan hanya bagian yang Anda perlukan untuk operasional hari ini.</div>
+        </div>
+        <span class="badge rounded-pill settings-badge px-3 py-2">{{ ordered_selected_tables|length }} tabel aktif</span>
+      </div>
+
+      <div class="mt-3">
+        <button class="btn btn-outline-light filter-btn px-4" type="button" data-bs-toggle="collapse" data-bs-target="#table-settings-panel" aria-expanded="false" aria-controls="table-settings-panel">
+          <i class="bi bi-sliders me-2"></i>Buka Pengaturan Tampilan
+        </button>
+      </div>
+
+      <div class="collapse mt-4" id="table-settings-panel">
+        <form method="GET" class="subtle-card p-3 p-lg-4">
+          <input type="hidden" name="date" value="{{ selected_date }}">
+          <input type="hidden" name="use_table_filters" value="1">
+          {% if selected_divisi %}
+          <input type="hidden" name="divisi" value="{{ selected_divisi }}">
+          {% endif %}
+          {% if search_query %}
+          <input type="hidden" name="search" value="{{ search_query }}">
+          {% endif %}
+
+          <div class="mb-4">
+            <div class="filter-label mb-3">Pilih tabel yang ditampilkan</div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for table_key, table_config in dashboard_table_configs.items() %}
+              <label class="chip-check">
+                <input type="checkbox" name="tables" value="{{ table_key }}" {% if table_key in selected_tables %}checked{% endif %}>
+                <span>{{ table_config.label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if ordered_selected_tables %}
+          <div class="accordion" id="column-settings-accordion">
+            {% for table_key in ordered_selected_tables %}
+            {% set table_config = dashboard_table_configs[table_key] %}
+            {% set active_columns = selected_table_columns.get(table_key, []) %}
+            <div class="accordion-item mb-3 rounded-4 overflow-hidden border-0">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#columns-{{ table_key }}" aria-expanded="false" aria-controls="columns-{{ table_key }}">
+                  <span class="fw-semibold">{{ table_config.label }}</span>
+                  <span class="ms-2 text-secondary small">{{ active_columns|length }} / {{ table_config.columns|length }} kolom aktif</span>
+                </button>
+              </h2>
+              <div id="columns-{{ table_key }}" class="accordion-collapse collapse" data-bs-parent="#column-settings-accordion">
+                <div class="accordion-body bg-dark-subtle bg-opacity-10">
+                  <div class="d-flex flex-wrap gap-2">
+                    {% for column in table_config.columns %}
+                    <label class="chip-check">
+                      <input type="checkbox" name="columns_{{ table_key }}" value="{{ column.key }}" {% if column.key in active_columns %}checked{% endif %}>
+                      <span>{{ column.label }}</span>
+                    </label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-primary filter-btn px-4"><i class="bi bi-layout-text-window-reverse me-2"></i>Terapkan Tampilan</button>
+            <a href="{{ url_for('dashboard', date=selected_date) }}" class="btn btn-outline-light filter-btn px-4">Reset</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel-card p-4 p-lg-4 mb-4">
+      <div class="row g-3 align-items-center">
+        <div class="col-lg-8">
+          <div class="section-title">Export Excel</div>
+          <div class="section-subtitle">File export akan mengikuti tanggal, pencarian, divisi, tabel, dan kolom yang sedang aktif di dashboard.</div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <form method="GET" action="/export">
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            <input type="hidden" name="use_table_filters" value="1">
+            {% if selected_divisi %}
+            <input type="hidden" name="divisi" value="{{ selected_divisi }}">
+            {% endif %}
+            {% if search_query %}
+            <input type="hidden" name="search" value="{{ search_query }}">
+            {% endif %}
+            {% for table_key in ordered_selected_tables %}
+            <input type="hidden" name="tables" value="{{ table_key }}">
+            {% for column_key in selected_table_columns.get(table_key, []) %}
+            <input type="hidden" name="columns_{{ table_key }}" value="{{ column_key }}">
+            {% endfor %}
+            {% endfor %}
+            <button class="btn btn-success filter-btn px-4 w-100 w-lg-auto"><i class="bi bi-file-earmark-arrow-down me-2"></i>Export Excel</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    {% for table_key in ordered_selected_tables %}
+    {% set table_config = dashboard_table_configs[table_key] %}
+    {% set table_rows = dashboard_table_rows.get(table_key, []) %}
+    {% set column_defs = selected_column_defs.get(table_key, table_config.columns) %}
+    <section class="card table-card mb-4">
+      <div class="card-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div>
+            <h2 class="card-title">{{ table_config.title }}</h2>
+            {% if table_config.description %}
+            <p class="card-text">{{ table_config.description }}</p>
+            {% endif %}
+          </div>
+          <span class="badge rounded-pill settings-badge px-3 py-2">{{ table_rows|length }} baris</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table dashboard-table align-middle">
+            <thead>
+              <tr>
+                {% for column in column_defs %}
+                <th class="px-3 py-3">{{ column.label }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in table_rows %}
+              <tr>
+                {% for column in column_defs %}
+                {% set value = row.get(column.key) %}
+                <td class="{% if column.key == 'menu' %}menu-cell {% endif %}{% if column.key in ['total', 'jumlah'] %}amount-cell {% endif %}{% if column.key in ['menu_names', 'catatan'] %}white-space-pre-line{% endif %}">
+                  {{ value if value not in [None, ''] else '-' }}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+              {% if not table_rows %}
+              <tr>
+                <td colspan="{{ column_defs|length }}" class="empty-row">{{ table_config.empty_message }}</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

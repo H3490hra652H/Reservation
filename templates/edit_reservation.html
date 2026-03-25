@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Reservation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800,
+body.theme-light .border-slate-700{border-color:#dbeafe !important;}
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-300,
+body.theme-light .text-slate-400{color:#475569 !important;}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="max-w-2xl mx-auto p-6">
+
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
+<h2 class="text-3xl font-bold mb-6">Edit Reservation</h2>
+
+<form method="POST" class="space-y-5">
+<div>
+<label class="block text-sm text-slate-400 mb-2">Name</label>
+<input type="text" name="customer_name" value="{{ reservation.customer_name }}" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3">
+</div>
+
+<div>
+<label class="block text-sm text-slate-400 mb-2">Table</label>
+<input type="text" name="table_number" value="{{ reservation.table_number }}" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3">
+</div>
+
+<div>
+<label class="block text-sm text-slate-400 mb-2">People</label>
+<input type="number" name="people_count" value="{{ reservation.people_count }}" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3">
+</div>
+
+<div>
+<label class="block text-sm text-slate-400 mb-2">Time</label>
+<input type="datetime-local" name="reservation_datetime" value="{{ reservation.reservation_datetime }}" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3">
+</div>
+
+<div>
+<label class="block text-sm text-slate-400 mb-2">Description</label>
+<textarea name="description" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 min-h-[120px]">{{ reservation.description or '' }}</textarea>
+</div>
+
+<div class="flex flex-wrap gap-3 pt-2">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold">
+Save
+</button>
+<a href="/reservations" class="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-semibold">
+Back
+</a>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    button.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+  });
+});
+})();
+</script>
+</body>
+</html>

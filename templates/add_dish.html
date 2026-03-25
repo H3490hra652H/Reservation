@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Dish</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800,
+body.theme-light .border-slate-700{border-color:#dbeafe !important;}
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-400{color:#475569 !important;}
+body.theme-light input,
+body.theme-light select{border-color:#cbd5e1 !important;}
+.ts-wrapper,
+.ts-control,
+.ts-dropdown{width:100%;}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="mx-auto max-w-6xl space-y-6 p-6">
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<a href="/reservation_menu/{{ reservation_id }}" class="text-blue-400 hover:text-blue-300">Back</a>
+<h1 class="mt-2 text-3xl font-bold">Add Dish</h1>
+<div class="mt-3 flex flex-wrap items-center gap-2">
+<span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-300">
+Reservasi: {{ reservation.customer_name or '-' }}
+</span>
+{% if reservation.table_number %}
+<span class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-sm font-semibold text-slate-200">
+Meja {{ reservation.table_number }}
+</span>
+{% endif %}
+<span class="rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm font-semibold text-sky-300">
+{{ selected_date }}
+</span>
+</div>
+<p class="mt-1 text-slate-400">Tambah menu baru dengan logika stok yang sama seperti create reservation untuk tanggal {{ selected_date }}.</p>
+</div>
+<a href="/" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+
+<div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+<h2 class="mb-4 text-xl font-bold">Tambah Menu Baru</h2>
+
+<form id="addMenuForm" action="/add_menu/{{ reservation_id }}" method="POST" class="space-y-4">
+<div>
+<label class="mb-2 block text-sm text-slate-400">Menu</label>
+<select id="addMenuSelect" name="display_menu_id" class="w-full text-black"></select>
+</div>
+
+<div id="addNilaWrap" class="hidden rounded-2xl border border-cyan-900/60 bg-cyan-950/20 p-4">
+<label class="mb-2 block text-sm font-semibold text-cyan-200">Size Nila</label>
+<p class="mb-3 text-xs text-slate-400">Pilih ukuran nila sesuai stok yang tersedia dari update stock.</p>
+<select id="addFishSize" name="fish_size" class="w-full rounded-xl border p-3 text-black"></select>
+</div>
+
+<div id="addMenuOptionsWrap" class="hidden grid gap-3 md:grid-cols-2"></div>
+
+<div id="addSeaWrap" class="hidden">
+<label class="mb-2 block text-sm text-slate-400">Pilihan Stock Ikan / Rahang Tuna</label>
+<select id="addSeaStock" class="w-full rounded-xl border p-3 text-black"></select>
+</div>
+
+<div id="addPieceWrap" class="hidden">
+<label class="mb-2 block text-sm text-slate-400">Stock Paket Dada Tuna</label>
+<select id="addPieceStock" class="w-full rounded-xl border p-3 text-black"></select>
+</div>
+
+<input type="hidden" name="fish_type" id="addFishType">
+<input type="hidden" name="fish_weight" id="addFishWeight">
+<input type="hidden" name="fish_stock_id" id="addFishStockId">
+<input type="hidden" name="special_stock_id" id="addSpecialStockId">
+<input type="hidden" name="menu_id" id="addResolvedMenuId">
+<input type="hidden" name="menu_options_json" id="addMenuOptionsJson">
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Quantity</label>
+<input type="number" name="qty" min="1" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3" required>
+</div>
+
+<div>
+<label class="mb-2 block text-sm text-slate-400">Special Request</label>
+<select name="special_request" id="addSpecial" class="w-full rounded-xl border p-3 text-black">
+<option value="no_special">No Special Req</option>
+<option value="with_special">With Special Req</option>
+</select>
+</div>
+
+<div id="addDescWrap" class="hidden">
+<label class="mb-2 block text-sm text-slate-400">Dish Description</label>
+<input type="text" name="dish_description" id="addDesc" class="w-full rounded-xl border border-slate-700 bg-slate-950 p-3" placeholder="Dish description">
+</div>
+
+<p id="addWarning" class="hidden text-sm font-semibold"></p>
+
+<button class="w-full rounded-xl bg-green-600 px-4 py-3 font-semibold text-white hover:bg-green-700">
+Add Menu
+</button>
+</form>
+</div>
+
+<div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+<h2 class="mb-4 text-xl font-bold">Current Order</h2>
+
+<div class="max-h-[720px] space-y-4 overflow-y-auto pr-2">
+{% for item in reservation_menus %}
+<div class="rounded-xl border border-slate-800 p-4">
+<div class="flex items-start justify-between gap-3">
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<div class="font-semibold text-white">{{ item.display_menu_name or item.name }}</div>
+{% if item.serving_type %}
+<span class="rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-sky-300">
+{{ item.serving_type|upper }}
+</span>
+{% endif %}
+</div>
+<div class="mt-1 text-sm text-slate-400">Qty: {{ item.quantity }}</div>
+{% if item.fish_size or item.fish_weight or item.fish_type %}
+<div class="mt-2 text-sm text-blue-400">
+{% if item.fish_size %}
+Nila {{ item.fish_size|capitalize }}
+{% elif item.fish_type %}
+{{ item.fish_type|capitalize }}
+{% endif %}
+{% if item.fish_weight and item.fish_weight > 0 %}
+- {{ item.fish_weight }} ons
+{% endif %}
+</div>
+{% endif %}
+{% if item.display_note %}
+<div class="mt-2 text-sm text-amber-300">{{ item.display_note }}</div>
+{% endif %}
+</div>
+
+<div class="flex items-center gap-2">
+<a href="/edit_menu/{{ item.id }}" class="rounded-lg bg-emerald-600 px-3 py-2 text-sm text-white hover:bg-emerald-700">Edit</a>
+<a href="/delete_menu/{{ item.id }}" class="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700">Delete</a>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    document.querySelectorAll("[data-theme-toggle]").forEach(function(innerButton){
+      innerButton.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+    });
+  });
+});
+})();
+</script>
+<script>
+const menuCatalog = {{ all_menus|tojson }};
+const nilaSizes = {{ nila_sizes|tojson }};
+const seaFishStock = {{ sea_fish|tojson }};
+const tunaPieceStock = {{ tuna_piece_stock|tojson }};
+const rahangTunaStock = {{ rahang_tuna_stock|tojson }};
+
+function escapeHtml(value){
+return String(value)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;");
+}
+
+function getMenuDisplayLabel(menu){
+if(!menu){
+  return "";
+}
+
+const servingType = String(menu.serving_type || "").trim().toLowerCase();
+const servingLabels = {
+  paket: "Paket",
+  pcs: "PCS",
+  porsi: "Porsi",
+  dish: "Dish"
+};
+const suffix = servingLabels[servingType];
+
+if(!suffix){
+  return menu.name || "";
+}
+
+const label = String(menu.name || "");
+return label.toLowerCase().includes(`(${suffix.toLowerCase()})`) ? label : `${label} (${suffix})`;
+}
+
+function menuOptionsMarkup(){
+return menuCatalog.map(function(menu){
+  const status = menu.status || "ready";
+  let label = getMenuDisplayLabel(menu);
+  if(status === "pending"){
+    label += " - PENDING";
+  }else if(status === "not_ready" || status === "out"){
+    label += " - NOT READY";
+  }
+  return `<option value="${menu.id}" data-stock-source="${menu.stock_source || menu.stock_type}" data-status="${status}">${escapeHtml(label)}</option>`;
+}).join("");
+}
+
+function serializeComboKey(optionValues, comboKeys){
+if(!(comboKeys || []).length){
+  return "__default__";
+}
+return comboKeys.map(function(key){
+  return `${key}=${String(optionValues[key] || "").toLowerCase()}`;
+}).join("|");
+}
+
+function resolveMenuChoice(menu, optionValues){
+if(!menu){
+  return null;
+}
+
+if((menu.combo_keys || []).length){
+  const comboMap = menu.combo_map || {};
+  const comboKey = serializeComboKey(optionValues || {}, menu.combo_keys || []);
+  return comboMap[comboKey] || Object.values(comboMap)[0] || null;
+}
+
+return {
+  menu_id: menu.menu_id,
+  menu_name: menu.actual_menu_name || menu.name,
+  serving_type: menu.serving_type || "",
+  stock_source: menu.stock_source || menu.stock_type || "",
+  status: menu.status || "ready"
+};
+}
+
+function normalizeGroupSelection(group, rawValue){
+const choices = group.choices || [];
+const fallbackValue = group.default !== undefined ? group.default : ((choices[0] || {}).value || "");
+
+if(group.multiple){
+  const sourceValues = Array.isArray(rawValue)
+    ? rawValue
+    : (rawValue === undefined || rawValue === null || rawValue === "" ? fallbackValue : [rawValue]);
+  return (Array.isArray(sourceValues) ? sourceValues : [sourceValues])
+    .map(function(value){
+      return String(value || "").trim();
+    })
+    .filter(Boolean);
+}
+
+if(Array.isArray(rawValue)){
+  return rawValue[0] || fallbackValue;
+}
+
+return rawValue || fallbackValue;
+}
+
+function getSelectControlValue(select){
+if(!select){
+  return "";
+}
+
+if(select.multiple){
+  return Array.from(select.selectedOptions).map(function(option){
+    return option.value;
+  });
+}
+
+return select.value;
+}
+
+function buildOptionsPayload(menu, optionValues){
+if(!menu || !(menu.option_groups || []).length){
+  return "";
+}
+
+const payload = {
+  display_menu_id: menu.id,
+  display_name: getMenuDisplayLabel(menu),
+  selected_options: {}
+};
+
+(menu.option_groups || []).forEach(function(group){
+  const choices = group.choices || [];
+  const normalizedValue = normalizeGroupSelection(group, optionValues[group.key]);
+
+  if(group.multiple){
+    const selectedChoices = choices.filter(function(choice){
+      return normalizedValue.includes(String(choice.value));
+    });
+
+    if(!selectedChoices.length){
+      return;
+    }
+
+    payload.selected_options[group.key] = {
+      label: group.label,
+      value: selectedChoices.map(function(choice){ return choice.value; }),
+      display: selectedChoices.map(function(choice){ return choice.label; })
+    };
+    return;
+  }
+
+  const selectedChoice = choices.find(function(choice){
+    return String(choice.value) === String(normalizedValue);
+  }) || choices[0];
+
+  if(!selectedChoice){
+    return;
+  }
+
+  payload.selected_options[group.key] = {
+    label: group.label,
+    value: selectedChoice.value,
+    display: selectedChoice.label
+  };
+});
+
+return JSON.stringify(payload);
+}
+
+function buildNilaOptions(selectedValue){
+if(!nilaSizes.length){
+  return `<option value="">Stock nila belum ready</option>`;
+}
+
+let markup = `<option value="">Pilih ukuran nila</option>`;
+if(selectedValue && !nilaSizes.includes(selectedValue)){
+  markup += `<option value="${selectedValue}" selected>Ukuran tersimpan: ${escapeHtml(String(selectedValue).replace(/_/g, " "))}</option>`;
+}
+markup += nilaSizes.map(function(size){
+  const selected = String(size) === String(selectedValue) ? "selected" : "";
+  return `<option value="${size}" ${selected}>${escapeHtml(size.replace(/_/g, " "))}</option>`;
+}).join("");
+return markup;
+}
+
+function shouldUseNilaSize(menu, resolvedChoice, stockSource){
+  const menuName = String((resolvedChoice && resolvedChoice.actual_menu_name) || (menu && menu.name) || "").toLowerCase();
+  const menuCategory = String((menu && menu.category) || "").toLowerCase();
+  return stockSource === "size" || menuCategory === "ikan nila" || menuName.includes("nila");
+}
+
+function buildSeaOptions(selectedFishType, selectedWeight, selectedStockId){
+let markup = `<option value="">Pilih jenis ikan laut</option>`;
+const hasSelected = seaFishStock.some(function(fish){
+  return String(fish.name) === String(selectedFishType) && String(fish.weight_ons) === String(selectedWeight);
+});
+if(selectedFishType && selectedWeight && !hasSelected){
+  markup += `<option value="${selectedStockId || ""}" selected data-fish-type="${escapeHtml(selectedFishType)}" data-weight="${escapeHtml(selectedWeight)}">Pilihan tersimpan: ${escapeHtml(selectedFishType)} - ${escapeHtml(selectedWeight)} ons</option>`;
+}
+markup += seaFishStock.map(function(fish){
+  const isSelected = String(fish.name) === String(selectedFishType) && String(fish.weight_ons) === String(selectedWeight);
+  return `<option value="${fish.id}" data-fish-type="${fish.name}" data-weight="${fish.weight_ons}" data-max-qty="${fish.fish_count}" ${isSelected ? "selected" : ""}>${escapeHtml(fish.label)}</option>`;
+}).join("");
+return markup;
+}
+
+function buildRahangOptions(selectedFishType, selectedWeight, selectedStockId){
+const rows = rahangTunaStock.rows || [];
+let markup = `<option value="">Pilih Rahang Tuna</option>`;
+const hasSelected = rows.some(function(row){
+  return String(selectedFishType) === "rahang tuna" && String(row.weight_ons) === String(selectedWeight);
+});
+if(selectedFishType && selectedWeight && !hasSelected){
+  markup += `<option value="${selectedStockId || ""}" selected data-fish-type="rahang tuna" data-weight="${escapeHtml(selectedWeight)}">Pilihan tersimpan: Rahang Tuna - ${escapeHtml(selectedWeight)} ons</option>`;
+}
+markup += rows.map(function(row){
+  const isSelected = String(selectedFishType) === "rahang tuna" && String(row.weight_ons) === String(selectedWeight);
+  return `<option value="${row.id}" data-fish-type="rahang tuna" data-weight="${row.weight_ons}" data-max-qty="${row.available_qty}" ${isSelected ? "selected" : ""}>${escapeHtml(row.label)}</option>`;
+}).join("");
+return markup;
+}
+
+function initTomSelect(id, onMenuChange){
+const element = document.getElementById(id);
+if(!element || typeof TomSelect !== "function"){
+  return null;
+}
+if(element.tomselect){
+  return element.tomselect;
+}
+const control = new TomSelect(element,{
+  create:false,
+  sortField:{ field:"text", direction:"asc" },
+  searchField:["text"],
+  maxOptions:null,
+  placeholder:"Cari menu...",
+  dropdownParent:"body"
+});
+if(typeof onMenuChange === "function"){
+  control.on("change", function(){
+    onMenuChange();
+  });
+}
+return control;
+}
+
+function initAddForm(){
+const menuSelect = document.getElementById("addMenuSelect");
+const nilaWrap = document.getElementById("addNilaWrap");
+const nilaSelect = document.getElementById("addFishSize");
+const seaWrap = document.getElementById("addSeaWrap");
+const seaSelect = document.getElementById("addSeaStock");
+const pieceWrap = document.getElementById("addPieceWrap");
+const pieceSelect = document.getElementById("addPieceStock");
+const fishTypeInput = document.getElementById("addFishType");
+const fishWeightInput = document.getElementById("addFishWeight");
+const fishStockIdInput = document.getElementById("addFishStockId");
+const specialStockIdInput = document.getElementById("addSpecialStockId");
+const resolvedMenuIdInput = document.getElementById("addResolvedMenuId");
+const menuOptionsJsonInput = document.getElementById("addMenuOptionsJson");
+const menuOptionsWrap = document.getElementById("addMenuOptionsWrap");
+const warning = document.getElementById("addWarning");
+const specialSelect = document.getElementById("addSpecial");
+const descWrap = document.getElementById("addDescWrap");
+const descInput = document.getElementById("addDesc");
+const qtyInput = document.querySelector("#addMenuForm input[name='qty']");
+const addMenuForm = document.getElementById("addMenuForm");
+
+function getCheckedOptionValues(optionKey){
+  return Array.from(menuOptionsWrap.querySelectorAll(`.menu-option-checkbox[data-option-key="${optionKey}"]:checked`)).map(function(input){
+    return input.value;
+  });
+}
+
+function getGroupControlValue(group){
+  if(group.multiple){
+    return getCheckedOptionValues(group.key);
+  }
+
+  const select = menuOptionsWrap.querySelector(`.menu-option-select[data-option-key="${group.key}"]`);
+  return select ? getSelectControlValue(select) : "";
+}
+
+function formatSelectedOptionText(values, group){
+  const selectedValues = Array.isArray(values) ? values : [];
+  if(!selectedValues.length){
+    return "Belum ada pilihan dipilih";
+  }
+
+  const labelMap = new Map((group.choices || []).map(function(choice){
+    return [String(choice.value), choice.label];
+  }));
+
+  return selectedValues.map(function(value){
+    return labelMap.get(String(value)) || value;
+  }).join(", ");
+}
+
+function refreshMultiSelectSummaries(){
+  const selectedMenu = getSelectedMenu() || {};
+  ((selectedMenu.option_groups) || []).filter(function(group){
+    return group.multiple;
+  }).forEach(function(group){
+    const summary = menuOptionsWrap.querySelector(`[data-option-summary="${group.key}"]`);
+    if(!summary){
+      return;
+    }
+    summary.textContent = `Terpilih: ${formatSelectedOptionText(getGroupControlValue(group), group)}`;
+  });
+}
+
+function getSelectedMenu(){
+  return menuCatalog.find(function(menu){
+    return String(menu.id) === String(menuSelect.value);
+  }) || null;
+}
+
+function renderOptionGroups(menu, presetValues){
+  const currentOptionValues = presetValues !== undefined ? presetValues : collectCurrentOptionValues();
+  if(!menu || !(menu.option_groups || []).length){
+    menuOptionsWrap.classList.add("hidden");
+    menuOptionsWrap.innerHTML = "";
+    return;
+  }
+
+  menuOptionsWrap.innerHTML = (menu.option_groups || []).map(function(group){
+    const selectedValue = normalizeGroupSelection(group, currentOptionValues[group.key]);
+    const optionsMarkup = (group.choices || []).map(function(choice){
+      const selected = group.multiple
+        ? selectedValue.includes(String(choice.value))
+        : String(choice.value) === String(selectedValue);
+      const choiceStatus = choice.status || "ready";
+      const statusSuffix = choiceStatus === "ready" ? "" : " - NOT READY";
+      const disabled = choiceStatus !== "ready" && !selected ? "disabled" : "";
+      if(group.multiple){
+        const wrapperClass = disabled ? "border-slate-800 bg-slate-950/40 opacity-60" : "border-slate-700 bg-slate-950/70";
+        return `
+          <label class="flex items-center gap-3 rounded-xl border px-3 py-2 text-sm text-slate-100 ${wrapperClass}">
+            <input type="checkbox" class="menu-option-checkbox h-4 w-4 accent-amber-500" data-option-key="${group.key}" value="${choice.value}" ${selected ? "checked" : ""} ${disabled}>
+            <span>${escapeHtml(choice.label + statusSuffix)}</span>
+          </label>
+        `;
+      }
+      return `<option value="${choice.value}" ${selected} ${disabled}>${escapeHtml(choice.label + statusSuffix)}</option>`;
+    }).join("");
+    const labelText = group.multiple ? `${group.label} (centang bisa lebih dari 1)` : group.label;
+    const helperMarkup = group.multiple ? `
+        <div class="mt-3 grid gap-2 sm:grid-cols-2">${optionsMarkup}</div>
+        <p class="mt-2 text-xs text-slate-400">Centang satu atau lebih pilihan, lalu cek ringkasan di bawah.</p>
+        <div class="mt-2 rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm text-amber-300" data-option-summary="${group.key}"></div>
+      ` : "";
+
+    return `
+      <div>
+        <label class="mb-2 block text-sm text-slate-400">${escapeHtml(labelText)}</label>
+        ${group.multiple ? "" : `
+        <select class="menu-option-select w-full rounded-xl border p-3 text-black" data-option-key="${group.key}">
+          ${optionsMarkup}
+        </select>`}
+        ${helperMarkup}
+      </div>
+    `;
+  }).join("");
+
+  menuOptionsWrap.classList.remove("hidden");
+  refreshMultiSelectSummaries();
+  menuOptionsWrap.querySelectorAll(".menu-option-select, .menu-option-checkbox").forEach(function(control){
+    control.addEventListener("change", function(){
+      refreshMultiSelectSummaries();
+      syncMenuState(false, false);
+    });
+  });
+}
+
+function collectCurrentOptionValues(){
+  const values = {};
+  menuOptionsWrap.querySelectorAll(".menu-option-select").forEach(function(select){
+    values[select.dataset.optionKey] = getSelectControlValue(select);
+  });
+  menuOptionsWrap.querySelectorAll(".menu-option-checkbox:checked").forEach(function(input){
+    if(!Array.isArray(values[input.dataset.optionKey])){
+      values[input.dataset.optionKey] = [];
+    }
+    values[input.dataset.optionKey].push(input.value);
+  });
+  return values;
+}
+
+function getSelectedOptionValues(menu){
+  const optionValues = {};
+  if(!menu){
+    return optionValues;
+  }
+
+  const currentValues = collectCurrentOptionValues();
+  (menu.option_groups || []).forEach(function(group){
+    optionValues[group.key] = normalizeGroupSelection(
+      group,
+      group.multiple ? getCheckedOptionValues(group.key) : (menuOptionsWrap.querySelector(`[data-option-key="${group.key}"]`) ? getGroupControlValue(group) : currentValues[group.key])
+    );
+  });
+
+  return optionValues;
+}
+
+function syncSeaSelection(){
+  const selected = seaSelect.selectedOptions[0];
+  if(!selected || !selected.dataset.fishType){
+    fishTypeInput.value = "";
+    fishWeightInput.value = "";
+    fishStockIdInput.value = "";
+    qtyInput.max = "";
+    return;
+  }
+
+  fishTypeInput.value = selected.dataset.fishType;
+  fishWeightInput.value = selected.dataset.weight || "";
+  fishStockIdInput.value = selected.value || "";
+  specialStockIdInput.value = "";
+  qtyInput.max = selected.dataset.maxQty || "";
+}
+
+function syncPieceSelection(){
+  const selected = pieceSelect.selectedOptions[0];
+  if(!selected || !selected.value){
+    specialStockIdInput.value = "";
+    qtyInput.max = "";
+    return;
+  }
+
+  specialStockIdInput.value = selected.value;
+  fishStockIdInput.value = "";
+  fishTypeInput.value = "";
+  fishWeightInput.value = "";
+  qtyInput.max = selected.dataset.maxQty || "";
+}
+
+function syncMenuState(showAlert){
+  const selectedMenu = getSelectedMenu();
+  const selectedOption = menuSelect.selectedOptions[0];
+  const shouldRenderOptions = arguments.length > 1 ? Boolean(arguments[1]) : true;
+  const currentOptionValues = collectCurrentOptionValues();
+  if(shouldRenderOptions){
+    renderOptionGroups(selectedMenu, currentOptionValues);
+  }
+  const optionValues = getSelectedOptionValues(selectedMenu);
+  const resolvedChoice = resolveMenuChoice(selectedMenu, optionValues) || {};
+  const stockSource = resolvedChoice.stock_source || (selectedMenu ? (selectedMenu.stock_source || selectedMenu.stock_type) : "");
+  const fallbackStockSource = selectedOption ? String(selectedOption.dataset.stockSource || "") : "";
+  const effectiveStockSource = stockSource || fallbackStockSource;
+  const status = resolvedChoice.status || (selectedMenu ? selectedMenu.status : "ready");
+                const menuId =
+                    resolvedChoice.menu_id !== undefined && resolvedChoice.menu_id !== null
+                        ? String(resolvedChoice.menu_id)
+                        : "";
+
+  const previousNilaValue = nilaSelect.value || "";
+  const previousSeaValue = seaSelect.value || fishStockIdInput.value || specialStockIdInput.value || "";
+  const previousPieceValue = pieceSelect.value || specialStockIdInput.value || "";
+  const previousFishType = fishTypeInput.value || "";
+  const previousFishWeight = fishWeightInput.value || "";
+  nilaWrap.classList.add("hidden");
+  seaWrap.classList.add("hidden");
+  pieceWrap.classList.add("hidden");
+  nilaSelect.value = "";
+  seaSelect.value = "";
+  pieceSelect.innerHTML = `<option value="">Pilih stok menu</option>`;
+  fishTypeInput.value = "";
+  fishWeightInput.value = "";
+  fishStockIdInput.value = "";
+  specialStockIdInput.value = "";
+  resolvedMenuIdInput.value = menuId;
+  menuOptionsJsonInput.value = buildOptionsPayload(selectedMenu, optionValues);
+  qtyInput.max = "";
+  warning.className = "hidden text-sm font-semibold";
+  warning.textContent = "";
+
+  if(status === "pending"){
+    warning.className = "text-sm font-semibold text-yellow-400";
+    warning.textContent = "Menu ini statusnya pending di update stock.";
+    if(showAlert){
+      alert("Menu ini statusnya pending di update stock.");
+    }
+  }else if(status === "not_ready" || status === "out"){
+    warning.className = "text-sm font-semibold text-red-400";
+    warning.textContent = "Menu ini sedang not ready di update stock.";
+    if(showAlert){
+      alert("Menu ini sedang not ready di update stock.");
+    }
+  }
+
+  if(shouldUseNilaSize(selectedMenu, resolvedChoice, effectiveStockSource)){
+    nilaWrap.classList.remove("hidden");
+    nilaSelect.innerHTML = buildNilaOptions(previousNilaValue);
+    if(previousNilaValue){
+      nilaSelect.value = previousNilaValue;
+    }
+  }else if(effectiveStockSource === "weight"){
+    seaWrap.classList.remove("hidden");
+    seaSelect.innerHTML = buildSeaOptions(previousFishType, previousFishWeight, previousSeaValue);
+    const matchedOption = Array.from(seaSelect.options).find(function(option){
+      return String(option.value) === String(previousSeaValue)
+        || (
+          option.dataset.fishType === String(previousFishType)
+          && option.dataset.weight === String(previousFishWeight)
+        );
+    });
+    seaSelect.value = matchedOption ? matchedOption.value : "";
+    syncSeaSelection();
+  }else if(effectiveStockSource === "tuna_weight"){
+    seaWrap.classList.remove("hidden");
+    seaSelect.innerHTML = buildRahangOptions(previousFishType, previousFishWeight, previousSeaValue);
+    if(previousSeaValue && Array.from(seaSelect.options).some(function(option){
+      return String(option.value) === String(previousSeaValue);
+    })){
+      seaSelect.value = previousSeaValue;
+    }
+    syncSeaSelection();
+  }else if(effectiveStockSource === "menu_piece"){
+    pieceWrap.classList.remove("hidden");
+    const stockInfo = tunaPieceStock[String(menuId)];
+    if(stockInfo && stockInfo.status === "ready" && (stockInfo.available_qty || 0) > 0){
+      pieceSelect.innerHTML = `<option value="${stockInfo.id}" data-max-qty="${stockInfo.available_qty || 0}" selected>${escapeHtml(stockInfo.display_name || "Paket Dada Tuna")} - ${stockInfo.available_qty || 0} stok</option>`;
+      if(previousPieceValue && Array.from(pieceSelect.options).some(function(option){
+        return String(option.value) === String(previousPieceValue);
+      })){
+        pieceSelect.value = previousPieceValue;
+      }
+      syncPieceSelection();
+    }else{
+      pieceSelect.innerHTML = `<option value="">Stock Paket Dada Tuna belum ready</option>`;
+    }
+  }
+
+  return optionValues;
+}
+
+function syncSpecial(){
+  if(specialSelect.value === "with_special"){
+    descWrap.classList.remove("hidden");
+  }else{
+    descWrap.classList.add("hidden");
+    descInput.value = "";
+  }
+}
+
+menuSelect.innerHTML = menuOptionsMarkup();
+ nilaSelect.innerHTML = buildNilaOptions();
+ seaSelect.innerHTML = buildSeaOptions();
+requestAnimationFrame(function(){
+  const control = initTomSelect("addMenuSelect", function(){
+    syncMenuState(true, true);
+  });
+  if(control){
+    control.sync();
+  }
+  syncMenuState(false, true);
+});
+
+menuSelect.addEventListener("change", function(){
+  syncMenuState(true, true);
+});
+seaSelect.addEventListener("change", syncSeaSelection);
+pieceSelect.addEventListener("change", syncPieceSelection);
+specialSelect.addEventListener("change", syncSpecial);
+
+syncMenuState(false, true);
+syncSpecial();
+
+addMenuForm.addEventListener("submit", function(event){
+  syncMenuState(false, false);
+  if(!String(resolvedMenuIdInput.value || "").trim()){
+    event.preventDefault();
+    alert("Pilih menu yang valid terlebih dahulu.");
+  }
+});
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+initAddForm();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stock History</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+<div class="mx-auto max-w-7xl p-6 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<h1 class="text-3xl font-bold">Stock History</h1>
+<p class="text-slate-400 mt-2">Riwayat perubahan update stock terbaru.</p>
+</div>
+<div class="flex gap-3">
+<a href="/update_stock" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold">Back to Update Stock</a>
+<a href="/" class="rounded-xl bg-slate-800 px-4 py-3 font-semibold">Home</a>
+</div>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+<div class="overflow-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4">Waktu</th>
+<th class="p-4">Scope</th>
+<th class="p-4">Target</th>
+<th class="p-4">Dari</th>
+<th class="p-4">Ke</th>
+<th class="p-4">User</th>
+<th class="p-4">Catatan</th>
+</tr>
+</thead>
+<tbody>
+{% for row in history_rows %}
+<tr class="border-t border-slate-800">
+<td class="p-4">{{ row.created_at }}</td>
+<td class="p-4">{{ row.stock_scope }}</td>
+<td class="p-4 font-semibold">{{ row.target_name }}</td>
+<td class="p-4">{{ row.previous_value or '-' }}</td>
+<td class="p-4 text-emerald-300">{{ row.new_value or '-' }}</td>
+<td class="p-4">{{ row.actor_name or '-' }}</td>
+<td class="p-4">{{ row.notes or '-' }}</td>
+</tr>
+{% endfor %}
+{% if not history_rows %}
+<tr><td colspan="7" class="p-8 text-center text-slate-400">Belum ada riwayat stock.</td></tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</body>
+</html>

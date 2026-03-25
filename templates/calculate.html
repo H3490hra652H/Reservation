@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kitchen Calculation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.theme-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:60;
+padding:10px 16px;
+border-radius:999px;
+background:#0f172a;
+color:#fff;
+font-weight:700;
+border:1px solid rgba(148,163,184,0.3);
+}
+body.theme-light{
+background:#f8fafc !important;
+color:#0f172a !important;
+}
+body.theme-light .bg-slate-950{background:#f8fafc !important;}
+body.theme-light .bg-slate-900,
+body.theme-light .bg-slate-800{background:#ffffff !important;color:#0f172a !important;}
+body.theme-light .border-slate-800,
+body.theme-light .border-slate-700{border-color:#dbeafe !important;}
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-300,
+body.theme-light .text-slate-400{color:#475569 !important;}
+.sticky-head th{
+position:sticky;
+top:0;
+z-index:12;
+}
+.zebra-row:nth-child(even){
+background:rgba(255,255,255,0.04);
+}
+body.theme-light .zebra-row:nth-child(even){
+background:rgba(59,130,246,0.06);
+}
+.wide-table{
+min-width:1900px;
+}
+.extra-wide-table{
+min-width:2400px;
+}
+</style>
+</head>
+
+<body class="bg-slate-950 text-slate-100" data-default-theme="dark">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+
+<div class="mx-auto max-w-[1880px] space-y-6 p-8">
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<h1 class="text-4xl font-bold">Kitchen Calculation</h1>
+<p class="mt-2 text-slate-400">Rekap total dish per hari. Tampilan tabel bisa dipilih sesuai kebutuhan kitchen.</p>
+</div>
+
+<div class="flex flex-wrap gap-3">
+<a href="/" class="rounded-xl bg-slate-700 px-5 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
+<a href="{{ url_for('create_reservation', date=selected_date) }}" class="rounded-xl bg-green-600 px-5 py-3 font-semibold text-white hover:bg-green-700">Add Reservation</a>
+</div>
+</div>
+
+<form method="GET" action="/calculate" class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900 p-4">
+<label class="font-medium text-slate-300">Pilih tanggal:</label>
+<input type="date" name="date" value="{{ selected_date }}" class="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2">
+{% if request.args.get('use_table_filters') == '1' %}
+<input type="hidden" name="use_table_filters" value="1">
+{% for table_key in selected_tables %}
+<input type="hidden" name="tables" value="{{ table_key }}">
+{% endfor %}
+{% endif %}
+<button class="rounded-xl bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">Tampilkan</button>
+</form>
+
+<form method="GET" action="/calculate" class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="hidden" name="use_table_filters" value="1">
+<p class="text-sm font-semibold text-slate-200">Pilih tabel yang ditampilkan di halaman:</p>
+<div class="mt-3 flex flex-wrap items-center gap-3 text-sm text-slate-300">
+<label class="inline-flex items-center gap-2"><input type="checkbox" name="tables" value="fish_stock" {% if 'fish_stock' in selected_tables %}checked{% endif %}> Total Ikan</label>
+<label class="inline-flex items-center gap-2"><input type="checkbox" name="tables" value="rice_need" {% if 'rice_need' in selected_tables %}checked{% endif %}> Kebutuhan Nasi</label>
+<label class="inline-flex items-center gap-2"><input type="checkbox" name="tables" value="fried_rice" {% if 'fried_rice' in selected_tables %}checked{% endif %}> Total Nasi Goreng</label>
+<label class="inline-flex items-center gap-2"><input type="checkbox" name="tables" value="menu_total" {% if 'menu_total' in selected_tables %}checked{% endif %}> Total Jumlah Makanan Permenu</label>
+<label class="inline-flex items-center gap-2"><input type="checkbox" name="tables" value="menu_total_detail" {% if 'menu_total_detail' in selected_tables %}checked{% endif %}> Total Menu Detail</label>
+</div>
+<div class="mt-4 flex flex-wrap gap-3">
+<button class="rounded-xl bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">Tampilkan Tabel</button>
+<a href="{{ url_for('calculate', date=selected_date) }}" class="rounded-xl bg-slate-700 px-4 py-2 font-semibold text-white hover:bg-slate-600">Reset Tampilan</a>
+</div>
+</form>
+
+<form method="GET" action="/export" class="rounded-2xl border border-slate-800 bg-slate-900 p-4">
+<input type="hidden" name="date" value="{{ selected_date }}">
+<input type="hidden" name="use_table_filters" value="1">
+{% for table_key in selected_tables %}
+<input type="hidden" name="tables" value="{{ table_key }}">
+{% endfor %}
+<p class="text-sm font-semibold text-slate-200">Export Excel akan mengikuti tabel yang sedang ditampilkan.</p>
+<button class="mt-4 rounded-xl bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">Export Excel</button>
+</form>
+
+<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+<div class="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl">
+<h2 class="text-sm uppercase tracking-wide text-slate-500">Total Dish</h2>
+<p class="mt-4 text-5xl font-bold text-emerald-400">{{ total_today or 0 }}</p>
+</div>
+</div>
+
+{% if 'fish_stock' in selected_tables %}
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="border-b border-slate-800 px-6 py-4">
+<h2 class="text-2xl font-semibold">Total Ikan</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="sticky-head bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4">No</th>
+<th class="p-4">Divisi</th>
+<th class="p-4">Jenis Ikan</th>
+<th class="p-4">Ukuran</th>
+<th class="p-4">Berat</th>
+<th class="p-4">Jumlah</th>
+<th class="p-4">Menu</th>
+</tr>
+</thead>
+<tbody>
+{% for row in fish_totals %}
+<tr class="zebra-row border-t border-slate-800">
+<td class="p-4">{{ row.no }}</td>
+<td class="p-4">{{ row.fish_divisi }}</td>
+<td class="p-4">{{ row.fish_name }}</td>
+<td class="p-4">{{ row.fish_size or '-' }}</td>
+<td class="p-4">{{ row.fish_weight_display or '-' }}</td>
+<td class="p-4 font-bold text-emerald-400">{{ row.total }}</td>
+<td class="p-4 whitespace-pre-line">{{ row.menu_names or '-' }}</td>
+</tr>
+{% endfor %}
+{% if not fish_totals %}
+<tr>
+<td colspan="7" class="p-8 text-center text-slate-400">Belum ada total ikan untuk tanggal ini.</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+
+{% if 'rice_need' in selected_tables %}
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="border-b border-slate-800 px-6 py-4">
+<h2 class="text-2xl font-semibold">Rekap Kebutuhan Nasi Hari Ini</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="sticky-head bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4 w-16">No</th>
+<th class="p-4">Keterangan</th>
+<th class="p-4 w-24">Jumlah</th>
+</tr>
+</thead>
+<tbody>
+{% for row in rice_requirement_rows %}
+<tr class="zebra-row border-t border-slate-800">
+<td class="p-4">{{ row[0] }}</td>
+<td class="p-4 font-semibold text-white">{{ row[1] }}</td>
+<td class="p-4 font-bold text-emerald-400">{{ row[2] }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+
+{% if 'fried_rice' in selected_tables %}
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="border-b border-slate-800 px-6 py-4">
+<h2 class="text-2xl font-semibold">Total Sambal Nasi Goreng</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="sticky-head bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4 w-16">No</th>
+<th class="p-4">Menu</th>
+<th class="p-4 w-24">Jumlah</th>
+</tr>
+</thead>
+<tbody>
+{% for row in fried_rice_rows %}
+<tr class="zebra-row border-t border-slate-800">
+<td class="p-4">{{ row[0] }}</td>
+<td class="p-4 font-semibold text-white">{{ row[1] }}</td>
+<td class="p-4 font-bold text-emerald-400">{{ row[2] }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+
+{% if 'menu_total' in selected_tables %}
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="border-b border-slate-800 px-6 py-4">
+<h2 class="text-2xl font-semibold">TOTAL MAKANAN UNTUK KITCHEN</h2>
+<p class="mt-1 text-sm text-slate-400">Data dipisah per kolom dari input user: PCS, paket, sambal, bumbu, topping/saus, suhu, telur, size nila, dan berat ikan.</p>
+</div>
+<div class="overflow-x-auto">
+<table class="wide-table w-full text-left">
+<thead class="sticky-head bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4 w-16">No</th>
+<th class="p-4">Divisi</th>
+<th class="p-4">Menu</th>
+<th class="p-4">PCS</th>
+<th class="p-4">Paket</th>
+<th class="p-4">Sambal</th>
+<th class="p-4">Bumbu</th>
+<th class="p-4">Topping / Saus</th>
+<th class="p-4">Suhu</th>
+<th class="p-4">Telur</th>
+<th class="p-4">Pilihan Saus</th>
+<th class="p-4">Varian / Ukuran</th>
+<th class="p-4">Opsi Lain</th>
+<th class="p-4">Size Nila</th>
+<th class="p-4">Berat Ikan</th>
+<th class="p-4">Catatan</th>
+<th class="p-4 w-24">Jumlah</th>
+</tr>
+</thead>
+<tbody>
+{% for row in combined_menu_rows %}
+<tr class="zebra-row border-t border-slate-800">
+<td class="p-4">{{ row.no }}</td>
+<td class="p-4">{{ row.divisi }}</td>
+<td class="p-4 font-semibold text-white">{{ row.menu }}</td>
+<td class="p-4">{{ row.pcs }}</td>
+<td class="p-4">{{ row.paket }}</td>
+<td class="p-4">{{ row.sambal }}</td>
+<td class="p-4">{{ row.bumbu }}</td>
+<td class="p-4">{{ row.topping_saus }}</td>
+<td class="p-4">{{ row.suhu_minuman }}</td>
+<td class="p-4">{{ row.pilihan_telur }}</td>
+<td class="p-4">{{ row.pilihan_saus }}</td>
+<td class="p-4">{{ row.varian_ukuran }}</td>
+<td class="p-4">{{ row.opsi_lain }}</td>
+<td class="p-4">{{ row.size_nila }}</td>
+<td class="p-4">{{ row.berat_ikan }}</td>
+<td class="p-4 whitespace-pre-line">{{ row.catatan }}</td>
+<td class="p-4 font-bold text-emerald-400">{{ row.jumlah }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+
+{% if 'menu_total_detail' in selected_tables %}
+<div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+<div class="border-b border-slate-800 px-6 py-4">
+<h2 class="text-2xl font-semibold">TOTAL MENU UNTUK PLATING</h2>
+<p class="mt-1 text-sm text-slate-400">Fokus untuk plating kitchen: divisi, nama menu, jumlah total, breakdown PCS/paket, size nila, berat ikan laut, dan special request.</p>
+</div>
+<div class="overflow-x-auto">
+<table class="wide-table w-full text-left">
+<thead class="sticky-head bg-slate-800 text-slate-300">
+<tr>
+<th class="p-4 w-16">No</th>
+<th class="p-4">Divisi</th>
+<th class="p-4">Menu</th>
+<th class="p-4 w-24">Jumlah Total</th>
+<th class="p-4">PCS</th>
+<th class="p-4">Paket</th>
+<th class="p-4">Size Nila</th>
+<th class="p-4">Berat Ikan</th>
+<th class="p-4">Special Req</th>
+</tr>
+</thead>
+<tbody>
+{% for row in detailed_menu_rows %}
+<tr class="zebra-row border-t border-slate-800 align-top">
+<td class="p-4">{{ row.no }}</td>
+<td class="p-4">{{ row.divisi }}</td>
+<td class="p-4 font-semibold text-white">{{ row.menu }}</td>
+<td class="p-4 font-bold text-emerald-400">{{ row.jumlah }}</td>
+<td class="p-4">{{ row.pcs }}</td>
+<td class="p-4">{{ row.paket }}</td>
+<td class="p-4">{{ row.size_nila }}</td>
+<td class="p-4">{{ row.berat_ikan }}</td>
+<td class="p-4 text-slate-300 whitespace-pre-line">{{ row.catatan }}</td>
+</tr>
+{% endfor %}
+{% if not detailed_menu_rows %}
+<tr>
+<td colspan="9" class="p-8 text-center text-slate-400">Belum ada detail menu untuk tanggal ini.</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+</div>
+{% endif %}
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const theme = localStorage.getItem(storageKey) || body.dataset.defaultTheme || "dark";
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  button.addEventListener("click", function(){
+    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+    body.classList.remove("theme-light", "theme-dark");
+    body.classList.add(`theme-${nextTheme}`);
+    localStorage.setItem(storageKey, nextTheme);
+    button.textContent = nextTheme === "dark" ? "Light Mode" : "Night Mode";
+  });
+});
+})();
+</script>
+</body>
+</html>

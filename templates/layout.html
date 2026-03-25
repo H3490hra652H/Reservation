@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manna Bakery and Cafe</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<meta http-equiv="refresh" content="20">
+<style>
+body{
+transition:background-color .2s ease,color .2s ease;
+}
+
+.theme-toggle{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+width:100%;
+margin-top:16px;
+padding:12px 16px;
+border-radius:12px;
+border:1px solid rgba(148,163,184,0.25);
+background:#0f172a;
+color:#f8fafc;
+font-weight:700;
+cursor:pointer;
+}
+
+body.theme-dark{
+background:#020617 !important;
+color:#e2e8f0 !important;
+}
+
+body.theme-dark .bg-slate-100{
+background:#020617 !important;
+}
+
+body.theme-dark .bg-white{
+background:#0f172a !important;
+color:#e2e8f0 !important;
+border-color:#1e293b !important;
+}
+
+body.theme-dark .text-slate-900,
+body.theme-dark .text-gray-500,
+body.theme-dark .text-gray-400{
+color:#94a3b8 !important;
+}
+
+body.theme-dark input,
+body.theme-dark select,
+body.theme-dark textarea{
+background:#0f172a !important;
+color:#e2e8f0 !important;
+border-color:#334155 !important;
+}
+</style>
+</head>
+
+<body class="bg-slate-100 text-slate-900" data-default-theme="light">
+
+<div class="flex h-screen">
+
+<aside class="w-72 bg-slate-950 px-6 py-7 text-white shadow-2xl">
+<div class="mb-10">
+<div class="text-xs uppercase tracking-[0.35em] text-slate-500">Manna Bakery and Cafe Panel</div>
+<h1 class="mt-3 text-3xl font-extrabold tracking-wide">MANNA</h1>
+</div>
+
+<nav class="space-y-2 text-[15px]">
+<a href="/" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Dashboard</a>
+<a href="/restaurant" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Public Cafe Page</a>
+<a href="/create_reservation" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Create Reservation</a>
+<a href="/reservations" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Reservations</a>
+<a href="/dashboard" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Kitchen Dashboard</a>
+<a href="/kitchen_live" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Kitchen Checklist</a>
+<a href="/calculate" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Calculate</a>
+<a href="/update_stock" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Update Stock</a>
+</nav>
+
+<div class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-4 text-sm text-slate-400">
+Mode: {{ current_user.role }}
+</div>
+
+<button type="button" class="theme-toggle" data-theme-toggle>
+Night Mode
+</button>
+
+<a href="/logout" class="mt-6 inline-flex rounded-xl px-4 py-3 text-rose-400 transition hover:bg-slate-900 hover:text-rose-300">
+Logout
+</a>
+</aside>
+
+<main class="flex-1 overflow-y-auto p-8">
+{% block content %}{% endblock %}
+</main>
+
+</div>
+
+<script>
+(function(){
+const storageKey = "moca_theme";
+const body = document.body;
+const defaultTheme = body.dataset.defaultTheme || "light";
+const savedTheme = localStorage.getItem(storageKey);
+const theme = savedTheme || defaultTheme;
+
+body.classList.remove("theme-light", "theme-dark");
+body.classList.add(`theme-${theme}`);
+
+function syncButtons(){
+  document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+    button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
+  });
+}
+
+window.toggleTheme = function(){
+  const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
+  body.classList.remove("theme-light", "theme-dark");
+  body.classList.add(`theme-${nextTheme}`);
+  localStorage.setItem(storageKey, nextTheme);
+  syncButtons();
+};
+
+document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
+  button.addEventListener("click", window.toggleTheme);
+});
+
+syncButtons();
+})();
+</script>
+
+</body>
+</html>

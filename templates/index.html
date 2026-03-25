@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manna Bakery and Cafe - Paste Reservation</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.container{
+    width:600px;
+    margin:60px auto;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+textarea{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    resize:none;
+}
+
+.input-group{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+input{
+    flex:1;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+}
+
+button{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    background:#2f80ed;
+    border:none;
+    color:white;
+    font-size:16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1c60b8;
+}
+
+.link{
+    margin-top:15px;
+    display:block;
+    text-align:center;
+    color:#2f80ed;
+    text-decoration:none;
+}
+
+.link:hover{
+    text-decoration:underline;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Paste Reservation List</h1>
+
+<form action="/paste" method="post">
+
+<textarea 
+name="menu_text"
+rows="8"
+placeholder="Contoh:
+Ayam Bakar Rica x2
+Nasi Goreng Spesial x1
+Es Teh x3"></textarea>
+
+<div class="input-group">
+<input name="customer" placeholder="Customer Name">
+<input name="table" placeholder="Table">
+<input name="people" placeholder="People">
+</div>
+
+<button type="submit">Process Reservation</button>
+
+</form>
+
+<a class="link" href="/dashboard">Open Kitchen Dashboard</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

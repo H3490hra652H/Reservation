@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="space-y-6">
+
+<div class="flex flex-wrap items-center justify-between gap-4">
+<h1 class="text-3xl font-bold">Dashboard Hari Ini</h1>
+
+<form method="GET" class="flex flex-wrap items-center gap-3">
+<label class="font-medium">Pilih tanggal:</label>
+<input
+type="date"
+name="date"
+value="{{ selected_date }}"
+class="border p-2 rounded">
+<button class="bg-blue-500 text-white px-4 py-2 rounded">
+Filter
+</button>
+</form>
+</div>
+
+<div class="grid gap-6 md:grid-cols-3">
+<div class="bg-white p-6 rounded shadow">
+<h2 class="text-sm uppercase tracking-wide text-gray-500">Total Reservasi</h2>
+<p class="text-4xl font-bold mt-3">{{ total_reservations }}</p>
+</div>
+
+<div class="bg-white p-6 rounded shadow">
+<h2 class="text-sm uppercase tracking-wide text-gray-500">Total Pax</h2>
+<p class="text-4xl font-bold mt-3">{{ total_pax }}</p>
+</div>
+
+<div class="bg-white p-6 rounded shadow">
+<h2 class="text-sm uppercase tracking-wide text-gray-500">Status Kitchen</h2>
+{% if busy %}
+<p class="text-2xl font-bold text-red-600 mt-3">BUSY</p>
+{% else %}
+<p class="text-2xl font-bold text-green-600 mt-3">NORMAL</p>
+{% endif %}
+</div>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-3">
+
+<div class="bg-white p-5 rounded shadow">
+<h3 class="text-lg font-bold mb-4">Menu Not Ready</h3>
+
+{% if stock_today %}
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-2">Menu</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for s in stock_today %}
+<tr class="border-b">
+<td class="p-2">{{ s.name }}</td>
+<td class="p-2 font-semibold {% if s.status == 'pending' %}text-yellow-500{% else %}text-red-600{% endif %}">
+{{ s.status|replace('_', ' ') }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p class="text-green-600 font-semibold">Hari ini semua menu READY</p>
+{% endif %}
+</div>
+
+<div class="bg-white p-5 rounded shadow">
+<h3 class="text-lg font-bold mb-4">Stock Ikan Laut</h3>
+
+{% if sea_fish_stock %}
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-2">Ikan</th>
+<th class="p-2">Berat</th>
+<th class="p-2">Jumlah</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for fish in sea_fish_stock %}
+<tr class="border-b">
+<td class="p-2">{{ fish.name|capitalize }}</td>
+<td class="p-2">
+{{ fish.display_weight }}
+</td>
+<td class="p-2">{{ fish.fish_count or 0 }}</td>
+<td class="p-2 {% if fish.status == 'ready' %}text-green-600{% else %}text-red-600{% endif %} font-semibold">
+{{ fish.status }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p class="text-gray-500">Belum ada data stock ikan laut yang tersimpan.</p>
+{% endif %}
+</div>
+
+<div class="bg-white p-5 rounded shadow">
+<h3 class="text-lg font-bold mb-4">Stock Ikan Nila</h3>
+
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-2">Ukuran</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for nila in nila_stock %}
+<tr class="border-b">
+<td class="p-2">
+<div class="flex items-center gap-2">
+<span class="inline-block h-3 w-3 rounded-full {% if nila.status_dot == 'green' %}bg-green-500{% else %}bg-red-500{% endif %}"></span>
+<span>{{ nila.size_category|replace('_', ' ')|title }}</span>
+</div>
+</td>
+<td class="p-2 {% if nila.status == 'ready' %}text-green-600{% else %}text-red-600{% endif %} font-semibold">
+{{ nila.status }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="bg-white p-5 rounded shadow">
+<h3 class="text-lg font-bold mb-4">Stock Paket Dada Tuna</h3>
+
+{% if special_stock %}
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-2">Item</th>
+<th class="p-2">Jumlah</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for item in special_stock %}
+<tr class="border-b">
+<td class="p-2">{{ item.name }}</td>
+<td class="p-2">{{ item.available_qty or 0 }}</td>
+<td class="p-2 {% if item.status == 'ready' %}text-green-600{% else %}text-red-600{% endif %} font-semibold">
+{{ item.status }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p class="text-gray-500">Belum ada stock Paket Dada Tuna untuk tanggal ini.</p>
+{% endif %}
+</div>
+
+<div class="bg-white p-5 rounded shadow xl:col-span-2">
+<div class="mb-4 flex items-center gap-3">
+<h3 class="text-lg font-bold">Stock Rahang Tuna</h3>
+<span class="rounded-full px-3 py-1 text-sm font-semibold {% if rahang_tuna_summary.status == 'ready' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+{{ (rahang_tuna_summary.status or 'not_ready')|replace('_', ' ') }}
+</span>
+</div>
+
+{% if rahang_tuna_rows %}
+<table class="w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="p-2">Berat</th>
+<th class="p-2">Jumlah</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for row in rahang_tuna_rows %}
+<tr class="border-b">
+<td class="p-2">{{ row.display_weight }}</td>
+<td class="p-2">{{ row.available_qty or 0 }}</td>
+<td class="p-2 {% if row.status == 'ready' %}text-green-600{% else %}text-red-600{% endif %} font-semibold">{{ row.status }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p class="text-gray-500">Belum ada list Rahang Tuna untuk tanggal ini.</p>
+{% endif %}
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
