@@ -135,10 +135,10 @@ RESTAURANT_PROFILE = {
     "name": "Manna Bakery and Cafe",
     "tagline": "Tempat nyaman untuk ngopi, makan santai, acara keluarga, dan reservasi rombongan.",
     "description": "Laman ini dibuat sebagai tampilan publik agar tamu bisa booking meja, melihat alamat, dan langsung chat WhatsApp Manna Bakery and Cafe.",
-    "address": "Jl. Alamat Restoran No. 1, Makassar",
-    "maps_url": "https://maps.google.com/?q=Makassar",
-    "whatsapp_number": "6281234567890",
-    "whatsapp_display": "+62 812-3456-7890",
+    "address": "Jl. Taman Bunga, Moodu, Kec. Kota Tim., Kota Gorontalo, Gorontalo, Indonesia",
+    "maps_url": "https://www.google.com/maps/place/Manna+Bakery+%26+Cafe/@0.5422788,123.0706622,18z/data=!4m15!1m8!3m7!1s0x32792b2581d491e9:0xe903578a06130f2f!2sJl.+Taman+Bunga,+Kec.+Kota+Tim.,+Kota+Gorontalo,+Gorontalo+96135!3b1!8m2!3d0.5433483!4d123.07236!16s%2Fg%2F11cn8tf56c!3m5!1s0x32792ba4ec34408f:0x5e8e69efd821cdbf!8m2!3d0.5415071!4d123.0705396!16s%2Fg%2F11j3q8ccyk?entry=ttu&g_ep=EgoyMDI2MDMyMi4wIKXMDSoASAFQAw%3D%3D",
+    "whatsapp_number": "628113112919",
+    "whatsapp_display": "08113112919",
     "hours": [
         {"label": "Senin - Jumat", "value": "10.00 - 22.00"},
         {"label": "Sabtu - Minggu", "value": "09.00 - 23.00"},
@@ -3108,6 +3108,11 @@ def restore_stock_for_item(cursor, item):
 # ================= LOGIN =================
 
 @app.route("/restaurant")
+def restaurant_landing_legacy():
+    return redirect(url_for("restaurant_landing"), code=301)
+
+
+@app.route("/booking-in-manna")
 def restaurant_landing():
     next_slot = (datetime.now() + timedelta(days=1)).replace(minute=0, second=0, microsecond=0)
 
@@ -3121,6 +3126,11 @@ def restaurant_landing():
 
 
 @app.route("/restaurant/book", methods=["POST"])
+def restaurant_book_legacy():
+    return redirect(url_for("restaurant_landing") + "#booking", code=307)
+
+
+@app.route("/booking-in-manna/book", methods=["POST"])
 def restaurant_book():
     customer_name = (request.form.get("customer_name") or "").strip()
     whatsapp_number = (request.form.get("whatsapp_number") or "").strip()
@@ -3177,6 +3187,11 @@ def restaurant_book():
 
 
 @app.route("/restaurant/booking-success/<int:reservation_id>")
+def restaurant_booking_success_legacy(reservation_id):
+    return redirect(url_for("restaurant_booking_success", reservation_id=reservation_id), code=301)
+
+
+@app.route("/booking-in-manna/booking-success/<int:reservation_id>")
 def restaurant_booking_success(reservation_id):
     return render_template(
         "restaurant/booking_success.html",
