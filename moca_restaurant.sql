@@ -24,6 +24,22 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `app_users`
+--
+
+CREATE TABLE `app_users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `daily_menu_stock`
 --
 
@@ -610,6 +626,13 @@ INSERT INTO `reservation_items` (`id`, `reservation_id`, `menu_id`, `quantity`, 
 --
 
 --
+-- Indexes for table `app_users`
+--
+ALTER TABLE `app_users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_app_users_username` (`username`);
+
+--
 -- Indexes for table `daily_menu_stock`
 --
 ALTER TABLE `daily_menu_stock`
@@ -658,6 +681,12 @@ ALTER TABLE `reservation_items`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `app_users`
+--
+ALTER TABLE `app_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `daily_menu_stock`

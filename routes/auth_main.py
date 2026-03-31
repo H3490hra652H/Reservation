@@ -1,4 +1,10 @@
+import sys
 from datetime import datetime
+from pathlib import Path
+
+if __package__ in (None, ""):
+    # Allow this route module to be launched directly from VS Code.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -176,3 +182,9 @@ def register_auth_main_routes(app):
             rahang_tuna_rows=rahang_tuna_rows,
             rahang_tuna_summary=special_tuna_stock.get("summary", {}),
         )
+
+
+if __name__ == "__main__":
+    from app import create_app
+
+    create_app().run(debug=True)
