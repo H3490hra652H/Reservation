@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div>
+<p class="text-sm uppercase tracking-[0.25em] text-slate-500">Stock Page</p>
+<h1 class="mt-2 text-3xl font-bold">Ringkasan Stock</h1>
+</div>
+
+<form method="GET" class="flex flex-wrap items-center gap-3">
+<label class="font-medium">Tanggal:</label>
+<input type="date" name="date" value="{{ selected_date }}" class="rounded-xl border border-slate-300 px-4 py-2">
+<button class="rounded-xl bg-slate-950 px-4 py-2 font-semibold text-white">Filter</button>
+{% if current_user.role == "admin" %}
+<a href="{{ url_for('update_stock', date=selected_date) }}" class="rounded-xl border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-100">Kelola Stock</a>
+{% endif %}
+</form>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-2">
+<section class="rounded-3xl bg-white p-5 shadow">
+<h2 class="text-lg font-bold">Menu Not Ready</h2>
+{% if stock_today %}
+<div class="mt-4 space-y-3">
+{% for item in stock_today %}
+<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+<span class="font-medium text-slate-900">{{ item.name }}</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold {% if item.status == 'pending' %}bg-amber-100 text-amber-700{% else %}bg-rose-100 text-rose-700{% endif %}">
+{{ item.status|replace('_', ' ') }}
+</span>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p class="mt-4 text-slate-500">Semua menu ready di tanggal ini.</p>
+{% endif %}
+</section>
+
+<section class="rounded-3xl bg-white p-5 shadow">
+<h2 class="text-lg font-bold">Stock Ikan Laut</h2>
+{% if sea_fish_stock %}
+<div class="mt-4 overflow-x-auto">
+<table class="min-w-full text-sm">
+<thead>
+<tr class="border-b text-left">
+<th class="px-3 py-2">Ikan</th>
+<th class="px-3 py-2">Berat</th>
+<th class="px-3 py-2">Jumlah</th>
+<th class="px-3 py-2">Status</th>
+</tr>
+</thead>
+<tbody>
+{% for fish in sea_fish_stock %}
+<tr class="border-b border-slate-100">
+<td class="px-3 py-2">{{ fish.name|capitalize }}</td>
+<td class="px-3 py-2">{{ fish.display_weight }}</td>
+<td class="px-3 py-2">{{ fish.fish_count or 0 }}</td>
+<td class="px-3 py-2 font-semibold {% if fish.status == 'ready' %}text-emerald-600{% else %}text-rose-600{% endif %}">{{ fish.status }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="mt-4 text-slate-500">Belum ada data stock ikan laut.</p>
+{% endif %}
+</section>
+
+<section class="rounded-3xl bg-white p-5 shadow">
+<h2 class="text-lg font-bold">Stock Ikan Nila</h2>
+<div class="mt-4 space-y-3">
+{% for nila in nila_stock %}
+<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+<span class="font-medium text-slate-900">{{ nila.size_category|replace('_', ' ')|title }}</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold {% if nila.status == 'ready' %}bg-emerald-100 text-emerald-700{% else %}bg-rose-100 text-rose-700{% endif %}">
+{{ nila.status }}
+</span>
+</div>
+{% endfor %}
+</div>
+</section>
+
+<section class="rounded-3xl bg-white p-5 shadow">
+<h2 class="text-lg font-bold">Special Tuna Stock</h2>
+<div class="mt-4 space-y-3">
+{% for item in special_stock %}
+<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+<span class="font-medium text-slate-900">{{ item.name }}</span>
+<span class="text-sm font-semibold text-slate-600">{{ item.available_qty or 0 }} pcs • {{ item.status }}</span>
+</div>
+{% else %}
+<p class="text-slate-500">Belum ada stock paket dada tuna.</p>
+{% endfor %}
+{% for row in rahang_tuna_rows %}
+<div class="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+<span class="font-medium text-slate-900">Rahang Tuna</span>
+<span class="text-sm font-semibold text-slate-600">{{ row.display_weight }} • {{ row.available_qty or 0 }} pcs • {{ row.status }}</span>
+</div>
+{% endfor %}
+</div>
+</section>
+</div>
+</div>
+{% endblock %}

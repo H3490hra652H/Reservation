@@ -3,6 +3,7 @@ from flask import Flask
 from auth import login_manager
 from config import get_app_secret_key
 from db import init_database
+from routes.account import register_account_routes
 from routes.auth_main import register_auth_main_routes
 from routes.dashboard import register_dashboard_routes
 from routes.public import register_public_routes
@@ -20,6 +21,7 @@ def create_app():
 
     register_public_routes(app)
     register_auth_main_routes(app)
+    register_account_routes(app)
     register_reservations_routes(app)
     register_dashboard_routes(app)
     register_stock_routes(app)

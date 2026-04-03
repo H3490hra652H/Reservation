@@ -54,7 +54,7 @@ class="bg-slate-900 text-white border border-slate-700 px-3 py-2 rounded-xl">
 type="text"
 name="search"
 value="{{ search_query or '' }}"
-placeholder="Cari nama, meja, deskripsi, atau ID reservasi"
+placeholder="Cari nama, WhatsApp, meja, deskripsi, atau ID reservasi"
 class="min-w-[280px] bg-slate-900 text-white border border-slate-700 px-3 py-2 rounded-xl">
 <button
 type="submit"
@@ -78,10 +78,11 @@ Tampilkan
 <tr>
 <th class="p-4">ID</th>
 <th class="p-4">Name</th>
+<th class="p-4">WhatsApp</th>
 <th class="p-4">Table</th>
 <th class="p-4">People</th>
 <th class="p-4">Time</th>
-<th class="p-4">Description</th>
+<th class="p-4">Booking Info</th>
 <th class="p-4">Action</th>
 </tr>
 </thead>
@@ -91,10 +92,21 @@ Tampilkan
 <tr class="border-t border-slate-800 hover:bg-slate-900/80 transition">
 <td class="p-4 font-semibold text-white">{{ r.id }}</td>
 <td class="p-4">{{ r.customer_name }}</td>
+<td class="p-4">{{ r.whatsapp_number or '-' }}</td>
 <td class="p-4">{{ r.table_number }}</td>
 <td class="p-4">{{ r.people_count }}</td>
-<td class="p-4 text-slate-400">{{ r.reservation_datetime }}</td>
-<td class="p-4 text-slate-300">{{ r.description or '-' }}</td>
+<td class="p-4 text-slate-400">
+  <div>{{ r.reservation_datetime }}</div>
+  {% if r.booking_end_display and r.booking_end_display != '-' %}
+  <div class="mt-1 text-xs text-slate-500">Selesai: {{ r.booking_end_display }}</div>
+  {% endif %}
+</td>
+<td class="p-4 text-slate-300">
+  <div>{{ r.booking_summary or '-' }}</div>
+  {% if r.description %}
+  <div class="mt-1 text-xs text-slate-500">{{ r.description }}</div>
+  {% endif %}
+</td>
 <td class="p-4">
 <div class="flex flex-wrap gap-2">
 <a href="/reservation_menu/{{ r.id }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold">View Menu</a>
@@ -108,7 +120,7 @@ Tampilkan
 
 {% if not data %}
 <tr>
-<td colspan="7" class="p-8 text-center text-slate-400">
+<td colspan="8" class="p-8 text-center text-slate-400">
 {% if search_query %}
 Tidak ada reservasi untuk tanggal {{ selected_date }} dengan kata kunci "{{ search_query }}".
 {% else %}
@@ -123,7 +135,7 @@ Tidak ada reservasi untuk tanggal {{ selected_date }}.
 </div>
 
 <div class="sticky bottom-0 z-20 bg-slate-950/95 backdrop-blur pt-2 flex flex-wrap gap-3">
-<a href="/" class="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-semibold">Home Dashboard</a>
+<a href="{{ url_for('home') }}" class="bg-slate-800 hover:bg-slate-700 px-5 py-3 rounded-xl font-semibold">Home Dashboard</a>
 <a href="{{ url_for('create_reservation', date=selected_date) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold">Add Reservation</a>
 <a href="{{ url_for('delete_all_reservations') }}" class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold">Delete All List</a>
 </div>

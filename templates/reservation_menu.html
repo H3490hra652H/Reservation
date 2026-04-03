@@ -44,7 +44,7 @@ body.theme-light .border-slate-800{border-color:#dbeafe !important;}
 {% endif %}
 </div>
 <div class="flex flex-wrap gap-3">
-<a href="/" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
+<a href="{{ url_for('home') }}" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
 <a href="/reservations?date={{ reservation_back_date }}" class="rounded-xl bg-slate-800 px-4 py-3 font-semibold text-white hover:bg-slate-700">Reservation List</a>
 <a href="/reservation_history?reservation_id={{ reservation_id }}" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">History</a>
 <a href="/add_dish/{{ reservation_id }}" class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">Add Dish</a>

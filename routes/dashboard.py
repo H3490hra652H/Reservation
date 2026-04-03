@@ -2,12 +2,12 @@ import io
 from datetime import date, datetime
 
 from flask import flash, redirect, render_template, request, send_file, url_for
-from flask_login import login_required
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
+from auth import admin_required
 from db import get_db_connection
 from services.common import format_menu_label, normalize_text
 from services.reporting import (
@@ -31,7 +31,7 @@ from services.reporting import (
 
 def register_dashboard_routes(app):
     @app.route("/dashboard")
-    @login_required
+    @admin_required
     def dashboard():
 
         selected_date = request.args.get("date")
@@ -99,7 +99,7 @@ def register_dashboard_routes(app):
         )
     
     @app.route("/kitchen_live")
-    @login_required
+    @admin_required
     def kitchen_live():
         selected_date = request.args.get("date")
         search_query = (request.args.get("search") or "").strip()
@@ -122,7 +122,7 @@ def register_dashboard_routes(app):
 
 
     @app.route("/kitchen_live/save/<int:reservation_id>", methods=["POST"])
-    @login_required
+    @admin_required
     def save_kitchen_live(reservation_id):
         selected_date = request.form.get("date") or datetime.now().strftime("%Y-%m-%d")
         search_query = (request.form.get("search") or "").strip()
@@ -188,7 +188,7 @@ def register_dashboard_routes(app):
 
 
     @app.route("/kitchen_live/export")
-    @login_required
+    @admin_required
     def export_kitchen_live_excel():
         selected_date = request.args.get("date")
         search_query = (request.args.get("search") or "").strip()
@@ -315,7 +315,7 @@ def register_dashboard_routes(app):
 
 
     @app.route("/calculate")
-    @login_required
+    @admin_required
     def calculate():
         use_table_filters = request.args.get("use_table_filters") == "1"
         selected_tables = parse_table_filters(
@@ -366,6 +366,7 @@ def register_dashboard_routes(app):
         )
     # ================= EXPORT EXCEL =================
     @app.route("/export")
+    @admin_required
     def export_excel():
 
         selected_date = request.args.get("date")

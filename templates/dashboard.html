@@ -305,7 +305,7 @@ body{
             <h1 class="hero-title mb-3">Kitchen Dashboard</h1>
             <p class="hero-subtitle mb-4">Pantau rekap kitchen dan plating dalam satu halaman, filter cepat berdasarkan tanggal, divisi, dan nama menu, lalu export sesuai tampilan yang sedang aktif.</p>
             <div class="d-flex flex-wrap gap-3">
-              <a href="/" class="btn btn-light toolbar-btn"><i class="bi bi-house-door me-2"></i>Home Dashboard</a>
+              <a href="{{ url_for('home') }}" class="btn btn-light toolbar-btn"><i class="bi bi-house-door me-2"></i>Home Dashboard</a>
               <a href="{{ url_for('create_reservation') }}" class="btn btn-success toolbar-btn"><i class="bi bi-plus-circle me-2"></i>Add Reservation</a>
               <button type="button" onclick="window.location.reload()" class="btn btn-primary toolbar-btn"><i class="bi bi-arrow-clockwise me-2"></i>Refresh Data</button>
             </div>

@@ -1,8 +1,9 @@
 from datetime import date
 
 from flask import redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask_login import current_user
 
+from auth import admin_required, role_required
 from db import get_db_connection
 from services.common import effective_stock_status, format_weight_display, normalize_weight_to_ons, row_value, status_indicator
 from services.history import log_stock_history
@@ -16,9 +17,103 @@ from services.stock import (
 )
 
 
+def _build_stock_overview_context(selected_date):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        _, _, special_tuna_stock = get_special_tuna_stock_context(cursor, selected_date)
+        latest_menu_status_map = get_latest_menu_status_map(cursor, selected_date)
+        latest_nila_status_map = get_latest_nila_status_map(cursor, selected_date)
+
+        cursor.execute("SELECT id, name FROM menus ORDER BY name")
+        stock_today = []
+        for menu_row in cursor.fetchall():
+            latest_status_row = latest_menu_status_map.get(menu_row["id"])
+            current_status = row_value(latest_status_row, "status", 1, "ready")
+            if current_status in ("not_ready", "pending", "out"):
+                stock_today.append({"name": menu_row["name"], "status": current_status})
+        stock_today = [row for row in stock_today if (row.get("name") or "").strip().lower() not in SPECIAL_TUNA_MENU_NAMES]
+
+        sea_fish_stock = [
+            row
+            for row in get_latest_sea_fish_stock_rows(cursor, selected_date)
+            if float(row.get("weight_ons") or 0) > 0 or int(row.get("fish_count") or 0) > 0
+        ]
+
+        for fish in sea_fish_stock:
+            fish["display_weight"] = format_weight_display(fish["weight_ons"], fish.get("weight_unit"))
+
+        nila_stock = []
+        for size in ["kecil", "sedang", "besar", "jumbo", "super_jumbo"]:
+            current_status = row_value(latest_nila_status_map.get(size), "status", 2, "ready")
+            nila_stock.append({"size_category": size, "status": current_status, "status_dot": status_indicator(current_status)})
+
+        special_stock = []
+        rahang_tuna_rows = []
+        package_stock = special_tuna_stock.get("package_stock")
+        if package_stock:
+            special_stock.append(
+                {
+                    "name": "Paket Dada Tuna",
+                    "available_qty": package_stock.get("available_qty", 0),
+                    "status": package_stock.get("status", "ready"),
+                    "status_dot": status_indicator(package_stock.get("status", "ready")),
+                }
+            )
+
+        for row in special_tuna_stock.get("all_rows", []):
+            if row.get("weight_ons") and float(row["weight_ons"]) > 0:
+                rahang_tuna_rows.append(
+                    {
+                        "display_weight": format_weight_display(row["weight_ons"], row.get("weight_unit")),
+                        "available_qty": row.get("available_qty", 0),
+                        "status": row.get("status", "ready"),
+                    }
+                )
+
+        package_status = effective_stock_status(
+            package_stock.get("status") if package_stock else "not_ready",
+            package_stock.get("available_qty") if package_stock else 0,
+        )
+        if package_status != "ready":
+            stock_today.append({"name": "Paket Dada Tuna", "status": package_status})
+
+        rahang_summary = special_tuna_stock.get("summary") or {}
+        if effective_stock_status(rahang_summary.get("status"), rahang_summary.get("available_qty")) != "ready":
+            stock_today.append(
+                {
+                    "name": "Rahang Tuna",
+                    "status": effective_stock_status(rahang_summary.get("status"), rahang_summary.get("available_qty")),
+                }
+            )
+
+        return {
+            "selected_date": selected_date,
+            "stock_today": stock_today,
+            "sea_fish_stock": sea_fish_stock,
+            "nila_stock": nila_stock,
+            "special_stock": special_stock,
+            "rahang_tuna_rows": rahang_tuna_rows,
+            "rahang_tuna_summary": rahang_summary,
+        }
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def register_stock_routes(app):
+    @app.route("/stock")
+    @role_required("admin", "kitchen")
+    def stock_overview():
+        selected_date = request.args.get("date") or date.today().strftime("%Y-%m-%d")
+        return render_template(
+            "stock.html",
+            **_build_stock_overview_context(selected_date)
+        )
+
     @app.route("/update_stock", methods=["GET","POST"])
-    @login_required
+    @admin_required
     def update_stock():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -243,7 +338,7 @@ def register_stock_routes(app):
 
     #================== CLEAR FISH STOCK =================
     @app.route("/clear_fish_stock")
-    @login_required
+    @admin_required
     def clear_fish_stock():
 
         conn = get_db_connection()
@@ -264,7 +359,7 @@ def register_stock_routes(app):
 
     #================== FISH STOCK =================
     @app.route("/fish_stock", methods=["GET","POST"])
-    @login_required
+    @admin_required
     def fish_stock():
         selected_date = request.values.get("date")
 
@@ -346,7 +441,7 @@ def register_stock_routes(app):
 
 
     @app.route("/fish_stock/update/<int:stock_id>", methods=["POST"])
-    @login_required
+    @admin_required
     def update_fish_stock_entry(stock_id):
 
         selected_date = request.form.get("date") or date.today().strftime("%Y-%m-%d")
@@ -377,7 +472,7 @@ def register_stock_routes(app):
 
 
     @app.route("/fish_stock/delete/<int:stock_id>")
-    @login_required
+    @admin_required
     def delete_fish_stock_entry(stock_id):
 
         selected_date = request.args.get("date") or date.today().strftime("%Y-%m-%d")
@@ -395,7 +490,7 @@ def register_stock_routes(app):
 
 
     @app.route("/tuna_stock/update/<int:stock_id>", methods=["POST"])
-    @login_required
+    @admin_required
     def update_tuna_stock_entry(stock_id):
 
         selected_date = request.form.get("date") or date.today().strftime("%Y-%m-%d")
@@ -427,7 +522,7 @@ def register_stock_routes(app):
 
 
     @app.route("/tuna_stock/delete/<int:stock_id>")
-    @login_required
+    @admin_required
     def delete_tuna_stock_entry(stock_id):
 
         selected_date = request.args.get("date") or date.today().strftime("%Y-%m-%d")
@@ -446,7 +541,7 @@ def register_stock_routes(app):
 
 
     @app.route("/save_fish_stock", methods=["POST"])
-    @login_required
+    @admin_required
     def save_fish_stock():
 
         data = request.get_json()
@@ -480,7 +575,7 @@ def register_stock_routes(app):
 
 
     @app.route("/stock_history")
-    @login_required
+    @admin_required
     def stock_history():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)

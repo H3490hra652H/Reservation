@@ -93,11 +93,11 @@ min-height:52px;
 <p class="mt-3 text-sm text-slate-400">Masuk untuk mengakses dashboard reservasi dan kitchen.</p>
 </div>
 
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 <div class="mb-6 space-y-2">
-{% for message in messages %}
-<div class="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-200">
+{% for category, message in messages %}
+<div class="rounded-2xl border px-4 py-3 text-sm font-semibold {% if category == 'success' %}border-emerald-400/30 bg-emerald-500/10 text-emerald-200{% else %}border-rose-400/30 bg-rose-500/10 text-rose-200{% endif %}">
 {{ message }}
 </div>
 {% endfor %}
@@ -107,9 +107,10 @@ min-height:52px;
 
 <form method="POST" class="space-y-5">
 <div>
-<label class="mb-2 block text-sm font-semibold text-slate-300">Username</label>
+<label class="mb-2 block text-sm font-semibold text-slate-300">Username atau Email</label>
 <input
 name="username"
+value="{{ identity or '' }}"
 placeholder="Masukkan username"
 class="w-full rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20">
 </div>
@@ -121,6 +122,13 @@ type="password"
 name="password"
 placeholder="Masukkan password"
 class="w-full rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20">
+<div class="mt-3 text-right">
+<a
+href="{{ url_for('forgot_password') }}"
+class="text-sm font-semibold text-cyan-300 transition hover:text-cyan-200">
+Lupa password?
+</a>
+</div>
 </div>
 
 <button class="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 px-4 py-3 text-base font-bold text-white shadow-lg shadow-cyan-900/30 transition hover:scale-[1.01]">
@@ -128,9 +136,15 @@ Masuk ke Dashboard
 </button>
 </form>
 
+<a
+href="{{ url_for('register') }}"
+class="mt-4 inline-flex w-full items-center justify-center rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20">
+Buat akun user
+</a>
+
 <div class="mt-8 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
 <div class="font-semibold text-slate-200">Akses Internal</div>
-<p class="mt-2">Halaman ini dipakai untuk operasional reservasi, kitchen checklist, stock, dan export laporan harian.</p>
+<p class="mt-2">Admin bisa akses semua halaman, kitchen fokus ke stock, dan user biasa hanya ke dashboard user serta profile sendiri.</p>
 </div>
 
 <a

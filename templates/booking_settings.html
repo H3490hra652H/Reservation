@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="space-y-6">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <p class="text-sm uppercase tracking-[0.25em] text-slate-500">Booking Settings</p>
+      <h1 class="mt-2 text-3xl font-bold">Pengaturan Booking Publik</h1>
+      <p class="mt-2 text-slate-500">Atur foto menu digital dan tampilan area atau setup booking yang muncul di halaman publik.</p>
+    </div>
+    <a href="{{ url_for('restaurant_landing') }}" class="rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white">Lihat Halaman Publik</a>
+  </div>
+
+  <div class="rounded-3xl bg-white p-6 shadow">
+    <div class="mb-4">
+      <h2 class="text-xl font-bold">Area Booking</h2>
+      <p class="text-sm text-slate-500">Gambar boleh dikosongkan dulu. Jika diisi, gambar akan muncul di kartu pilihan tempat.</p>
+    </div>
+    <form method="POST" action="{{ url_for('save_booking_resources') }}" class="space-y-4">
+      {% for resource in booking_resources %}
+      <input type="hidden" name="resource_id[]" value="{{ resource.id }}">
+      <div class="rounded-2xl border border-slate-200 p-4">
+        <div class="grid gap-4 xl:grid-cols-[1fr_1fr_1fr_1fr]">
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Area</label>
+            <input class="w-full rounded-xl border border-slate-300 px-4 py-3" name="area_name_{{ resource.id }}" value="{{ resource.area_name }}">
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Nama Tampil</label>
+            <input class="w-full rounded-xl border border-slate-300 px-4 py-3" name="display_name_{{ resource.id }}" value="{{ resource.display_name }}">
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Label Meja / Setup</label>
+            <input class="w-full rounded-xl border border-slate-300 px-4 py-3" name="table_label_{{ resource.id }}" value="{{ resource.table_label or '' }}">
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Kapasitas Kursi</label>
+            <input type="number" min="0" class="w-full rounded-xl border border-slate-300 px-4 py-3" name="seat_capacity_{{ resource.id }}" value="{{ resource.seat_capacity }}">
+          </div>
+        </div>
+        <div class="mt-4 grid gap-4 xl:grid-cols-[1.2fr_.8fr_.7fr]">
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">URL Gambar</label>
+            <input class="w-full rounded-xl border border-slate-300 px-4 py-3" name="image_url_{{ resource.id }}" value="{{ resource.image_url or '' }}" placeholder="https://...">
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Urutan</label>
+            <input type="number" class="w-full rounded-xl border border-slate-300 px-4 py-3" name="sort_order_{{ resource.id }}" value="{{ resource.sort_order }}">
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-600">Status</label>
+            <select class="w-full rounded-xl border border-slate-300 px-4 py-3" name="is_active_{{ resource.id }}">
+              <option value="1" {% if resource.is_active %}selected{% endif %}>Aktif</option>
+              <option value="0" {% if not resource.is_active %}selected{% endif %}>Nonaktif</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-4">
+          <label class="mb-2 block text-sm font-semibold text-slate-600">Deskripsi Singkat</label>
+          <textarea class="min-h-[100px] w-full rounded-xl border border-slate-300 px-4 py-3" name="description_{{ resource.id }}">{{ resource.description or '' }}</textarea>
+        </div>
+      </div>
+      {% endfor %}
+      <button class="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">Simpan Pengaturan Area</button>
+    </form>
+  </div>
+
+  <div class="rounded-3xl bg-white p-6 shadow">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 class="text-xl font-bold">Foto & Deskripsi Menu Digital</h2>
+        <p class="text-sm text-slate-500">Admin bisa isi foto untuk kartu menu publik. Jika kosong, sistem akan tampilkan placeholder.</p>
+      </div>
+      <input id="menu-media-search" type="search" class="min-w-[280px] rounded-xl border border-slate-300 px-4 py-3" placeholder="Cari menu...">
+    </div>
+    <form method="POST" action="{{ url_for('save_booking_menu_media') }}" class="space-y-4">
+      <div class="max-h-[900px] space-y-4 overflow-auto pr-2">
+        {% for menu in menu_media_rows %}
+        <div class="menu-media-row rounded-2xl border border-slate-200 p-4" data-menu-search="{{ (menu.menu_label ~ ' ' ~ (menu.category or '') ~ ' ' ~ (menu.divisi or ''))|lower }}">
+          <input type="hidden" name="menu_id[]" value="{{ menu.id }}">
+          <div class="grid gap-4 xl:grid-cols-[1.1fr_1fr]">
+            <div>
+              <div class="text-lg font-bold text-slate-900">{{ menu.menu_label }}</div>
+              <div class="mt-1 text-sm text-slate-500">{{ menu.category or '-' }} • {{ menu.divisi or '-' }} • {% if menu.price_display %}Rp {{ menu.price_display }}{% else %}Harga menyusul{% endif %}</div>
+              <div class="mt-4">
+                <label class="mb-2 block text-sm font-semibold text-slate-600">URL Foto</label>
+                <input class="w-full rounded-xl border border-slate-300 px-4 py-3" name="image_url_{{ menu.id }}" value="{{ menu.image_url or '' }}" placeholder="https://...">
+              </div>
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-semibold text-slate-600">Deskripsi Singkat</label>
+              <textarea class="min-h-[120px] w-full rounded-xl border border-slate-300 px-4 py-3" name="short_description_{{ menu.id }}" placeholder="Contoh: menu favorit keluarga, cocok untuk lunch, atau hidangan seafood signature">{{ menu.short_description or '' }}</textarea>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white">Simpan Foto Menu</button>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+const searchInput = document.getElementById("menu-media-search");
+if(!searchInput){
+  return;
+}
+searchInput.addEventListener("input", function(){
+  const keyword = (searchInput.value || "").trim().toLowerCase();
+  document.querySelectorAll(".menu-media-row").forEach(function(row){
+    const haystack = row.dataset.menuSearch || "";
+    row.style.display = !keyword || haystack.indexOf(keyword) >= 0 ? "" : "none";
+  });
+});
+})();
+</script>
+{% endblock %}

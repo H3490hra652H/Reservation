@@ -57,6 +57,7 @@ def get_stock_context(cursor, selected_date):
         m.serving_type,
         m.category,
         m.divisi,
+        m.price,
         m.stock_type,
         CASE
             WHEN LOWER(m.name) = 'rahang tuna' THEN 'tuna_weight'

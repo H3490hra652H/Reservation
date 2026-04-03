@@ -7,435 +7,100 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-:root{
-  --manna-ink:#112035;
-  --manna-gold:#d6a85f;
-  --manna-cream:#fbf6ee;
-  --manna-accent:#8f3d2e;
-  --manna-soft:#fff9ef;
-}
-
-body{
-  background:
-    radial-gradient(circle at top right, rgba(214,168,95,0.18), transparent 24%),
-    linear-gradient(180deg, #fffdf9 0%, #f7efe2 54%, #f3ece2 100%);
-  color:var(--manna-ink);
-}
-
-.site-nav{
-  position:sticky;
-  top:0;
-  z-index:1030;
-  backdrop-filter:blur(14px);
-  background:rgba(255,249,239,0.84);
-  border-bottom:1px solid rgba(17,32,53,0.08);
-}
-
-.brand-mark{
-  width:2.75rem;
-  height:2.75rem;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:1rem;
-  background:linear-gradient(135deg, #192b44, #324a68);
-  color:#fff7e7;
-  font-weight:800;
-  letter-spacing:.08em;
-}
-
-.nav-actions .btn{
-  min-height:48px;
-}
-
-.hero{
-  padding:3rem 0 2.5rem;
-}
-
-.hero-shell{
-  border:1px solid rgba(17,32,53,0.08);
-  border-radius:2rem;
-  overflow:hidden;
-  background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,247,234,0.92));
-  box-shadow:0 24px 60px rgba(17,32,53,0.12);
-}
-
-.hero-copy{
-  padding:3rem;
-}
-
-.hero-kicker{
-  display:inline-flex;
-  align-items:center;
-  gap:.6rem;
-  padding:.6rem 1rem;
-  border-radius:999px;
-  background:rgba(214,168,95,0.15);
-  color:#8a5b17;
-  font-weight:700;
-}
-
-.hero h1{
-  letter-spacing:-0.03em;
-}
-
-.hero-lead{
-  max-width:35rem;
-}
-
-.hero-meta{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:1rem;
-  margin-top:1.5rem;
-}
-
-.meta-card{
-  padding:1rem 1.1rem;
-  border-radius:1.25rem;
-  background:#fff;
-  border:1px solid rgba(17,32,53,0.08);
-}
-
-.meta-label{
-  font-size:.8rem;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#7a8698;
-  margin-bottom:.35rem;
-}
-
-.hero-actions .btn{
-  min-height:54px;
-}
-
-.hero-photo{
-  min-height:100%;
-  background:
-    linear-gradient(rgba(17,32,53,0.2), rgba(17,32,53,0.28)),
-    url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80") center/cover;
-}
-
-.section-card{
-  border:0;
-  border-radius:1.5rem;
-  box-shadow:0 18px 40px rgba(17,32,53,0.08);
-}
-
-.section-heading{
-  max-width:42rem;
-}
-
-.feature-icon{
-  width:3rem;
-  height:3rem;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:1rem;
-  background:rgba(214,168,95,0.18);
-  color:var(--manna-accent);
-  font-size:1.25rem;
-}
-
-.contact-chip{
-  border:1px solid rgba(17,32,53,0.08);
-  border-radius:999px;
-  padding:.55rem .9rem;
-  background:#fff;
-}
-
-.booking-panel{
-  background:linear-gradient(180deg, rgba(17,32,53,0.96), rgba(31,49,72,0.96));
-  color:#fff;
-}
-
-.booking-panel .form-control,
-.booking-panel .form-select{
-  border-color:rgba(255,255,255,0.14);
-  background:rgba(255,255,255,0.08);
-  color:#fff;
-}
-
-.booking-panel .form-control::placeholder{
-  color:rgba(255,255,255,0.6);
-}
-
-.booking-panel .form-label,
-.booking-panel .form-text{
-  color:rgba(255,255,255,0.78);
-}
-
-.booking-panel .form-control,
-.booking-panel .form-select,
-.booking-panel textarea{
-  min-height:54px;
-  border-radius:1rem;
-}
-
-.booking-panel textarea{
-  min-height:132px;
-}
-
-.booking-badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.75rem;
-  margin-top:1rem;
-}
-
-.booking-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:.5rem;
-  padding:.7rem 1rem;
-  border-radius:999px;
-  background:rgba(255,255,255,0.08);
-  color:rgba(255,255,255,0.88);
-  border:1px solid rgba(255,255,255,0.08);
-}
-
-.map-box{
-  background:
-    linear-gradient(180deg, rgba(214,168,95,0.18), rgba(17,32,53,0.08)),
-    linear-gradient(135deg, #fff5df, #f7ead7);
-}
-
-footer{
-  color:#546072;
-}
-
-.quick-info{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:1rem;
-}
-
-.quick-info-card{
-  padding:1.1rem;
-  border-radius:1.25rem;
-  background:var(--manna-soft);
-}
-
-.sticky-mobile-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:1035;
-  padding:.9rem 1rem calc(.9rem + env(safe-area-inset-bottom));
-  background:rgba(17,32,53,0.94);
-  backdrop-filter:blur(12px);
-  box-shadow:0 -10px 30px rgba(17,32,53,0.25);
-}
-
-.sticky-mobile-bar .btn{
-  min-height:52px;
-}
-
-main{
-  padding-bottom:6rem;
-}
-
-@media (max-width: 991.98px){
-  .site-nav{
-    padding-top:.35rem;
-    padding-bottom:.35rem;
-  }
-
-  .nav-actions{
-    width:100%;
-  }
-
-  .nav-actions .btn{
-    flex:1 1 auto;
-  }
-
-  .hero-copy{
-    padding:2rem;
-  }
-
-  .hero-photo{
-    min-height:280px;
-  }
-
-  .hero-meta,
-  .quick-info{
-    grid-template-columns:1fr;
-  }
-}
-
-@media (max-width: 767.98px){
-  .hero{
-    padding:1.25rem 0 1.75rem;
-  }
-
-  .hero-shell,
-  .section-card{
-    border-radius:1.35rem;
-  }
-
-  .hero-copy{
-    padding:1.35rem;
-  }
-
-  .hero h1{
-    font-size:2.3rem;
-  }
-
-  .hero-lead{
-    font-size:1rem;
-  }
-
-  .contact-chip{
-    width:100%;
-    justify-content:flex-start;
-  }
-
-  .hero-actions{
-    display:grid !important;
-    grid-template-columns:1fr;
-  }
-
-  .hero-actions .btn{
-    width:100%;
-  }
-
-  .booking-panel .card-body,
-  .section-card .card-body{
-    padding:1.3rem !important;
-  }
-
-  .booking-badge{
-    width:100%;
-    justify-content:flex-start;
-  }
-
-  .desktop-only{
-    display:none !important;
-  }
-}
-
-@media (min-width: 768px){
-  .mobile-only{
-    display:none !important;
-  }
-}
+:root{--manna-ink:#744700;--manna-panel:#744700;--manna-panel-soft:#f6b26b;--manna-gold:#ffd966;--manna-cream:#fff7d6}
+body{background:radial-gradient(circle at top right, rgba(255,217,102,.34), transparent 24%),linear-gradient(180deg, #fff8e1 0%, #ffe9bb 100%);color:var(--manna-ink)}
+.site-nav{position:sticky;top:0;z-index:1030;backdrop-filter:blur(12px);background:rgba(255,247,214,.92);border-bottom:1px solid rgba(116,71,0,.16)}
+.brand-mark{width:3rem;height:3rem;border-radius:1rem;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#744700,#f6b26b);color:#fff8ee;font-weight:800}
+.hero-card,.glass-card{border:1px solid rgba(116,71,0,.1);border-radius:1.6rem;background:#fffdf5;box-shadow:0 18px 40px rgba(116,71,0,.12)}
+.hero-photo{min-height:100%;background:linear-gradient(rgba(116,71,0,.16), rgba(116,71,0,.28)),url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80") center/cover}
+.booking-card{background:linear-gradient(180deg, var(--manna-panel) 0%, #9a6111 100%);color:#fff8e8}
+.booking-card .form-control,.booking-card .form-select{min-height:52px;border-radius:1rem;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff}
+.booking-card .form-control::placeholder{color:rgba(255,255,255,.6)}
+.booking-card .form-label,.booking-card .form-text{color:rgba(255,255,255,.82)}
+.booking-block{padding:1.2rem;border-radius:1.25rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05)}
+.resource-card{width:100%;text-align:left;border:1px solid rgba(255,255,255,.12);border-radius:1rem;background:rgba(255,255,255,.06);color:#fff;padding:1rem}
+.resource-card.active{border-color:rgba(255,217,102,.95);background:rgba(255,217,102,.2)}
+.resource-card:disabled{opacity:.45}
+.resource-preview{height:124px;border-radius:.9rem;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, rgba(255,217,102,.3), rgba(246,178,107,.16));color:#fff0c2;font-size:2rem}
+.resource-preview img,.menu-photo img{width:100%;height:100%;object-fit:cover}
+.summary-panel{position:sticky;top:92px}
+.menu-summary-item{border:1px solid rgba(20,37,59,.08);border-radius:1rem;background:var(--manna-cream)}
+.menu-book-modal .modal-content,.place-book-modal .modal-content{border:0;border-radius:1.8rem;overflow:hidden;background:#fff2c4}
+.book-shell{min-height:72vh;background:linear-gradient(90deg, rgba(116,71,0,.08) 0, rgba(116,71,0,.08) 2px, transparent 2px),linear-gradient(135deg, #fff7db, #ffd98f)}
+.book-sidebar{background:linear-gradient(180deg, #ffd966 0%, #f6b26b 100%);border-right:1px solid rgba(116,71,0,.16)}
+.book-page{background:linear-gradient(90deg, rgba(116,71,0,.05) 0, rgba(116,71,0,.02) 14px, transparent 14px),linear-gradient(180deg, #fffdf6 0%, #fff4d0 100%)}
+.category-pill{width:100%;text-align:left;border:1px solid rgba(116,71,0,.18);border-radius:999px;padding:.8rem 1rem;background:rgba(255,255,255,.54);color:#744700;font-weight:700}
+.category-pill.active{background:#744700;color:#fff7ea}
+.place-intro{border:1px dashed rgba(255,255,255,.2);border-radius:1rem;padding:1rem;background:rgba(255,255,255,.04)}
+.place-summary-card{border:1px solid rgba(255,255,255,.12);border-radius:1rem;padding:1rem;background:rgba(255,255,255,.08)}
+.place-summary-card.is-empty{background:rgba(255,255,255,.04);border-style:dashed}
+.place-chip{width:100%;text-align:left;border:1px solid rgba(116,71,0,.18);border-radius:999px;padding:.8rem 1rem;background:rgba(255,255,255,.54);color:#744700;font-weight:700}
+.place-chip.is-disabled{opacity:.55;text-decoration:line-through;background:rgba(255,255,255,.32)}
+.place-book-sections{display:grid;gap:1.5rem}
+.place-section-title{font-size:1.05rem;font-weight:800;color:#744700;margin-bottom:.85rem}
+.place-subtitle{font-size:.88rem;font-weight:700;letter-spacing:.02em;color:#9a6111;margin:.2rem 0 .8rem}
+.place-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:1rem}
+.place-empty-note{border:1px dashed rgba(116,71,0,.18);border-radius:1rem;padding:1rem;color:#744700;background:rgba(255,255,255,.62)}
+.extra-chair-box{border:1px dashed rgba(255,255,255,.22);border-radius:1rem;padding:1rem;background:rgba(255,255,255,.05)}
+.book-menu-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));gap:1rem}
+.menu-card{border:1px solid rgba(20,37,59,.08);border-radius:1.2rem;background:#fff;overflow:hidden;box-shadow:0 12px 28px rgba(20,37,59,.08)}
+.menu-card.not-ready{opacity:.56}
+.menu-photo{height:168px;background:linear-gradient(135deg, rgba(215,166,93,.22), rgba(27,45,70,.12));display:flex;align-items:center;justify-content:center;color:#8a4a2f;font-size:2rem}
+.qty-control{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem;border-radius:999px;border:1px solid rgba(20,37,59,.08);background:#fffaf1}
+.qty-control button{width:2rem;height:2rem;border:0;border-radius:999px;background:var(--manna-panel);color:#fff}
+.menu-extra{background:#fffaf1;border-top:1px solid rgba(20,37,59,.08)}
+.status-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.35rem .7rem;font-size:.75rem;font-weight:700}
+.status-ready{background:rgba(25,135,84,.12);color:#146c43}.status-pending{background:rgba(255,193,7,.18);color:#946200}.status-not_ready{background:rgba(220,53,69,.12);color:#b42336}
+.menu-option-check{display:flex;align-items:center;gap:.55rem;border:1px solid rgba(20,37,59,.08);border-radius:.9rem;padding:.55rem .75rem;background:#fff}
+main{padding-bottom:5rem}
+@media (max-width:991.98px){.summary-panel{position:static}.hero-photo{min-height:260px}.book-sidebar{border-right:0;border-bottom:1px solid rgba(120,89,47,.16)}}
 </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg py-3 site-nav">
   <div class="container">
-    <a class="navbar-brand fw-bold d-flex align-items-center gap-3" href="{{ url_for('restaurant_landing') }}">
+    <a class="navbar-brand d-flex align-items-center gap-3 fw-bold" href="{{ url_for('restaurant_landing') }}">
       <span class="brand-mark">MB</span>
-      <span class="lh-sm">
-        <span class="d-block">{{ restaurant.name }}</span>
-        <span class="small text-secondary fw-normal">Booking dan informasi cafe</span>
-      </span>
+      <span><span class="d-block">{{ restaurant.name }}</span><span class="small text-secondary fw-normal">Reservasi tempat dan pilihan menu</span></span>
     </a>
-    <div class="d-flex align-items-center gap-2 ms-auto flex-wrap nav-actions">
-      <a class="btn btn-outline-dark rounded-pill px-3" href="{{ whatsapp_link }}" target="_blank" rel="noopener">
-        <i class="bi bi-whatsapp me-2"></i>Chat WA
-      </a>
-      {% if current_user.is_authenticated and current_user.role == "admin" %}
-      <a class="btn btn-dark rounded-pill px-3" href="{{ url_for('home') }}">Manna Panel</a>
-      {% elif current_user.is_authenticated %}
-      <a class="btn btn-dark rounded-pill px-3" href="{{ url_for('home') }}">Panel</a>
-      {% else %}
-      <a class="btn btn-dark rounded-pill px-3" href="{{ url_for('login') }}">Login Admin</a>
-      {% endif %}
+    <div class="d-flex gap-2 ms-auto">
+      <a class="btn btn-outline-dark rounded-pill px-3" href="{{ whatsapp_link }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-2"></i>Chat WA</a>
+      <a class="btn btn-dark rounded-pill px-3" href="{{ url_for('home') if current_user.is_authenticated else url_for('login') }}">{{ 'Panel' if current_user.is_authenticated else 'Login Admin' }}</a>
     </div>
   </div>
 </nav>
 
 <main>
-  <section class="hero">
+  <section class="py-4">
     <div class="container">
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-      <div class="mb-4">
+      <div class="mb-3">
         {% for category, message in messages %}
-        <div class="alert alert-{{ 'danger' if category == 'error' else 'warning' if category == 'warning' else 'success' }} rounded-4 shadow-sm mb-2">
-          {{ message }}
-        </div>
+        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'warning' }} rounded-4 mb-2">{{ message }}</div>
         {% endfor %}
       </div>
       {% endif %}
       {% endwith %}
 
-      {% if current_user.is_authenticated and current_user.role == "admin" %}
-      <div class="alert alert-dark rounded-4 border-0 shadow-sm mb-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <div class="fw-semibold">Mode admin aktif</div>
-          <div class="small text-secondary-emphasis">Anda sedang login sebagai admin dan bisa langsung masuk ke `home.html` panel Manna Bakery and Cafe.</div>
-        </div>
-        <a class="btn btn-warning rounded-pill px-4" href="{{ url_for('home') }}">Masuk Manna Panel</a>
-      </div>
-      {% endif %}
-
-      <div class="hero-shell">
+      <div class="hero-card overflow-hidden">
         <div class="row g-0">
-          <div class="col-lg-7">
-            <div class="hero-copy">
-              <span class="hero-kicker mb-3"><i class="bi bi-stars"></i>Booking, lokasi, dan chat dalam satu halaman</span>
-              <h1 class="display-4 fw-bold mt-3">{{ restaurant.name }}</h1>
-              <p class="lead mt-3 hero-lead">{{ restaurant.tagline }}</p>
-              <p class="text-secondary fs-5 mb-3 hero-lead">{{ restaurant.description }}</p>
-
-              <div class="d-flex flex-wrap gap-2 mb-4">
-                <span class="contact-chip"><i class="bi bi-geo-alt me-2"></i>{{ restaurant.address }}</span>
-                <span class="contact-chip"><i class="bi bi-clock me-2"></i>{{ restaurant.hours[0].value }}</span>
-              </div>
-
-              <div class="d-flex flex-wrap gap-3 hero-actions">
-                <a class="btn btn-dark btn-lg rounded-pill px-4" href="#booking">Book a Table</a>
-                <a class="btn btn-outline-dark btn-lg rounded-pill px-4" href="{{ whatsapp_link }}" target="_blank" rel="noopener">
-                  <i class="bi bi-whatsapp me-2"></i>Chat WhatsApp
-                </a>
-              </div>
-
-              <div class="hero-meta">
-                <div class="meta-card">
-                  <div class="meta-label">Kapasitas</div>
-                  <div class="fw-semibold fs-5">Tamu pribadi dan rombongan</div>
-                  <div class="text-secondary small mt-1">Cocok untuk keluarga, meeting kecil, dan acara santai.</div>
-                </div>
-                <div class="meta-card">
-                  <div class="meta-label">Respon Cepat</div>
-                  <div class="fw-semibold fs-5">Booking atau chat dulu</div>
-                  <div class="text-secondary small mt-1">Pilih isi form reservasi atau langsung hubungi WhatsApp cafe.</div>
-                </div>
-              </div>
+          <div class="col-lg-7 p-4 p-lg-5">
+            <span class="badge rounded-pill text-bg-warning px-3 py-2">Reservasi publik langsung masuk ke sistem restoran</span>
+            <h1 class="display-5 fw-bold mt-3">{{ restaurant.name }}</h1>
+            <p class="lead mt-3">{{ restaurant.tagline }}</p>
+            <p class="text-secondary fs-5">Isi data tamu, pilih tempat, lalu tambahkan menu bila ingin disiapkan lebih awal.</p>
+            <div class="d-flex flex-wrap gap-2 my-4">
+              <span class="badge text-bg-light rounded-pill px-3 py-2"><i class="bi bi-geo-alt me-2"></i>{{ restaurant.address }}</span>
+              <span class="badge text-bg-light rounded-pill px-3 py-2"><i class="bi bi-clock me-2"></i>{{ restaurant.hours[0].value }}</span>
+            </div>
+            <div class="d-flex flex-wrap gap-3">
+              <a class="btn btn-dark btn-lg rounded-pill px-4" href="#booking">Mulai Booking</a>
+              <a class="btn btn-outline-dark btn-lg rounded-pill px-4" href="{{ whatsapp_link }}" target="_blank" rel="noopener">Tanya via WhatsApp</a>
             </div>
           </div>
-          <div class="col-lg-5">
-            <div class="hero-photo"></div>
-          </div>
+          <div class="col-lg-5"><div class="hero-photo"></div></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="pb-5">
-    <div class="container">
-      <div class="section-heading mb-4">
-        <h2 class="fw-bold mb-2">Dibuat supaya lebih gampang dipakai tamu</h2>
-        <p class="text-secondary mb-0">Tampilan dibuat lebih jelas, tombol lebih mudah disentuh, dan informasi penting langsung terlihat di layar kecil maupun tablet.</p>
-      </div>
-      <div class="row g-4">
-        {% for feature in restaurant.features %}
-        <div class="col-md-6 col-xl-4">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="feature-icon mb-3">
-                <i class="bi bi-grid-1x2-fill"></i>
-              </div>
-              <h3 class="h4">{{ feature.title }}</h3>
-              <p class="text-secondary mb-0">{{ feature.description }}</p>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
       </div>
     </div>
   </section>
@@ -443,106 +108,84 @@ main{
   <section id="booking" class="pb-5">
     <div class="container">
       <div class="row g-4 align-items-start">
-        <div class="col-lg-7">
-          <div class="card section-card booking-panel h-100">
-            <div class="card-body p-4 p-lg-5">
-              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-                <div>
-                  <h2 class="mb-1">Booking Request</h2>
-                  <p class="mb-0 text-white-50">Form ini akan masuk ke sistem reservasi restoran.</p>
-                </div>
-                <span class="badge rounded-pill text-bg-warning px-3 py-2">Bootstrap 5 UI</span>
-              </div>
-
-              <div class="booking-badges">
-                <div class="booking-badge"><i class="bi bi-phone"></i>Nyaman di HP dan tablet</div>
-                <div class="booking-badge"><i class="bi bi-lightning-charge"></i>Form singkat dan cepat diisi</div>
-              </div>
-
-              <form method="POST" action="{{ url_for('restaurant_book') }}" class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Nama pemesan</label>
-                  <input type="text" class="form-control form-control-lg" name="customer_name" autocomplete="name" required>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Nomor WhatsApp</label>
-                  <input type="tel" class="form-control form-control-lg" name="whatsapp_number" inputmode="numeric" autocomplete="tel" placeholder="08xxxxxxxxxx" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Jumlah tamu</label>
-                  <input type="number" class="form-control form-control-lg" name="people_count" min="1" required>
-                </div>
-                <div class="col-md-8">
-                  <label class="form-label">Tanggal dan jam</label>
-                  <input type="datetime-local" class="form-control form-control-lg" name="reservation_datetime" value="{{ suggested_datetime }}" min="{{ suggested_min_datetime }}" required>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Preferensi meja / area</label>
-                  <input type="text" class="form-control form-control-lg" name="seating_preference" placeholder="Contoh: Indoor, outdoor, VIP, dekat jendela">
-                  <div class="form-text">Disimpan ke sistem sebagai referensi tim restoran.</div>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Catatan tambahan</label>
-                  <textarea class="form-control" rows="4" name="notes" placeholder="Contoh: ulang tahun, kursi bayi, acara keluarga, atau request lainnya"></textarea>
-                </div>
-                <div class="col-12 d-flex flex-wrap gap-3 pt-2">
-                  <button class="btn btn-warning btn-lg rounded-pill px-4 flex-grow-1 flex-md-grow-0" type="submit">Kirim Booking</button>
-                  <a class="btn btn-outline-light btn-lg rounded-pill px-4 flex-grow-1 flex-md-grow-0" href="{{ whatsapp_link }}" target="_blank" rel="noopener">Tanya via WhatsApp</a>
-                </div>
-              </form>
+        <div class="col-xl-8">
+          <form method="POST" action="{{ url_for('restaurant_book') }}" id="booking-form" class="glass-card booking-card p-4 p-lg-5">
+            <div class="mb-4">
+              <h2 class="mb-1">Form Reservasi</h2>
+              <div class="text-white-50">Lengkapi data pembooking, tentukan slot waktu, lalu pilih tempat yang tersedia.</div>
             </div>
-          </div>
+
+            <div class="booking-block mb-4">
+              <div class="text-uppercase small fw-semibold text-white-50 mb-3">Data Pembooking</div>
+              <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">Nama pembooking</label><input class="form-control" name="customer_name" required></div>
+                <div class="col-md-6"><label class="form-label">Nomor WhatsApp</label><input class="form-control" name="whatsapp_number" inputmode="numeric" placeholder="08xxxxxxxxxx" required></div>
+                <div class="col-md-4"><label class="form-label">Jumlah tamu</label><input class="form-control" id="people-count" type="number" min="1" name="people_count" required></div>
+                <div class="col-md-4"><label class="form-label">Jam mulai booking</label><input class="form-control" id="start-dt" type="datetime-local" name="reservation_datetime" value="{{ suggested_datetime }}" min="{{ suggested_min_datetime }}" required></div>
+                <div class="col-md-4"><label class="form-label">Jam selesai booking</label><input class="form-control" id="end-dt" type="datetime-local" name="booking_end_datetime" value="{{ suggested_end_datetime }}" min="{{ suggested_min_datetime }}" required></div>
+              </div>
+            </div>
+
+            <div class="booking-block mb-4">
+              <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
+                <div><div class="text-uppercase small fw-semibold text-white-50">Pilihan Tempat</div><div class="small text-white-50">Buka jendela tempat untuk memilih area reservasi yang masih tersedia pada jam booking Anda.</div></div>
+                <button type="button" class="btn btn-warning rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#placeBookModal">Pilih Tempat</button>
+              </div>
+              <input type="hidden" name="booking_area" id="booking-area" required>
+              <input type="hidden" name="booking_resource_code" id="booking-resource" required>
+              <div class="place-intro">
+                <div class="small text-white-50 mb-3">Area reservasi yang dapat dipilih: Ruang Utama, VIP, Hall, Outdoor, dan Kanopi. VIP menyediakan opsi Ala Carte dan Prasmanan.</div>
+                <div id="selected-place-summary" class="place-summary-card is-empty">
+                  <div class="fw-semibold">Belum ada tempat dipilih</div>
+                  <div class="small text-white-50 mt-1">Tekan tombol <strong>Pilih Tempat</strong> untuk membuka daftar tempat reservasi.</div>
+                </div>
+              </div>
+              <div class="small text-warning mt-3" id="availability-message"></div>
+            </div>
+
+            <div class="booking-block mb-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div><div class="text-uppercase small fw-semibold text-white-50">Pilihan Menu</div><div class="small text-white-50">Menu diambil dari data stok MySQL dan disusun per kategori makanan.</div></div>
+                <button type="button" class="btn btn-warning rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#menuBookModal">Tambahkan Menu</button>
+              </div>
+              <input type="hidden" name="booking_items_payload" id="booking-payload" value="[]">
+              <div class="mt-3" id="selected-menu-summary"></div>
+            </div>
+
+            <div class="booking-block mb-4">
+              <div class="text-uppercase small fw-semibold text-white-50 mb-3">Catatan Tambahan</div>
+              <textarea class="form-control" rows="4" name="notes" placeholder="Contoh: acara keluarga, butuh kursi bayi, atau kebutuhan setup ruangan"></textarea>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3">
+              <button class="btn btn-warning btn-lg rounded-pill px-4" type="submit">Kirim Reservasi</button>
+              <a class="btn btn-outline-light btn-lg rounded-pill px-4" href="{{ whatsapp_link }}" target="_blank" rel="noopener">Hubungi WhatsApp</a>
+            </div>
+          </form>
         </div>
 
-        <div class="col-lg-5">
-          <div class="card section-card info-panel">
-            <div class="card-body p-4 p-lg-5">
-              <h2 class="mb-4">Informasi Restoran</h2>
+        <div class="col-xl-4">
+          <div class="summary-panel d-grid gap-4">
+            <div class="glass-card p-4">
+              <div class="text-uppercase small fw-semibold text-secondary mb-2">Ringkasan Booking</div>
+              <h3 class="h4">Pilihan Anda</h3>
+              <div class="mt-3"><div class="small text-secondary">Tempat</div><div class="fw-semibold" id="sum-resource">Belum dipilih</div></div>
+              <div class="mt-3"><div class="small text-secondary">Slot waktu</div><div class="fw-semibold" id="sum-time">Belum diatur</div></div>
+              <div class="mt-3"><div class="small text-secondary">Menu dipilih</div><div class="fw-semibold" id="sum-count">Belum ada menu dipilih</div></div>
+              <div class="mt-2 small text-secondary" id="sum-list">Ringkasan menu akan muncul setelah Anda menambahkan pilihan menu.</div>
+            </div>
 
-              <div class="quick-info mb-4">
-                <div class="quick-info-card">
-                  <div class="text-uppercase small fw-semibold text-secondary mb-2">Kontak cepat</div>
-                  <div class="fw-semibold">{{ restaurant.whatsapp_display }}</div>
-                  <div class="small text-secondary mt-1">Langsung terhubung ke WhatsApp cafe.</div>
-                </div>
-                <div class="quick-info-card">
-                  <div class="text-uppercase small fw-semibold text-secondary mb-2">Jam paling ramai</div>
-                  <div class="fw-semibold">Sore sampai malam</div>
-                  <div class="small text-secondary mt-1">Sebaiknya booking lebih awal untuk rombongan.</div>
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <div class="text-uppercase small fw-semibold text-secondary mb-2">Alamat</div>
-                <p class="mb-2">{{ restaurant.address }}</p>
-                <a class="link-dark fw-semibold" href="{{ restaurant.maps_url }}" target="_blank" rel="noopener">Buka di Google Maps</a>
-              </div>
-
-              <div class="mb-4">
-                <div class="text-uppercase small fw-semibold text-secondary mb-2">WhatsApp</div>
-                <p class="mb-2">{{ restaurant.whatsapp_display }}</p>
-                <a class="btn btn-success rounded-pill px-4" href="{{ whatsapp_link }}" target="_blank" rel="noopener">
-                  <i class="bi bi-whatsapp me-2"></i>Chat Sekarang
-                </a>
-              </div>
-
-              <div class="mb-4">
-                <div class="text-uppercase small fw-semibold text-secondary mb-2">Jam Operasional</div>
-                {% for hour in restaurant.hours %}
-                <div class="d-flex justify-content-between border-bottom py-2">
-                  <span>{{ hour.label }}</span>
-                  <strong>{{ hour.value }}</strong>
-                </div>
+            <div class="glass-card p-4">
+              <div class="text-uppercase small fw-semibold text-secondary mb-2">Informasi Restoran</div>
+              <p class="mb-2">{{ restaurant.address }}</p>
+              <a class="link-dark fw-semibold" href="{{ restaurant.maps_url }}" target="_blank" rel="noopener">Buka di Google Maps</a>
+              <hr>
+              <div class="fw-semibold">{{ restaurant.whatsapp_display }}</div>
+              <a class="btn btn-success rounded-pill mt-3 px-4" href="{{ whatsapp_link }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-2"></i>Chat Sekarang</a>
+              <div class="mt-4">
+                {% for item in restaurant.highlights %}
+                <div class="d-flex gap-2 mb-2 text-secondary"><i class="bi bi-check2-circle text-success"></i><span>{{ item }}</span></div>
                 {% endfor %}
-              </div>
-
-              <div class="map-box rounded-4 p-4">
-                <div class="text-uppercase small fw-semibold text-secondary mb-3">Kenapa booking dari sini?</div>
-                <ul class="mb-0 ps-3">
-                  {% for item in restaurant.highlights %}
-                  <li class="mb-2">{{ item }}</li>
-                  {% endfor %}
-                </ul>
               </div>
             </div>
           </div>
@@ -552,20 +195,116 @@ main{
   </section>
 </main>
 
-<footer class="py-4">
-  <div class="container d-flex flex-wrap justify-content-between gap-2">
-    <div>{{ restaurant.name }}.</div>
-    <div>Kontak placeholder bisa diganti langsung dari `RESTAURANT_PROFILE` di `app.py`.</div>
-  </div>
-</footer>
-
-<div class="sticky-mobile-bar mobile-only">
-  <div class="d-grid gap-2" style="grid-template-columns:1fr 1fr;">
-    <a class="btn btn-warning rounded-pill fw-semibold" href="#booking">Booking</a>
-    <a class="btn btn-success rounded-pill fw-semibold" href="{{ whatsapp_link }}" target="_blank" rel="noopener">WhatsApp</a>
+<div class="modal fade place-book-modal" id="placeBookModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-lg-down modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class="row g-0 book-shell">
+          <div class="col-lg-3 p-4 book-sidebar">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+              <div><div class="text-uppercase small fw-semibold text-secondary">Pilihan Tempat</div><h3 class="h4 mb-1">Area Reservasi</h3><div class="small text-secondary">Pilih salah satu tempat yang paling cocok untuk booking Anda.</div></div>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="small text-secondary mb-3">Pilihan area reservasi:</div>
+            <div class="d-grid gap-2" id="place-area-nav"></div>
+          </div>
+          <div class="col-lg-9 p-4 p-lg-5 book-page">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+              <div><div class="text-uppercase small fw-semibold text-secondary">Jendela Tempat</div><h3 class="h3 mb-1">Pilih Tempat Reservasi</h3><div class="small text-secondary">Ketersediaan tempat mengikuti jam mulai dan jam selesai yang Anda isi di form.</div></div>
+              <button type="button" class="btn btn-dark rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+            <div class="alert alert-warning rounded-4 border-0 mb-4" id="place-policy-message"></div>
+            <div id="place-book-content" class="place-book-sections"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
+<div class="modal fade menu-book-modal" id="menuBookModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-lg-down modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class="row g-0 book-shell">
+          <div class="col-lg-3 p-4 book-sidebar">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+              <div><div class="text-uppercase small fw-semibold text-secondary">Buku Menu</div><h3 class="h4 mb-1">Pilih Kategori</h3><div class="small text-secondary">Daftar menu diurutkan dari data kategori MySQL.</div></div>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="d-grid gap-2" id="category-nav"></div>
+          </div>
+          <div class="col-lg-9 p-4 p-lg-5 book-page">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+              <div><div class="text-uppercase small fw-semibold text-secondary">Halaman Menu</div><h3 class="h3 mb-1" id="category-title">Menu</h3><div class="small text-secondary" id="category-caption">Pilih menu yang ingin disiapkan untuk booking Anda.</div></div>
+              <div class="d-flex gap-2 align-items-center">
+                <input class="form-control" id="menu-search" type="search" placeholder="Cari menu..." style="min-width:220px;">
+                <button type="button" class="btn btn-dark rounded-pill px-4" data-bs-dismiss="modal">Selesai</button>
+              </div>
+            </div>
+            <div id="book-page-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="booking-bootstrap" type="application/json">{{ booking_bootstrap_json | safe }}</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function(){
+const data = JSON.parse(document.getElementById("booking-bootstrap").textContent || "{}");
+const menus = data.menu_catalog || [];
+const seaFish = data.sea_fish || [];
+const nilaSizes = data.nila_sizes || [];
+const tunaPieceStock = data.tuna_piece_stock || {};
+const rahangRows = ((data.rahang_tuna_stock || {}).rows) || [];
+let availability = data.availability || { area_sections: [], main_tables: [], vip_layouts: [], booked_codes: [] };
+const guestRules = data.guest_rules || { vip_max_guests: 50, large_party_allowed_areas: ["Hall", "Outdoor", "Ruang Utama"], large_party_blocked_areas: ["VIP", "Kanopi"], large_party_message: "Untuk jumlah tamu lebih dari 50 orang, sistem hanya merekomendasikan Hall, Outdoor, atau Ruang Utama. VIP dan Kanopi tidak tersedia." };
+const state = { resource: "", area: "", items: {}, activeCategory: "" };
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+function escapeHtml(value){return String(value || "").replace(/[&<>"']/g, function(char){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];});}
+function normalizeStatusClass(status){const normalized = String(status || "not_ready");return normalized === "ready" ? "status-ready" : normalized === "pending" ? "status-pending" : "status-not_ready";}
+function normalizedAreaSections(){if((availability.area_sections || []).length){return availability.area_sections;}const fallback=[{area_name:"Ruang Utama",resources:availability.main_tables || []},{area_name:"VIP",resources:availability.vip_layouts || []}];return fallback.filter(function(section){return (section.resources || []).length;});}
+function allResources(){return normalizedAreaSections().flatMap(function(section){return section.resources || [];});}
+function currentPlaceModal(){const element = $("#placeBookModal");return element && window.bootstrap ? bootstrap.Modal.getOrCreateInstance(element) : null;}
+function currentGuestCount(){const element=$("#people-count");const value=Number(element?element.value:0);return Number.isFinite(value)?value:0;}
+function isLargeParty(){return currentGuestCount() > Number(guestRules.vip_max_guests || 50);}
+function isAreaAllowedForCurrentGuests(areaName){return !isLargeParty() || (guestRules.large_party_allowed_areas || []).includes(String(areaName || ""));}
+function placePolicyMessage(){if(isLargeParty()){return guestRules.large_party_message || "Untuk jumlah tamu besar, sistem hanya menampilkan area yang direkomendasikan.";}return "VIP maksimal " + escapeHtml(guestRules.vip_max_guests || 50) + " tamu. Jika jumlah tamu lebih dari itu, sistem akan merekomendasikan Hall, Outdoor, atau Ruang Utama.";}
+function vipGroupLabel(resource){return String(resource.service_mode || "").toLowerCase() === "prasmanan" ? "VIP Prasmanan" : "VIP Ala Carte";}
+function renderPlaceAreaNav(sections){const nav=$("#place-area-nav");if(!nav){return;}nav.innerHTML=sections.map(function(section){const allowed=isAreaAllowedForCurrentGuests(section.area_name);return '<div class="place-chip'+(allowed?'':' is-disabled')+'">'+escapeHtml(section.area_name || "Area Reservasi")+'</div>';}).join("");}
+function placeIconName(resource){if(resource.image_url){return "";}const areaName = String(resource.area_name || "").toLowerCase();const resourceType = String(resource.resource_type || "").toLowerCase();if(resourceType === "vip_setup"){return "kanban";}if(areaName.indexOf("hall") >= 0){return "building";}if(areaName.indexOf("outdoor") >= 0){return "tree";}if(areaName.indexOf("kanopi") >= 0){return "umbrella";}return "grid-3x3-gap";}
+function groupMenus(){const groups=[];menus.forEach(function(menu){let group=groups.find(function(item){return String(item.key)===String(menu.public_group_key||"lainnya");});if(!group){group={key:menu.public_group_key||"lainnya",label:menu.public_group_label||"Menu Lainnya",order:Number(menu.public_group_order||999),items:[]};groups.push(group);}group.items.push(menu);});groups.sort(function(a,b){return a.order-b.order;});return groups;}
+const menuGroups = groupMenus();
+state.activeCategory = menuGroups[0] ? menuGroups[0].key : "";
+function initItem(menu){if(!state.items[menu.id]){const optionValues={};(menu.option_groups||[]).forEach(function(group){if(group.multiple){optionValues[group.key]=Array.isArray(group.default)?group.default.map(String):[];}else{const firstChoice=(((group.choices||[])[0]||{}).value)||"";optionValues[group.key]=String(group.default||firstChoice||"");}});state.items[menu.id]={qty:0,optionValues:optionValues,fish_size:"",fish_type:"",fish_weight:"",fish_stock_id:"",special_stock_id:""};}return state.items[menu.id];}
+function resolveChoice(menu,itemState){if((menu.combo_keys||[]).length&&(menu.combo_map||{})){const comboKey=(menu.combo_keys||[]).map(function(key){const value=itemState.optionValues[key];return key+"="+(Array.isArray(value)?value.join(","):(value||""));}).join("|");return menu.combo_map[comboKey]||Object.values(menu.combo_map)[0]||{};}return {menu_id:menu.menu_id,stock_source:menu.stock_source||menu.stock_type||"",price:menu.price};}
+function buildPayload(menu,itemState){if(!(menu.option_groups||[]).length){return null;}const payload={display_menu_id:menu.id,display_name:menu.name,selected_options:{}};(menu.option_groups||[]).forEach(function(group){const currentValue=itemState.optionValues[group.key];if(group.multiple){const picked=(group.choices||[]).filter(function(choice){return (currentValue||[]).includes(String(choice.value));});if(picked.length){payload.selected_options[group.key]={label:group.label,value:picked.map(function(choice){return choice.value;}),display:picked.map(function(choice){return choice.label;})};}return;}const selectedChoice=(group.choices||[]).find(function(choice){return String(choice.value)===String(currentValue);})||(group.choices||[])[0];if(selectedChoice){payload.selected_options[group.key]={label:group.label,value:selectedChoice.value,display:selectedChoice.label};}});return JSON.stringify(payload);}
+function selectedItems(){return menus.map(function(menu){const itemState=initItem(menu), qty=Number(itemState.qty||0);if(qty<=0){return null;}const choice=resolveChoice(menu,itemState), stockSource=choice.stock_source||menu.stock_source||"";const row={display_menu_id:menu.id,menu_id:choice.menu_id||menu.menu_id||"",qty:qty,menu_options_json:buildPayload(menu,itemState),fish_type:"",fish_size:"",fish_weight:"",fish_stock_id:"",special_stock_id:""};if(stockSource==="size"){row.fish_size=itemState.fish_size||"";}else if(stockSource==="weight"){row.fish_type=itemState.fish_type||"";row.fish_weight=itemState.fish_weight||"";row.fish_stock_id=itemState.fish_stock_id||"";}else if(stockSource==="tuna_weight"){row.fish_type="rahang tuna";row.fish_weight=itemState.fish_weight||"";row.special_stock_id=itemState.special_stock_id||"";}else if(stockSource==="menu_piece"){row.special_stock_id=itemState.special_stock_id||"";}return row;}).filter(Boolean);}
+function renderSelectedMenuSummary(){const picked=selectedItems();$("#booking-payload").value=JSON.stringify(picked);$("#sum-count").textContent=picked.length?picked.reduce(function(total,item){return total+Number(item.qty||0);},0)+" item dipilih":"Belum ada menu dipilih";$("#sum-list").textContent=picked.length?picked.map(function(item){const menu=menus.find(function(entry){return String(entry.id)===String(item.display_menu_id);})||{};return (menu.display_label||menu.name||"Menu")+" x"+item.qty;}).join(" | "):"Ringkasan menu akan muncul setelah Anda menambahkan pilihan menu.";$("#selected-menu-summary").innerHTML=picked.length?picked.map(function(item){const menu=menus.find(function(entry){return String(entry.id)===String(item.display_menu_id);})||{};return '<div class="menu-summary-item p-3 mb-2"><div class="fw-semibold text-dark">'+escapeHtml(menu.display_label||menu.name||"Menu")+'</div><div class="small text-secondary">Qty '+escapeHtml(item.qty)+'</div></div>';}).join(""):'<div class="small text-white-50">Belum ada menu yang dipilih untuk reservasi ini.</div>';}
+function renderPlaceSummary(selectedResource){const target = $("#selected-place-summary");if(!target){return;}if(!selectedResource){target.classList.add("is-empty");target.innerHTML='<div class="fw-semibold">Belum ada tempat dipilih</div><div class="small text-white-50 mt-1">Tekan tombol <strong>Pilih Tempat</strong> untuk membuka daftar tempat reservasi.</div>';return;}const meta=[selectedResource.area_name || "", selectedResource.service_mode_label || "", selectedResource.capacity_label || ((selectedResource.seat_capacity || 0)+" kursi")].filter(Boolean).join(" | ");target.classList.remove("is-empty");target.innerHTML='<div class="d-flex flex-wrap justify-content-between gap-3 align-items-start"><div><div class="fw-semibold">'+escapeHtml(selectedResource.display_name || "Tempat Reservasi")+'</div><div class="small text-white-50 mt-1">'+escapeHtml(meta)+'</div></div><span class="status-pill '+(selectedResource.is_available ? 'status-ready' : 'status-not_ready')+'">'+(selectedResource.is_available ? 'Tersedia' : 'Tidak tersedia')+'</span></div><div class="small text-white-50 mt-3">'+escapeHtml(selectedResource.description || "Tempat reservasi sudah dipilih untuk booking ini.")+'</div>';}
+function updateSummary(){const selectedResource=allResources().find(function(resource){return String(resource.resource_code)===String(state.resource);});$("#sum-resource").textContent=selectedResource?(selectedResource.display_name+" | "+(selectedResource.seat_capacity||0)+" kursi"):"Belum dipilih";$("#sum-time").textContent=($("#start-dt").value&&$("#end-dt").value)?$("#start-dt").value.replace("T"," ")+" - "+$("#end-dt").value.replace("T"," "):"Belum diatur";renderPlaceSummary(selectedResource);renderSelectedMenuSummary();}
+function renderPlacePicker(){const sections = normalizedAreaSections();const policy=$("#place-policy-message");if(policy){policy.innerHTML=placePolicyMessage();}renderPlaceAreaNav(sections);function resourceCardMarkup(resource, areaAllowed){const iconName = placeIconName(resource);const imageMarkup=resource.image_url?'<img src="'+escapeHtml(resource.image_url)+'" alt="'+escapeHtml(resource.display_name)+'">':'<i class="bi bi-'+iconName+'"></i>';const isActive=String(resource.resource_code)===String(state.resource);const isSelectable=areaAllowed && resource.is_available;const statusLabel=!areaAllowed?'Tidak sesuai jumlah tamu':(resource.is_available?'Tersedia':'Not available');return '<button type="button" class="resource-card'+(isActive?' active':'')+'" data-resource="'+escapeHtml(resource.resource_code)+'" data-area="'+escapeHtml(resource.area_name||'')+'" '+(isSelectable?'':'disabled')+'><div class="resource-preview mb-3">'+imageMarkup+'</div><div class="d-flex justify-content-between gap-2"><div><div class="fw-semibold">'+escapeHtml(resource.display_name)+'</div><div class="small text-white-50 mt-1">'+escapeHtml(resource.description||"")+'</div></div><span class="status-pill '+(isSelectable?'status-ready':'status-not_ready')+'">'+escapeHtml(statusLabel)+'</span></div><div class="small text-white-50 mt-3">'+escapeHtml([resource.service_mode_label || "", resource.capacity_label || ((resource.seat_capacity || 0)+" kursi")].filter(Boolean).join(" | "))+'</div></button>';}function sectionBody(section){const resources = section.resources || [];const areaAllowed=isAreaAllowedForCurrentGuests(section.area_name);if(!resources.length){return '<div class="place-empty-note">Belum ada tempat yang bisa ditampilkan di area ini.</div>';}if(section.area_name === "VIP"){if(!areaAllowed){return '<div class="place-empty-note">Untuk jumlah tamu saat ini, area VIP tidak tersedia. VIP hanya dapat dipilih sampai maksimal '+escapeHtml(guestRules.vip_max_guests || 50)+' tamu.</div>';}const grouped={"VIP Ala Carte":resources.filter(function(resource){return vipGroupLabel(resource)==="VIP Ala Carte";}),"VIP Prasmanan":resources.filter(function(resource){return vipGroupLabel(resource)==="VIP Prasmanan";})};return Object.keys(grouped).map(function(groupLabel){const groupResources=grouped[groupLabel];if(!groupResources.length){return "";}return '<div class="mb-4"><div class="place-subtitle">'+escapeHtml(groupLabel)+'</div><div class="place-grid">'+groupResources.map(function(resource){return resourceCardMarkup(resource, areaAllowed);}).join("")+'</div></div>';}).join("");}if(!areaAllowed){return '<div class="place-empty-note">Area ini tidak tersedia untuk jumlah tamu saat ini. Silakan pilih Hall, Outdoor, atau Ruang Utama.</div>';}return '<div class="place-grid">'+resources.map(function(resource){return resourceCardMarkup(resource, areaAllowed);}).join("")+'</div>';}$("#place-book-content").innerHTML=sections.length?sections.map(function(section){return '<section><div class="place-section-title">'+escapeHtml(section.area_name || "Area Reservasi")+'</div>'+sectionBody(section)+'</section>';}).join(""):'<div class="place-empty-note">Belum ada data tempat reservasi yang tersedia.</div>';$$("#place-book-content .resource-card").forEach(function(button){button.addEventListener("click", function(){state.resource=button.dataset.resource||"";state.area=button.dataset.area||"";$("#booking-resource").value=state.resource;$("#booking-area").value=state.area;$("#availability-message").textContent="";updateSummary();renderPlacePicker();const modal = currentPlaceModal();if(modal){modal.hide();}});});}
+function syncGuestCountPolicy(){const selectedResource=allResources().find(function(resource){return String(resource.resource_code)===String(state.resource);});if(selectedResource && !isAreaAllowedForCurrentGuests(selectedResource.area_name)){state.resource="";state.area="";$("#booking-resource").value="";$("#booking-area").value="";$("#availability-message").textContent="Jumlah tamu saat ini membuat pilihan tempat sebelumnya tidak tersedia. Silakan pilih Hall, Outdoor, atau Ruang Utama.";}renderPlacePicker();updateSummary();}
+function renderCategoryNav(){$("#category-nav").innerHTML=menuGroups.map(function(group){return '<button type="button" class="category-pill'+(String(group.key)===String(state.activeCategory)?' active':'')+'" data-category="'+escapeHtml(group.key)+'">'+escapeHtml(group.label)+' <span class="small opacity-75">('+group.items.length+')</span></button>';}).join("");$$(".category-pill").forEach(function(button){button.addEventListener("click", function(){state.activeCategory=button.dataset.category||"";renderBookPage();});});}
+function optionMarkup(menu,itemState){return (menu.option_groups||[]).map(function(group){if(group.multiple){return '<div class="mb-3"><label class="form-label fw-semibold">'+escapeHtml(group.label)+'</label><div class="d-grid gap-2">'+(group.choices||[]).map(function(choice){const checked=(itemState.optionValues[group.key]||[]).includes(String(choice.value));const disabled=choice.status&&choice.status!=="ready"&&!checked;return '<label class="menu-option-check"><input class="form-check-input menu-option-check-input" data-menu="'+escapeHtml(menu.id)+'" data-key="'+escapeHtml(group.key)+'" type="checkbox" value="'+escapeHtml(choice.value)+'" '+(checked?'checked':'')+' '+(disabled?'disabled':'')+'><span>'+escapeHtml(choice.label)+(disabled?' - not ready':'')+'</span></label>';}).join("")+'</div></div>';}return '<div class="mb-3"><label class="form-label fw-semibold">'+escapeHtml(group.label)+'</label><select class="form-select menu-option-select" data-menu="'+escapeHtml(menu.id)+'" data-key="'+escapeHtml(group.key)+'">'+(group.choices||[]).map(function(choice){const selected=String(itemState.optionValues[group.key])===String(choice.value);const disabled=choice.status&&choice.status!=="ready"&&!selected;return '<option value="'+escapeHtml(choice.value)+'" '+(selected?'selected':'')+' '+(disabled?'disabled':'')+'>'+escapeHtml(choice.label)+(disabled?' - not ready':'')+'</option>';}).join("")+'</select></div>';}).join("");}
+function extraMarkup(menu,itemState){const choice=resolveChoice(menu,itemState), stockSource=choice.stock_source||menu.stock_source||"";if(stockSource==="size"){return '<div class="mb-3"><label class="form-label fw-semibold">Ukuran Nila</label><select class="form-select menu-extra-select" data-kind="size" data-menu="'+escapeHtml(menu.id)+'"><option value="">Pilih ukuran nila</option>'+nilaSizes.map(function(row){const value=row.size_category||row;return '<option value="'+escapeHtml(value)+'" '+(String(itemState.fish_size)===String(value)?'selected':'')+'>'+escapeHtml(String(value).replace(/_/g," "))+'</option>';}).join("")+'</select></div>';}if(stockSource==="weight"){return '<div class="mb-3"><label class="form-label fw-semibold">Pilih Ikan Laut</label><select class="form-select menu-extra-select" data-kind="weight" data-menu="'+escapeHtml(menu.id)+'"><option value="">Pilih stok ikan</option>'+seaFish.map(function(row){return '<option value="'+escapeHtml(row.id)+'" data-type="'+escapeHtml(row.name||"")+'" data-weight="'+escapeHtml(row.weight_ons||"")+'" '+(String(itemState.fish_stock_id)===String(row.id)?'selected':'')+'>'+escapeHtml((row.label||row.name||"Ikan")+" ("+(row.fish_count||0)+" stok)")+'</option>';}).join("")+'</select></div>';}if(stockSource==="tuna_weight"){return '<div class="mb-3"><label class="form-label fw-semibold">Pilih Rahang Tuna</label><select class="form-select menu-extra-select" data-kind="tuna_weight" data-menu="'+escapeHtml(menu.id)+'"><option value="">Pilih stok rahang tuna</option>'+rahangRows.map(function(row){return '<option value="'+escapeHtml(row.id)+'" data-weight="'+escapeHtml(row.weight_ons||"")+'" '+(String(itemState.special_stock_id)===String(row.id)?'selected':'')+'>'+escapeHtml((row.label||"Rahang Tuna")+" ("+(row.available_qty||0)+" stok)")+'</option>';}).join("")+'</select></div>';}if(stockSource==="menu_piece"){const stockInfo=tunaPieceStock[String(choice.menu_id||menu.menu_id||"")]||{};const availableQty=Number(stockInfo.available_qty||0);itemState.special_stock_id=availableQty>0?(stockInfo.id||itemState.special_stock_id||""):"";return '<div class="small '+(availableQty>0?'text-success':'text-danger')+'">'+escapeHtml(availableQty>0?(stockInfo.display_name||"Paket Dada Tuna")+" tersedia "+availableQty+" stok.":"Stock Paket Dada Tuna belum ready.")+'</div>';}return '';}
+function renderBookPage(){renderCategoryNav();const group=menuGroups.find(function(item){return String(item.key)===String(state.activeCategory);})||menuGroups[0];if(!group){$("#book-page-content").innerHTML='<div class="text-secondary">Belum ada menu yang bisa ditampilkan.</div>';return;}$("#category-title").textContent=group.label;$("#category-caption").textContent="Daftar menu tersusun sesuai kategori makanan yang tersedia.";const keyword=($("#menu-search").value||"").trim().toLowerCase();const filteredMenus=group.items.filter(function(menu){const haystack=[menu.name,menu.display_label,menu.category,menu.divisi,menu.short_description].join(" ").toLowerCase();return !keyword||haystack.indexOf(keyword)>=0;});$("#book-page-content").innerHTML=filteredMenus.length?'<div class="book-menu-grid">'+filteredMenus.map(function(menu){const itemState=initItem(menu), photoMarkup=menu.image_url?'<img src="'+escapeHtml(menu.image_url)+'" alt="'+escapeHtml(menu.display_label||menu.name)+'">':'<i class="bi bi-journal-richtext"></i>', isReady=String(menu.status||"ready")==="ready", showDetail=Number(itemState.qty||0)>0;return '<div class="menu-card '+(isReady?'':'not-ready')+'"><div class="menu-photo">'+photoMarkup+'</div><div class="p-3"><div class="d-flex justify-content-between gap-2 mb-2"><div><div class="fw-semibold fs-5">'+escapeHtml(menu.display_label||menu.name)+'</div><div class="small text-secondary">'+escapeHtml(menu.short_description||"")+'</div></div><span class="status-pill '+normalizeStatusClass(menu.status)+'">'+escapeHtml(String(menu.status||"ready").replace("_"," "))+'</span></div><div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-light rounded-pill">'+escapeHtml(menu.category||"-")+'</span><span class="badge text-bg-warning rounded-pill">'+escapeHtml(menu.price_display?("Rp "+menu.price_display):"Harga menyusul")+'</span></div><div class="d-flex justify-content-between align-items-center"><div class="qty-control"><button type="button" class="qty-btn" data-menu="'+escapeHtml(menu.id)+'" data-delta="-1" '+(isReady?'':'disabled')+'>-</button><span class="fw-semibold">'+escapeHtml(itemState.qty||0)+'</span><button type="button" class="qty-btn" data-menu="'+escapeHtml(menu.id)+'" data-delta="1" '+(isReady?'':'disabled')+'>+</button></div><div class="small text-secondary">'+escapeHtml(menu.serving_type||"menu")+'</div></div></div>'+(showDetail?'<div class="menu-extra p-3">'+optionMarkup(menu,itemState)+extraMarkup(menu,itemState)+'</div>':'')+'</div>';}).join("")+'</div>':'<div class="text-secondary">Tidak ada menu yang cocok pada kategori ini.</div>';bindBookEvents();}
+function bindBookEvents(){$$(".qty-btn").forEach(function(button){button.addEventListener("click", function(){const menu=menus.find(function(entry){return String(entry.id)===String(button.dataset.menu);}), itemState=initItem(menu);itemState.qty=Math.max(0,Number(itemState.qty||0)+Number(button.dataset.delta||0));renderBookPage();updateSummary();});});$$(".menu-option-select").forEach(function(select){select.addEventListener("change", function(){const menu=menus.find(function(entry){return String(entry.id)===String(select.dataset.menu);}), itemState=initItem(menu);itemState.optionValues[select.dataset.key]=select.value;renderBookPage();updateSummary();});});$$(".menu-option-check-input").forEach(function(input){input.addEventListener("change", function(){const menu=menus.find(function(entry){return String(entry.id)===String(input.dataset.menu);}), itemState=initItem(menu), values=new Set((itemState.optionValues[input.dataset.key]||[]).map(String));if(input.checked){values.add(String(input.value));}else{values.delete(String(input.value));}itemState.optionValues[input.dataset.key]=Array.from(values);renderBookPage();updateSummary();});});$$(".menu-extra-select").forEach(function(select){select.addEventListener("change", function(){const menu=menus.find(function(entry){return String(entry.id)===String(select.dataset.menu);}), itemState=initItem(menu), currentOption=select.options[select.selectedIndex];if(select.dataset.kind==="size"){itemState.fish_size=select.value;}else if(select.dataset.kind==="weight"){itemState.fish_type=currentOption?(currentOption.dataset.type||""):"";itemState.fish_weight=currentOption?(currentOption.dataset.weight||""):"";itemState.fish_stock_id=select.value;}else if(select.dataset.kind==="tuna_weight"){itemState.fish_weight=currentOption?(currentOption.dataset.weight||""):"";itemState.special_stock_id=select.value;}updateSummary();});});}
+function refreshAvailability(){const start=$("#start-dt").value,end=$("#end-dt").value;if(!start||!end){return;}if(end<=start){$("#availability-message").textContent="Jam selesai harus lebih besar dari jam mulai.";return;}fetch("{{ url_for('restaurant_booking_availability') }}?start="+encodeURIComponent(start)+"&end="+encodeURIComponent(end)).then(function(response){return response.json();}).then(function(payload){if(payload.error){$("#availability-message").textContent=payload.error;return;}availability=payload;$("#availability-message").textContent="";if(state.resource&&(availability.booked_codes||[]).includes(state.resource)){state.resource="";state.area="";$("#booking-resource").value="";$("#booking-area").value="";$("#availability-message").textContent="Pilihan tempat sebelumnya sudah tidak tersedia pada slot ini.";}syncGuestCountPolicy();}).catch(function(){$("#availability-message").textContent="Status ketersediaan belum bisa diperbarui saat ini.";});}
+function localInputValue(dateObject){const year=dateObject.getFullYear(), month=String(dateObject.getMonth()+1).padStart(2,"0"), day=String(dateObject.getDate()).padStart(2,"0"), hour=String(dateObject.getHours()).padStart(2,"0"), minute=String(dateObject.getMinutes()).padStart(2,"0");return year+"-"+month+"-"+day+"T"+hour+":"+minute;}
+$("#menu-search").addEventListener("input", renderBookPage);
+$("#people-count").addEventListener("input", syncGuestCountPolicy);
+$("#start-dt").addEventListener("change", function(){if($("#end-dt").value<=$("#start-dt").value){const dateObject=new Date($("#start-dt").value);if(!Number.isNaN(dateObject.getTime())){dateObject.setHours(dateObject.getHours()+2);$("#end-dt").value=localInputValue(dateObject);}}updateSummary();refreshAvailability();});
+$("#end-dt").addEventListener("change", function(){updateSummary();refreshAvailability();});
+$("#booking-form").addEventListener("submit", function(event){if(!$("#booking-area").value||!$("#booking-resource").value){event.preventDefault();$("#availability-message").textContent="Pilih tempat terlebih dahulu sebelum mengirim reservasi.";return;}if($("#end-dt").value<=$("#start-dt").value){event.preventDefault();$("#availability-message").textContent="Jam selesai harus lebih besar dari jam mulai.";return;}$("#booking-payload").value=JSON.stringify(selectedItems());});
+syncGuestCountPolicy();
+renderBookPage();
+updateSummary();
+})();
+</script>
 </body>
 </html>

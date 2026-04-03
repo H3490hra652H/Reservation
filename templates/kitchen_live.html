@@ -44,7 +44,7 @@ body.theme-light .text-slate-400{color:#475569 !important;}
 <p class="mt-2 text-slate-400">Pantau progress tiap reservasi, buka list menu, lalu centang menu yang sudah selesai.</p>
 </div>
 <div class="flex flex-wrap gap-3">
-<a href="/" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
+<a href="{{ url_for('home') }}" class="rounded-xl bg-slate-700 px-4 py-3 font-semibold text-white hover:bg-slate-600">Home</a>
 <a href="/reservations?date={{ selected_date }}" class="rounded-xl bg-slate-800 px-4 py-3 font-semibold text-white hover:bg-slate-700">Back</a>
 <a href="{{ url_for('export_kitchen_live_excel', date=selected_date, search=search_query or '') }}" class="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">Export Excel</a>
 </div>

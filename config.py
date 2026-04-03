@@ -53,3 +53,32 @@ def get_database_config():
         "database": get_env("DB_NAME", required=True),
         "port": int(get_env("DB_PORT", default="3306")),
     }
+
+
+def get_mail_config():
+    return {
+        "host": get_env("MAIL_HOST", default="smtp.gmail.com"),
+        "port": int(get_env("MAIL_PORT", default="465")),
+        "username": get_env("MAIL_USERNAME", required=True),
+        "password": get_env("MAIL_PASSWORD", required=True),
+        "sender_name": get_env("MAIL_SENDER_NAME", default="Manna Bakery and Cafe"),
+    }
+
+
+def get_password_reset_allowed_email():
+    email = get_env("PASSWORD_RESET_ALLOWED_EMAIL", default="")
+    normalized_email = (email or "").strip().lower()
+    return normalized_email or None
+
+
+def get_password_reset_token_minutes():
+    return int(get_env("PASSWORD_RESET_TOKEN_MINUTES", default="30"))
+
+
+def get_default_admin_config():
+    return {
+        "username": get_env("DEFAULT_ADMIN_USERNAME", default="admin"),
+        "full_name": get_env("DEFAULT_ADMIN_FULL_NAME", default="Administrator"),
+        "email": get_env("DEFAULT_ADMIN_EMAIL", default="admin@manna.local"),
+        "password": get_env("DEFAULT_ADMIN_PASSWORD", default="Admin12345!"),
+    }

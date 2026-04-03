@@ -1,8 +1,9 @@
 from datetime import date, datetime
 
 from flask import redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask_login import current_user
 
+from auth import admin_required
 from db import get_db_connection
 from services.common import dish_description_sql, format_currency, format_fish_info, format_menu_label, format_weight_display, render_notice_page
 from services.history import build_menu_history_summary, get_menu_label_for_history, log_reservation_history, prepare_reservation_history_rows
@@ -14,6 +15,12 @@ from services.menu_options import (
     get_effective_selected_options,
     get_payload_display_name,
     resolve_menu_submission,
+)
+from services.public_booking import (
+    build_booking_summary,
+    ensure_public_booking_tables,
+    format_datetime_display,
+    get_reservation_end_datetime,
 )
 from services.stock import (
     ensure_additional_stock_tables,
@@ -28,7 +35,7 @@ from services.stock import (
 
 def register_reservations_routes(app):
     @app.route("/create_reservation")
-    @login_required
+    @admin_required
     def create_reservation():
 
         selected_date = request.args.get("date")
@@ -38,6 +45,7 @@ def register_reservations_routes(app):
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        ensure_public_booking_tables(cursor)
 
         menus, nila_sizes, sea_fish = get_stock_context(cursor, selected_date)
         tuna_stock_menus, tuna_piece_stock, rahang_tuna_stock = get_special_tuna_stock_context(cursor, selected_date)
@@ -67,12 +75,13 @@ def register_reservations_routes(app):
     # ================= ADD RESERVATION =================
 
     @app.route("/add_reservation", methods=["POST"])
-    @login_required
+    @admin_required
     def add_reservation():
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         ensure_additional_stock_tables(cursor)
+        ensure_public_booking_tables(cursor)
 
         name = request.form["customer_name"]
         table = request.form["table_number"]
@@ -230,21 +239,26 @@ def register_reservations_routes(app):
 
 
     @app.route("/reservation_menu/<int:reservation_id>")
-    @login_required
+    @admin_required
     def reservation_menu(reservation_id):
         search_query = (request.args.get("search") or "").strip()
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        ensure_public_booking_tables(cursor)
         description_expr = dish_description_sql("ri")
 
         cursor.execute("""
         SELECT
             id,
             customer_name,
+            whatsapp_number,
             table_number,
             people_count,
             reservation_datetime,
+            booking_end_datetime,
+            booking_area,
+            booking_setup,
             description
         FROM reservations
         WHERE id = %s
@@ -267,6 +281,9 @@ def register_reservations_routes(app):
             reservation_back_date = reservation_datetime.strftime("%Y-%m-%d")
         elif reservation_datetime:
             reservation_back_date = str(reservation_datetime).split(" ")[0]
+        if reservation_info:
+            reservation_info["booking_summary"] = build_booking_summary(reservation_info)
+            reservation_info["booking_end_display"] = format_datetime_display(get_reservation_end_datetime(reservation_info))
 
         query = """
         SELECT
@@ -336,7 +353,7 @@ def register_reservations_routes(app):
     # ================= RESERVATION LIST =================
 
     @app.route("/reservations")
-    @login_required
+    @admin_required
     def reservations():
 
         selected_date = request.args.get("date")
@@ -347,10 +364,12 @@ def register_reservations_routes(app):
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        ensure_public_booking_tables(cursor)
 
         query = """
-            SELECT id,customer_name,table_number,
-                   people_count,reservation_datetime,description
+            SELECT id,customer_name,whatsapp_number,table_number,
+                   people_count,reservation_datetime,booking_end_datetime,
+                   booking_area,booking_setup,description
             FROM reservations
             WHERE DATE(reservation_datetime) = %s
         """
@@ -361,17 +380,21 @@ def register_reservations_routes(app):
             AND (
                 CAST(id AS CHAR) LIKE %s
                 OR customer_name LIKE %s
+                OR COALESCE(whatsapp_number,'') LIKE %s
                 OR table_number LIKE %s
                 OR COALESCE(description,'') LIKE %s
             )
             """
             search_like = f"%{search_query}%"
-            params.extend([search_like] * 4)
+            params.extend([search_like] * 5)
 
         query += " ORDER BY id DESC"
         cursor.execute(query, params)
 
         data = cursor.fetchall()
+        for row in data:
+            row["booking_summary"] = build_booking_summary(row)
+            row["booking_end_display"] = format_datetime_display(get_reservation_end_datetime(row))
 
         cursor.close()
         conn.close()
@@ -385,7 +408,7 @@ def register_reservations_routes(app):
 
 
     @app.route("/delete/<int:res_id>")
-    @login_required
+    @admin_required
     def delete_reservation(res_id):
 
         conn = get_db_connection()
@@ -434,7 +457,7 @@ def register_reservations_routes(app):
     # ================= DELETE ALL RESERVATIONS =================
 
     @app.route("/delete_all_reservations")
-    @login_required
+    @admin_required
     def delete_all_reservations():
 
         conn = get_db_connection()
@@ -476,18 +499,21 @@ def register_reservations_routes(app):
     # ================= EDIT RESERVATION =================
 
     @app.route("/edit/<int:res_id>", methods=["GET","POST"])
-    @login_required
+    @admin_required
     def edit_reservation(res_id):
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        ensure_public_booking_tables(cursor)
 
         if request.method == "POST":
 
             name = request.form["customer_name"]
+            whatsapp_number = (request.form.get("whatsapp_number") or "").strip()
             table = request.form["table_number"]
             people = request.form["people_count"]
             time = request.form["reservation_datetime"]
+            booking_end_time = (request.form.get("booking_end_datetime") or "").strip() or None
             deskripsi = request.form["description"]
 
             cursor.execute("SELECT * FROM reservations WHERE id=%s",(res_id,))
@@ -496,12 +522,14 @@ def register_reservations_routes(app):
             cursor.execute("""
             UPDATE reservations
             SET customer_name=%s,
+                whatsapp_number=%s,
                 table_number=%s,
                 people_count=%s,
                 reservation_datetime=%s,
+                booking_end_datetime=%s,
                 description=%s
             WHERE id=%s
-            """,(name,table,people,time,deskripsi,res_id))
+            """,(name,whatsapp_number,table,people,time,booking_end_time,deskripsi,res_id))
 
             if existing_reservation:
                 log_reservation_history(
@@ -525,6 +553,8 @@ def register_reservations_routes(app):
 
         if reservation and reservation.get("reservation_datetime"):
             reservation["reservation_datetime"] = reservation["reservation_datetime"].strftime("%Y-%m-%dT%H:%M")
+        if reservation and reservation.get("booking_end_datetime"):
+            reservation["booking_end_datetime"] = reservation["booking_end_datetime"].strftime("%Y-%m-%dT%H:%M")
 
         cursor.close()
         conn.close()
@@ -533,7 +563,7 @@ def register_reservations_routes(app):
 
     #================== EDIT MENU =================
     @app.route("/edit_menu/<int:item_id>", methods=["GET","POST"])
-    @login_required
+    @admin_required
     def edit_menu(item_id):
 
         conn = get_db_connection()
@@ -798,7 +828,7 @@ def register_reservations_routes(app):
 
 
     @app.route("/add_dish/<int:reservation_id>")
-    @login_required
+    @admin_required
     def add_dish_page(reservation_id):
 
         conn = get_db_connection()
@@ -884,7 +914,7 @@ def register_reservations_routes(app):
 
     # ================= DELETE MENU =================
     @app.route("/delete_menu/<int:item_id>")
-    @login_required
+    @admin_required
     def delete_menu(item_id):
 
         conn = get_db_connection()
@@ -933,7 +963,7 @@ def register_reservations_routes(app):
 
     # ================= ADD MENU =================
     @app.route("/add_menu/<int:reservation_id>", methods=["POST"])
-    @login_required
+    @admin_required
     def add_menu(reservation_id):
 
         conn = get_db_connection()
@@ -1081,7 +1111,7 @@ def register_reservations_routes(app):
 
 
     @app.route("/reservation_history")
-    @login_required
+    @admin_required
     def reservation_history():
         reservation_id = request.args.get("reservation_id")
         action_type = (request.args.get("action_type") or "").strip().lower()

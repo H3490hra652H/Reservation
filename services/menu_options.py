@@ -1113,6 +1113,7 @@ def build_display_menu_catalog(raw_menus):
                 "stock_type": raw_menu.get("stock_type"),
                 "stock_source": raw_menu.get("stock_source") or raw_menu.get("stock_type"),
                 "status": raw_menu.get("status") or "ready",
+                "price": raw_menu.get("price"),
                 "option_groups": single_config.get("option_groups", []),
                 "combo_keys": [],
                 "combo_map": {},
@@ -1132,6 +1133,7 @@ def build_display_menu_catalog(raw_menus):
             "stock_type": None,
             "stock_source": None,
             "status": "ready",
+            "price": None,
             "option_groups": group.get("option_groups", []),
             "combo_keys": group.get("combo_keys", []),
             "combo_map": OrderedDict(),
@@ -1159,6 +1161,7 @@ def build_display_menu_catalog(raw_menus):
             group_map["divisi"] = group_map["divisi"] or raw_menu.get("divisi")
             group_map["stock_type"] = group_map["stock_type"] or raw_menu.get("stock_type")
             group_map["stock_source"] = group_map["stock_source"] or raw_menu.get("stock_source") or raw_menu.get("stock_type")
+            group_map["price"] = group_map["price"] or raw_menu.get("price")
             if raw_menu.get("status") != "ready":
                 group_map["status"] = raw_menu.get("status")
 
