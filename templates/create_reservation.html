@@ -16,9 +16,7 @@
   .table-group[data-status="occupied"] .table-shape,.table-group[data-status="unavailable"] .table-shape{fill:rgba(220,38,38,.9);}
   .table-group:hover .table-shape{transform:translateY(-2px);filter:brightness(1.06);}
   .table-group.is-selected .table-shape{stroke:var(--selected);stroke-width:5;filter:drop-shadow(0 0 14px rgba(56,189,248,.38));}
-  .table-tag,.table-tag-text{pointer-events:none;user-select:none;}
-  .table-tag{fill:rgba(255,255,255,.96);stroke:rgba(15,23,42,.18);stroke-width:1.5;}
-  .table-tag-text{fill:#111827;font-size:10px;font-weight:800;text-anchor:middle;}
+  .table-label{pointer-events:none;user-select:none;fill:#f8fafc;font-size:12px;font-weight:800;text-anchor:middle;dominant-baseline:middle;}
   .non-bookable{fill:rgba(15,23,42,.12);stroke:rgba(15,23,42,.28);stroke-width:2;}
   .non-bookable-label{fill:#334155;font-size:14px;font-weight:700;text-anchor:middle;}
   .soft-wall{fill:#ece6dd;}
@@ -79,9 +77,9 @@
               <rect x="72" y="682" width="44" height="10" fill="#ffffff" opacity="0.85"></rect>
               <text class="fixture-label" x="56" y="472" transform="rotate(-90 56 472)">Jendela</text>
 
-              <path d="M28 238 L28 336 L120 336" fill="none" stroke="#94a3b8" stroke-width="3"></path>
-              <path d="M28 242 A86 86 0 0 1 112 326" fill="none" stroke="#94a3b8" stroke-width="2"></path>
-              <text class="fixture-label" x="148" y="322">Pintu Masuk</text>
+              <path d="M28 246 L28 302 L76 302" fill="none" stroke="#94a3b8" stroke-width="3"></path>
+              <path d="M28 248 A56 56 0 0 1 84 302" fill="none" stroke="#94a3b8" stroke-width="2"></path>
+              <text class="fixture-label" x="120" y="300">Pintu Masuk</text>
 
               <rect class="non-bookable" x="678" y="72" width="24" height="110" rx="7"></rect>
               <text class="fixture-label" x="690" y="128" transform="rotate(90 690 128)">Wastafel</text>
@@ -102,16 +100,14 @@
 
               {% for table in floor_map.tables %}
               {% set center_x = (table.x_position|float) + ((table.width|float) / 2) %}
-              {% set label_width = 54 if (table.table_label|length) <= 2 else 70 %}
-              {% set label_y = (table.y_position|float) - 22 %}
+              {% set center_y = (table.y_position|float) + ((table.height|float) / 2) %}
               <g class="table-group" id="table-{{ table.resource_code }}" data-resource-code="{{ table.resource_code }}" data-status="{{ table.status }}">
                 {% if table.shape == "circle" %}
-                <circle class="table-shape" cx="{{ center_x }}" cy="{{ (table.y_position|float) + ((table.height|float) / 2) }}" r="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></circle>
+                <circle class="table-shape" cx="{{ center_x }}" cy="{{ center_y }}" r="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></circle>
                 {% else %}
                 <rect class="table-shape" x="{{ table.x_position }}" y="{{ table.y_position }}" width="{{ table.width }}" height="{{ table.height }}" rx="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></rect>
                 {% endif %}
-                <rect class="table-tag" x="{{ center_x - (label_width / 2) }}" y="{{ label_y }}" width="{{ label_width }}" height="18" rx="5"></rect>
-                <text class="table-tag-text" x="{{ center_x }}" y="{{ label_y + 12 }}">Meja {{ table.table_label }}</text>
+                <text class="table-label" x="{{ center_x }}" y="{{ center_y }}">{{ table.table_label }}</text>
               </g>
               {% endfor %}
             </svg>
