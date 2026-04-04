@@ -62,11 +62,22 @@ h1,h2,h3,.headline,.navbar-brand{font-family:"Fraunces",serif;letter-spacing:-.0
 .summary-card{padding:1.5rem;border-radius:1.7rem;background:rgba(255,250,244,.88);border:1px solid rgba(106,67,41,.1);box-shadow:0 22px 44px rgba(117,83,51,.08)}
 .summary-stat{padding:.95rem 1rem;border-radius:1rem;background:#fff9f3;border:1px solid rgba(106,67,41,.08)}
 .menu-summary-item{border:1px solid rgba(106,67,41,.08);border-radius:1rem;background:#fff8f0}
+.menu-book-modal .modal-dialog,.place-book-modal .modal-dialog{max-width:min(1360px,calc(100vw - 1.5rem));margin:1rem auto}
 .menu-book-modal .modal-content,.place-book-modal .modal-content{border:0;border-radius:2rem;overflow:hidden;background:#fff6eb}
-.book-shell{min-height:72vh;background:linear-gradient(90deg, rgba(195,135,77,.05) 0, rgba(195,135,77,.05) 2px, transparent 2px),linear-gradient(135deg, #fffaf4, #efd9bc)}
-.book-sidebar{background:linear-gradient(180deg, #efd2ae 0%, #d9b087 100%);border-right:1px solid rgba(106,67,41,.12)}
-.book-page{background:linear-gradient(90deg, rgba(106,67,41,.04) 0, rgba(106,67,41,.015) 14px, transparent 14px),linear-gradient(180deg, #fffdf9 0%, #f9ecdc 100%)}
-.category-pill{width:100%;text-align:left;border:1px solid rgba(106,67,41,.16);border-radius:999px;padding:.85rem 1rem;background:rgba(255,250,244,.82);color:var(--manna-ink);font-weight:700}
+.book-shell{min-height:min(78vh,860px);background:linear-gradient(90deg, rgba(195,135,77,.05) 0, rgba(195,135,77,.05) 2px, transparent 2px),linear-gradient(135deg, #fffaf4, #efd9bc)}
+.book-sidebar{min-width:0;background:linear-gradient(180deg, #efd2ae 0%, #d9b087 100%);border-right:1px solid rgba(106,67,41,.12)}
+.book-page{min-width:0;overflow-x:hidden;background:linear-gradient(90deg, rgba(106,67,41,.04) 0, rgba(106,67,41,.015) 14px, transparent 14px),linear-gradient(180deg, #fffdf9 0%, #f9ecdc 100%)}
+.menu-book-modal .modal-body{height:100%;overflow:hidden}
+.book-shell-menu{height:min(88vh,920px);min-height:min(88vh,920px)}
+.book-shell-menu>[class*="col-"]{display:flex;flex-direction:column;min-height:0}
+.menu-sidebar{display:flex;flex-direction:column;gap:.9rem;min-height:0;overflow:hidden}
+.menu-sidebar-copy{font-size:.9rem;line-height:1.6}
+.menu-sidebar-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.2rem;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#category-nav{display:grid;gap:.55rem;grid-auto-rows:max-content;align-content:start;align-items:start}
+.menu-book-page{display:flex;flex-direction:column;min-height:0}
+.menu-book-page-shell{display:flex;flex-direction:column;gap:1rem;flex:1;min-height:0;height:100%}
+.menu-book-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:.35rem;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.category-pill{width:100%;text-align:left;border:1px solid rgba(106,67,41,.16);border-radius:1rem;padding:.62rem .85rem;background:rgba(255,250,244,.82);color:var(--manna-ink);font-weight:700;font-size:.94rem;line-height:1.35}
 .category-pill.active{background:linear-gradient(135deg,#6a4329,#a46631);color:#fff8ef}
 .place-intro{border:1px dashed rgba(106,67,41,.16);border-radius:1rem;padding:1rem;background:#fffaf5}
 .place-summary-card{border:1px solid rgba(106,67,41,.1);border-radius:1rem;padding:1rem;background:#fffdf9}
@@ -74,7 +85,7 @@ h1,h2,h3,.headline,.navbar-brand{font-family:"Fraunces",serif;letter-spacing:-.0
 .place-chip{width:100%;text-align:left;border:1px solid rgba(106,67,41,.18);border-radius:999px;padding:.8rem 1rem;background:rgba(255,250,244,.7);color:var(--manna-ink);font-weight:700}
 .place-chip.is-disabled{opacity:.55;text-decoration:line-through;background:rgba(255,252,248,.44)}
 .place-chip.is-active{background:linear-gradient(135deg,#6a4329,#a46631);color:#fff8ef;border-color:#6a4329;box-shadow:0 12px 24px rgba(106,67,41,.18)}
-.place-book-sections{display:grid;gap:1.5rem}
+.place-book-sections{display:grid;gap:1.5rem;min-width:0}
 .place-section-title{font-size:1.08rem;font-weight:800;color:var(--manna-espresso);margin-bottom:.85rem}
 .place-subtitle{font-size:.88rem;font-weight:700;letter-spacing:.02em;color:#9c6b43;margin:.2rem 0 .8rem}
 .place-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:1rem}
@@ -106,29 +117,34 @@ h1,h2,h3,.headline,.navbar-brand{font-family:"Fraunces",serif;letter-spacing:-.0
 .place-floor-meta-value{margin-top:.3rem;font-weight:700;color:var(--manna-espresso)}
 .menu-header-tools{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between}
 .menu-search-inline{max-width:280px}
-.book-menu-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));gap:1rem}
-.menu-card{border:1px solid rgba(106,67,41,.08);border-radius:1.3rem;background:#fffdf9;overflow:hidden;box-shadow:0 12px 28px rgba(117,83,51,.08)}
+.book-menu-grid{display:grid;grid-template-columns:1fr;gap:1rem;align-items:start}
+.menu-card{min-width:0;display:grid;grid-template-columns:220px minmax(0,1fr);align-items:stretch;border:1px solid rgba(106,67,41,.08);border-radius:1.3rem;background:#fffdf9;overflow:hidden;box-shadow:0 12px 28px rgba(117,83,51,.08)}
 .menu-card.not-ready{opacity:.56}
-.menu-photo{height:168px;background:linear-gradient(135deg, rgba(224,191,151,.42), rgba(132,86,53,.12));display:flex;align-items:center;justify-content:center;color:#8a4a2f;font-size:2rem}
+.menu-photo{height:100%;min-height:188px;background:linear-gradient(135deg, rgba(224,191,151,.42), rgba(132,86,53,.12));display:flex;align-items:center;justify-content:center;color:#8a4a2f;font-size:2rem}
+.menu-card > .p-3{min-width:0;display:flex;flex-direction:column;justify-content:space-between}
 .qty-control{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem;border-radius:999px;border:1px solid rgba(106,67,41,.08);background:#fff9f2}
 .qty-control button{width:2rem;height:2rem;border:0;border-radius:999px;background:linear-gradient(135deg,#6a4329,#a46631);color:#fff}
-.menu-extra{background:#fff8f0;border-top:1px solid rgba(106,67,41,.08)}
-.menu-card-actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem}
-.menu-action-buttons{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end}
+.menu-extra{grid-column:1 / -1;background:#fff8f0;border-top:1px solid rgba(106,67,41,.08)}
+.menu-card-actions{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:.75rem}
+.menu-action-buttons{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-start;width:100%}
+.menu-action-buttons .btn{flex:1 1 150px}
 .menu-editor-note{font-size:.85rem;color:var(--manna-muted);line-height:1.6}
 .menu-summary-item.is-editing{border-color:rgba(195,135,77,.45);box-shadow:0 14px 28px rgba(163,104,49,.1)}
 .menu-options-compact{display:grid;gap:.9rem}
 .menu-options-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
-.menu-option-field{display:grid;gap:.35rem}
+.menu-option-field{display:grid;gap:.35rem;min-width:0}
 .menu-option-label{font-size:.84rem;font-weight:700;color:var(--manna-ink)}
 .menu-option-field .form-select,.menu-option-field .form-control{min-height:44px;border-radius:.9rem;background:#fffdf9}
-.menu-multi{position:relative}
-.menu-multi-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.72rem .9rem;border:1px solid rgba(106,67,41,.12);border-radius:.9rem;background:#fffdf9;color:var(--manna-ink);font-weight:600}
+.menu-multi{position:relative;min-width:0}
+.menu-multi-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.72rem .9rem;border:1px solid rgba(106,67,41,.12);border-radius:.9rem;background:#fffdf9;color:var(--manna-ink);font-weight:600;min-width:0}
+.menu-multi-trigger span{min-width:0;overflow-wrap:anywhere}
 .menu-multi-trigger .placeholder{color:var(--manna-muted);font-weight:500}
-.menu-multi-panel{margin-top:.45rem;border:1px solid rgba(106,67,41,.12);border-radius:1rem;background:#fffdf9;padding:.55rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.45rem;max-height:220px;overflow:auto}
+.menu-multi-panel{margin-top:.45rem;border:1px solid rgba(106,67,41,.12);border-radius:1rem;background:#fffdf9;padding:.55rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.45rem;max-height:220px;overflow:auto;min-width:0}
 .status-pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.35rem .7rem;font-size:.75rem;font-weight:700}
 .status-ready{background:rgba(25,135,84,.12);color:#146c43}.status-pending{background:rgba(255,193,7,.18);color:#946200}.status-not_ready{background:rgba(220,53,69,.12);color:#b42336}
-.menu-option-check{display:flex;align-items:center;gap:.55rem;border:1px solid rgba(106,67,41,.08);border-radius:.9rem;padding:.55rem .75rem;background:#fff;cursor:pointer}
+.menu-option-check{display:flex;align-items:flex-start;gap:.55rem;border:1px solid rgba(106,67,41,.08);border-radius:.9rem;padding:.55rem .75rem;background:#fff;cursor:pointer;min-width:0}
+.menu-option-check span{min-width:0;overflow-wrap:anywhere;line-height:1.45}
+.menu-option-check-input{flex-shrink:0}
 .menu-special-box{border-top:1px dashed rgba(106,67,41,.12);padding-top:.8rem;display:grid;gap:.6rem}
 .menu-special-toggle{display:flex;align-items:center;gap:.6rem;font-weight:600;color:var(--manna-ink)}
 .menu-special-input{display:grid;gap:.35rem}
@@ -144,8 +160,9 @@ h1,h2,h3,.headline,.navbar-brand{font-family:"Fraunces",serif;letter-spacing:-.0
 .btn-close{filter:sepia(.2)}
 main{padding-bottom:5rem}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@media (max-width:991.98px){.summary-panel{position:static}.hero-photo{min-height:320px}.book-sidebar{border-right:0;border-bottom:1px solid rgba(120,89,47,.16)}.process-strip{grid-template-columns:1fr}.hero-copy{padding:1.5rem}.headline{font-size:2.8rem}.place-floor-wrap{grid-template-columns:1fr}}
-@media (max-width:767.98px){.hero-actions{display:grid}.hero-actions .btn{width:100%}.hero-note{left:1rem;right:1rem;bottom:1rem;max-width:none}.menu-options-grid{grid-template-columns:1fr}.menu-multi-panel{grid-template-columns:1fr}.menu-search-inline{max-width:none;width:100%}}
+@media (max-width:1199.98px){.menu-book-modal .modal-dialog,.place-book-modal .modal-dialog{max-width:100vw;margin:0;min-height:100dvh}.menu-book-modal .modal-content,.place-book-modal .modal-content{border-radius:0;min-height:100dvh}.book-shell{min-height:100dvh}.book-shell-menu{height:100dvh;min-height:100dvh}.book-sidebar{border-right:0;border-bottom:1px solid rgba(120,89,47,.16)}.book-sidebar,.book-page{padding:1.25rem!important}.menu-sidebar{max-height:42dvh}.menu-sidebar-scroll{padding-right:0}.menu-header-tools{align-items:flex-start;flex-direction:column}.menu-header-tools .btn{width:100%}.menu-search-inline{max-width:none;width:100%}.place-grid,.menu-options-grid,.menu-multi-panel{grid-template-columns:1fr}.menu-card{grid-template-columns:1fr}.menu-photo{min-height:168px}.menu-card-actions{flex-direction:column;align-items:stretch}.menu-card-actions>div:first-child{width:100%}.place-floor-wrap{grid-template-columns:1fr}}
+@media (max-width:991.98px){.summary-panel{position:static}.hero-photo{min-height:320px}.process-strip{grid-template-columns:1fr}.hero-copy{padding:1.5rem}.headline{font-size:2.8rem}}
+@media (max-width:767.98px){.hero-actions{display:grid}.hero-actions .btn{width:100%}.hero-note{left:1rem;right:1rem;bottom:1rem;max-width:none}}
 </style>
 </head>
 <body>
@@ -379,26 +396,32 @@ main{padding-bottom:5rem}
   <div class="modal-dialog modal-fullscreen-lg-down modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-body p-0">
-        <div class="row g-0 book-shell">
-          <div class="col-lg-3 p-4 book-sidebar">
+        <div class="row g-0 book-shell book-shell-menu">
+          <div class="col-xl-2 col-lg-3 p-4 book-sidebar menu-sidebar">
             <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
-              <div><div class="text-uppercase small fw-semibold text-secondary">Buku Menu</div><h3 class="h4 mb-1">Pilih Kategori</h3><div class="small text-secondary">Daftar menu disusun dari data kategori yang aktif di sistem.</div></div>
+              <div><div class="text-uppercase small fw-semibold text-secondary">Buku Menu</div><h3 class="h4 mb-1">Pilih Kategori</h3><div class="small text-secondary menu-sidebar-copy">Kategori dibuat lebih ringkas agar ruang utama fokus ke daftar menu.</div></div>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="d-grid gap-2" id="category-nav"></div>
+            <div class="menu-sidebar-scroll">
+              <div class="d-grid gap-2" id="category-nav"></div>
+            </div>
           </div>
-          <div class="col-lg-9 p-4 p-lg-5 book-page">
-            <div class="menu-header-tools mb-4">
-              <div><div class="text-uppercase small fw-semibold text-secondary">Halaman Menu</div><h3 class="h3 mb-1" id="category-title">Menu</h3><div class="small text-secondary" id="category-caption">Jelajahi menu per kategori seperti buku menu digital. Search hanya dipakai jika Anda memang ingin filter cepat.</div></div>
-              <button type="button" class="btn btn-dark rounded-pill px-4" data-bs-dismiss="modal">Selesai</button>
-            </div>
-            <div class="d-flex justify-content-end mb-4">
-              <div class="menu-search-inline">
-                <label class="form-label small text-secondary mb-2" for="menu-search">Cari menu cepat (opsional)</label>
-                <input class="form-control" id="menu-search" type="search" placeholder="Ketik nama menu bila perlu">
+          <div class="col-xl-10 col-lg-9 p-4 p-lg-5 book-page menu-book-page">
+            <div class="menu-book-page-shell">
+              <div>
+                <div class="menu-header-tools mb-4">
+                  <div><div class="text-uppercase small fw-semibold text-secondary">Halaman Menu</div><h3 class="h3 mb-1" id="category-title">Menu</h3><div class="small text-secondary" id="category-caption">Jelajahi menu per kategori seperti buku menu digital. Search hanya dipakai jika Anda memang ingin filter cepat.</div></div>
+                  <button type="button" class="btn btn-dark rounded-pill px-4" data-bs-dismiss="modal">Selesai</button>
+                </div>
+                <div class="d-flex justify-content-end mb-4">
+                  <div class="menu-search-inline">
+                    <label class="form-label small text-secondary mb-2" for="menu-search">Cari menu cepat (opsional)</label>
+                    <input class="form-control" id="menu-search" type="search" placeholder="Ketik nama menu bila perlu">
+                  </div>
+                </div>
               </div>
+              <div id="book-page-content" class="menu-book-scroll"></div>
             </div>
-            <div id="book-page-content"></div>
           </div>
         </div>
       </div>

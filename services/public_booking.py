@@ -39,8 +39,8 @@ PUBLIC_MENU_GROUPS = [
     {"key": "nasi_mie_bubur", "label": "Nasi, Mie, dan Bubur", "order": 80},
     {"key": "snack", "label": "Snack", "order": 90},
     {"key": "dessert", "label": "Dessert", "order": 100},
-    {"key": "minuman_koffie", "label": "Minuman dan Koffie", "order": 110},
-    {"key": "non_koffie", "label": "Non Koffie", "order": 120},
+    {"key": "minuman", "label": "Minuman", "order": 110},
+    {"key": "koffie", "label": "Koffie", "order": 120},
 ]
 PUBLIC_MENU_GROUP_LOOKUP = {item["key"]: item for item in PUBLIC_MENU_GROUPS}
 
@@ -605,12 +605,14 @@ def _resolve_public_menu_group(menu):
         return PUBLIC_MENU_GROUP_LOOKUP["snack"]
     if category == "dessert":
         return PUBLIC_MENU_GROUP_LOOKUP["dessert"]
-    if category == "nokoffie":
-        return PUBLIC_MENU_GROUP_LOOKUP["non_koffie"]
-    if category in {"drink", "koffie"}:
-        return PUBLIC_MENU_GROUP_LOOKUP["minuman_koffie"]
+    if category in {"drink", "nokoffie"}:
+        return PUBLIC_MENU_GROUP_LOOKUP["minuman"]
+    if category == "koffie":
+        return PUBLIC_MENU_GROUP_LOOKUP["koffie"]
     if divisi == "bar":
-        return PUBLIC_MENU_GROUP_LOOKUP["minuman_koffie"]
+        if "koffie" in name:
+            return PUBLIC_MENU_GROUP_LOOKUP["koffie"]
+        return PUBLIC_MENU_GROUP_LOOKUP["minuman"]
     return {"key": "lainnya", "label": "Menu Lainnya", "order": 999}
 
 
