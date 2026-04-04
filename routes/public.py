@@ -31,6 +31,7 @@ from services.public_booking import (
     resolve_booking_end,
     serialize_resource_selection,
 )
+from services.reservation_floor import ensure_reservation_floor_schema, get_floor_tables
 
 
 def register_public_routes(app):
@@ -55,8 +56,10 @@ def register_public_routes(app):
 
         try:
             ensure_public_booking_tables(cursor)
+            ensure_reservation_floor_schema(cursor)
             menu_catalog, nila_sizes, sea_fish, tuna_piece_stock, rahang_tuna_stock = prepare_public_menu_catalog(cursor, selected_date)
             resource_sections = build_booking_resource_sections(cursor, next_slot, default_end)
+            floor_tables = get_floor_tables(cursor)
         finally:
             cursor.close()
             conn.close()
@@ -69,6 +72,7 @@ def register_public_routes(app):
                 "tuna_piece_stock": tuna_piece_stock,
                 "rahang_tuna_stock": rahang_tuna_stock,
                 "availability": resource_sections,
+                "floor_tables": floor_tables,
                 "guest_rules": build_guest_booking_rules(),
             },
             ensure_ascii=False,
