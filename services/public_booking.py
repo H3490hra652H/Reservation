@@ -8,6 +8,7 @@ from services.common import format_currency, format_menu_label, format_weight_di
 from services.menu_options import resolve_menu_submission
 from services.stock import (
     ensure_additional_stock_tables,
+    format_size_category_label,
     get_special_tuna_stock_context,
     get_stock_context,
     reduce_stock_after_order,
@@ -56,10 +57,10 @@ DEFAULT_BOOKING_RESOURCES = [
     {"resource_code": "main-10", "area_name": BOOKING_TABLE_AREA, "resource_type": "table", "display_name": "Meja 10", "table_label": "10", "seat_capacity": 4, "setup_key": None, "image_url": None, "description": "4 kursi. Dekat kasir, bar, dan pajangan roti.", "sort_order": 100},
     {"resource_code": "main-11", "area_name": BOOKING_TABLE_AREA, "resource_type": "table", "display_name": "Meja 11", "table_label": "11", "seat_capacity": 4, "setup_key": None, "image_url": None, "description": "4 kursi. Dekat pintu masuk, jendela, dan panggung live music.", "sort_order": 110},
     {"resource_code": "main-12", "area_name": BOOKING_TABLE_AREA, "resource_type": "table", "display_name": "Meja 12", "table_label": "12", "seat_capacity": 4, "setup_key": None, "image_url": None, "description": "4 kursi. Dekat pintu masuk, jendela, dan panggung live music.", "sort_order": 120},
-    {"resource_code": "vip-classroom", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP Ala Carte - Classroom", "table_label": None, "seat_capacity": 50, "setup_key": "classroom", "image_url": "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup classroom. Maksimal 50 tamu.", "sort_order": 200},
-    {"resource_code": "vip-letter-u", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP Ala Carte - Letter U", "table_label": None, "seat_capacity": 50, "setup_key": "letter_u", "image_url": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup Letter U. Maksimal 50 tamu.", "sort_order": 210},
-    {"resource_code": "vip-dining-table", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP Ala Carte - Meja Makan", "table_label": None, "seat_capacity": 50, "setup_key": "dining_table", "image_url": "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup meja makan. Maksimal 50 tamu.", "sort_order": 220},
-    {"resource_code": "vip-prasmanan", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP Prasmanan", "table_label": None, "seat_capacity": 50, "setup_key": "prasmanan", "image_url": "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1200&q=80", "description": "Layanan VIP prasmanan. Cocok untuk acara privat dengan maksimal 50 tamu.", "sort_order": 230},
+    {"resource_code": "vip-classroom", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP 1 Ala Carte - Classroom", "table_label": None, "seat_capacity": 50, "setup_key": "classroom", "image_url": "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup classroom. Maksimal 50 tamu.", "sort_order": 200},
+    {"resource_code": "vip-letter-u", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP 1 Ala Carte - Letter U", "table_label": None, "seat_capacity": 50, "setup_key": "letter_u", "image_url": "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup Letter U. Maksimal 50 tamu.", "sort_order": 210},
+    {"resource_code": "vip-dining-table", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP 1 Ala Carte - Meja Makan", "table_label": None, "seat_capacity": 50, "setup_key": "dining_table", "image_url": "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1200&q=80", "description": "Layanan ala carte dengan setup meja makan. Maksimal 50 tamu.", "sort_order": 220},
+    {"resource_code": "vip-prasmanan", "area_name": BOOKING_VIP_AREA, "resource_type": "vip_setup", "display_name": "VIP 1 Prasmanan", "table_label": None, "seat_capacity": 50, "setup_key": "prasmanan", "image_url": "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1200&q=80", "description": "Layanan VIP 1 prasmanan. Cocok untuk acara privat dengan maksimal 50 tamu.", "sort_order": 230},
     {"resource_code": "hall-a", "area_name": BOOKING_HALL_AREA, "resource_type": "table", "display_name": "Hall A", "table_label": "A", "seat_capacity": 40, "setup_key": None, "description": "Area lebih luas untuk acara komunitas atau grup besar.", "sort_order": 300},
     {"resource_code": "hall-b", "area_name": BOOKING_HALL_AREA, "resource_type": "table", "display_name": "Hall B", "table_label": "B", "seat_capacity": 60, "setup_key": None, "description": "Pilihan hall besar untuk reservasi rombongan.", "sort_order": 310},
     {"resource_code": "outdoor-01", "area_name": BOOKING_OUTDOOR_AREA, "resource_type": "table", "display_name": "Outdoor 1", "table_label": "O1", "seat_capacity": 6, "setup_key": None, "description": "Area semi terbuka untuk suasana santai.", "sort_order": 400},
@@ -88,7 +89,7 @@ RESTAURANT_PROFILE = {
     ],
     "highlights": [
         "Area makan nyaman untuk keluarga dan rombongan.",
-        "Pilihan ruang utama, VIP, hall, outdoor, dan kanopi tersedia dalam satu form booking.",
+        "Pilihan ruang utama, VIP 1, hall, outdoor, dan kanopi tersedia dalam satu form booking.",
         "Admin dapat melihat detail tamu, WhatsApp, slot booking, dan menu dari panel reservasi.",
     ],
 }
@@ -127,6 +128,24 @@ def _column_exists(cursor, table_name, column_name):
     return cursor.fetchone() is not None
 
 
+def get_nila_size_price_map(cursor):
+    if not _table_exists(cursor, "fish_size_prices"):
+        return {}
+
+    cursor.execute(
+        """
+        SELECT size_category, price
+        FROM fish_size_prices
+        WHERE price IS NOT NULL
+        """
+    )
+    return {
+        str(row.get("size_category") or "").strip(): int(row.get("price") or 0)
+        for row in cursor.fetchall()
+        if row.get("size_category")
+    }
+
+
 def ensure_public_booking_tables(cursor):
     ensure_additional_stock_tables(cursor)
 
@@ -143,6 +162,7 @@ def ensure_public_booking_tables(cursor):
         for column_name, sql in reservation_columns.items():
             if not _column_exists(cursor, "reservations", column_name):
                 cursor.execute(sql)
+        cursor.execute("ALTER TABLE reservations MODIFY COLUMN table_number VARCHAR(255) NULL")
 
     cursor.execute(
         """
@@ -170,25 +190,61 @@ def ensure_public_booking_tables(cursor):
         """
         UPDATE booking_resources
         SET
-            display_name = 'VIP Ala Carte - Classroom',
+            area_name = %s,
+            display_name = 'VIP 1 Ala Carte - Classroom',
             seat_capacity = 50,
             setup_key = 'classroom',
             description = 'Layanan ala carte dengan setup classroom. Maksimal 50 tamu.',
             sort_order = 200
         WHERE resource_code = 'vip-classroom'
         """
+        ,
+        (BOOKING_VIP_AREA,)
     )
     cursor.execute(
         """
         UPDATE booking_resources
         SET
-            display_name = 'VIP Ala Carte - Letter U',
+            area_name = %s,
+            display_name = 'VIP 1 Ala Carte - Meja Makan',
+            seat_capacity = 50,
+            setup_key = 'dining_table',
+            description = 'Layanan ala carte dengan setup meja makan. Maksimal 50 tamu.',
+            sort_order = 220
+        WHERE resource_code = 'vip-dining-table'
+        """
+        ,
+        (BOOKING_VIP_AREA,)
+    )
+    cursor.execute(
+        """
+        UPDATE booking_resources
+        SET
+            area_name = %s,
+            display_name = 'VIP 1 Prasmanan',
+            seat_capacity = 50,
+            setup_key = 'prasmanan',
+            description = 'Layanan VIP 1 prasmanan. Cocok untuk acara privat dengan maksimal 50 tamu.',
+            sort_order = 230
+        WHERE resource_code = 'vip-prasmanan'
+        """
+        ,
+        (BOOKING_VIP_AREA,)
+    )
+    cursor.execute(
+        """
+        UPDATE booking_resources
+        SET
+            area_name = %s,
+            display_name = 'VIP 1 Ala Carte - Letter U',
             seat_capacity = 50,
             setup_key = 'letter_u',
             description = 'Layanan ala carte dengan setup Letter U. Maksimal 50 tamu.',
             sort_order = 210
         WHERE resource_code = 'vip-letter-u'
         """
+        ,
+        (BOOKING_VIP_AREA,)
     )
 
     cursor.execute(
@@ -481,6 +537,49 @@ def _default_menu_description(menu):
     return " • ".join(parts)
 
 
+def _build_stock_hint_text(menu, nila_sizes, sea_fish, rahang_tuna_stock):
+    stock_source = (menu.get("stock_source") or menu.get("stock_type") or "").strip().lower()
+
+    if stock_source == "size":
+        labels = [row.get("label") or format_size_category_label(row.get("size_category")) for row in nila_sizes if row.get("size_category")]
+        if labels:
+            return f"Size tersedia: {', '.join(labels)}."
+        return "Size nila mengikuti update stock terbaru."
+
+    if stock_source == "weight":
+        labels = [row.get("label") or row.get("display_weight") for row in sea_fish if row.get("display_weight")]
+        if labels:
+            return f"Berat ikan tersedia: {', '.join(labels[:4])}."
+        return "Berat ikan laut mengikuti update stock terbaru."
+
+    if stock_source == "tuna_weight":
+        labels = [row.get("label") or row.get("display_weight") for row in rahang_tuna_stock.get("rows", []) if row.get("display_weight")]
+        if labels:
+            return f"Berat rahang tersedia: {', '.join(labels[:4])}."
+        return "Berat rahang tuna mengikuti update stock terbaru."
+
+    return ""
+
+
+def _build_item_selection_detail(item):
+    fish_size = (item.get("fish_size") or "").strip()
+    if fish_size:
+        return f"Size {format_size_category_label(fish_size)}"
+
+    fish_type = (item.get("fish_type") or "").strip()
+    fish_weight = item.get("fish_weight")
+
+    if fish_weight not in (None, "", "0", "0.0"):
+        weight_label = format_weight_display(fish_weight)
+        if fish_type.lower() == "rahang tuna":
+            return f"Rahang Tuna {weight_label}"
+        if fish_type:
+            return f"{fish_type.title()} {weight_label}"
+        return weight_label
+
+    return ""
+
+
 def _resolve_public_menu_group(menu):
     category = normalize_text(menu.get("category"))
     divisi = normalize_text(menu.get("divisi"))
@@ -519,6 +618,7 @@ def prepare_public_menu_catalog(cursor, selected_date):
     ensure_public_booking_tables(cursor)
     menu_catalog, nila_sizes, sea_fish = get_stock_context(cursor, selected_date)
     _, tuna_piece_stock, rahang_tuna_stock = get_special_tuna_stock_context(cursor, selected_date)
+    nila_size_price_map = get_nila_size_price_map(cursor)
     media_map = get_menu_media_map(cursor)
 
     prepared_catalog = []
@@ -535,6 +635,17 @@ def prepare_public_menu_catalog(cursor, selected_date):
         menu["public_group_key"] = group_info["key"]
         menu["public_group_label"] = group_info["label"]
         menu["public_group_order"] = group_info["order"]
+        if (menu.get("stock_source") or menu.get("stock_type")) == "size":
+            menu["size_price_map"] = nila_size_price_map
+            available_size_prices = [
+                nila_size_price_map.get(row.get("size_category"))
+                for row in nila_sizes
+                if row.get("size_category") in nila_size_price_map
+            ]
+            available_size_prices = [price for price in available_size_prices if price is not None]
+            if available_size_prices:
+                menu["size_price_min"] = min(available_size_prices)
+                menu["size_price_min_display"] = format_currency(menu["size_price_min"])
         prepared_catalog.append(menu)
 
     for fish in sea_fish:
@@ -544,6 +655,9 @@ def prepare_public_menu_catalog(cursor, selected_date):
     for row in rahang_tuna_stock.get("rows", []):
         row["display_weight"] = format_weight_display(row.get("weight_ons"), row.get("weight_unit"))
         row["label"] = f"Rahang Tuna - {row['display_weight']}"
+
+    for menu in prepared_catalog:
+        menu["stock_hint"] = _build_stock_hint_text(menu, nila_sizes, sea_fish, rahang_tuna_stock)
 
     prepared_catalog.sort(
         key=lambda item: (
@@ -695,6 +809,9 @@ def build_selected_menu_summary(items, menu_catalog):
             continue
         menu = menu_lookup.get(str(item.get("display_menu_id")))
         label = (menu or {}).get("display_label") or (menu or {}).get("name") or "Menu"
+        detail = _build_item_selection_detail(item)
+        if detail:
+            label = f"{label} ({detail})"
         summary_parts.append(f"{label} x{qty}")
     return ", ".join(summary_parts[:6])
 
@@ -726,9 +843,16 @@ def parse_booking_items(raw_payload):
                 "fish_weight": item.get("fish_weight") or None,
                 "fish_stock_id": item.get("fish_stock_id") or None,
                 "special_stock_id": item.get("special_stock_id") or None,
+                "special_request": _normalize_special_request_value(item.get("special_request")),
+                "dish_description": (item.get("dish_description") or "").strip() or None,
             }
         )
     return [item for item in normalized_items if item["qty"] > 0 and item["display_menu_id"]]
+
+
+def _normalize_special_request_value(raw_value):
+    value = str(raw_value or "").strip().lower()
+    return "with_special" if value in {"with_special", "special_request"} else "no_special"
 
 
 def persist_public_booking_items(cursor, reservation_id, reservation_date, raw_payload):
@@ -752,6 +876,8 @@ def persist_public_booking_items(cursor, reservation_id, reservation_date, raw_p
         fish_type = item.get("fish_type")
         fish_size = item.get("fish_size")
         fish_weight = item.get("fish_weight")
+        special_request_value = _normalize_special_request_value(item.get("special_request"))
+        dish_description = (item.get("dish_description") or "").strip() or None
 
         resolved_fish_stock_id, resolved_special_stock_id = resolve_selected_stock_refs(
             cursor,
@@ -790,8 +916,8 @@ def persist_public_booking_items(cursor, reservation_id, reservation_date, raw_p
                 reservation_id,
                 resolved_menu_id,
                 item.get("qty"),
-                "no_special",
-                None,
+                special_request_value,
+                dish_description,
                 fish_type,
                 fish_size,
                 fish_weight,

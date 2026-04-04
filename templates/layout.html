@@ -1,114 +1,486 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Manna Bakery and Cafe</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <meta http-equiv="refresh" content="20">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-body{
-transition:background-color .2s ease,color .2s ease;
+:root{
+--panel-bg:#f6ede3;
+--panel-surface:rgba(255,249,242,0.92);
+--panel-muted:#8f6e53;
+--panel-line:rgba(110,74,45,0.16);
+--panel-ink:#402514;
+--panel-coffee:#5e3a24;
+--panel-espresso:#2b170e;
+--panel-caramel:#c98d52;
+--panel-caramel-deep:#ab6f38;
+--panel-foam:#fffaf4;
+--panel-soft:#efe0cd;
+--panel-success:#2f7a55;
+--panel-danger:#a24d43;
 }
 
-.theme-toggle{
+html,body{
+min-height:100%;
+}
+
+body{
+margin:0;
+font-family:"Manrope",sans-serif;
+background:
+radial-gradient(circle at top left, rgba(212,161,110,0.28), transparent 26%),
+radial-gradient(circle at bottom right, rgba(120,76,43,0.14), transparent 28%),
+linear-gradient(180deg, #fbf5ee 0%, #efe0cf 100%);
+color:var(--panel-ink);
+transition:background-color .25s ease,color .25s ease;
+}
+
+h1,h2,h3,.panel-brand-title{
+font-family:"Fraunces",serif;
+letter-spacing:-0.02em;
+}
+
+a{
+transition:all .2s ease;
+}
+
+.panel-shell{
+display:flex;
+min-height:100vh;
+}
+
+.panel-sidebar{
+width:296px;
+padding:28px 22px;
+background:
+linear-gradient(180deg, rgba(108,69,43,0.96) 0%, rgba(48,28,17,0.98) 100%);
+color:#f9efe3;
+box-shadow:28px 0 60px rgba(54,31,18,0.16);
+position:relative;
+overflow:hidden;
+}
+
+.panel-sidebar::before{
+content:"";
+position:absolute;
+inset:-20% auto auto -10%;
+width:220px;
+height:220px;
+border-radius:999px;
+background:radial-gradient(circle, rgba(212,161,110,0.22), transparent 72%);
+pointer-events:none;
+}
+
+.panel-brand{
+position:relative;
+z-index:1;
+padding:22px;
+border-radius:28px;
+background:linear-gradient(180deg, rgba(255,248,240,0.12), rgba(255,248,240,0.04));
+border:1px solid rgba(255,241,225,0.12);
+}
+
+.panel-brand-kicker{
+font-size:.72rem;
+letter-spacing:.36em;
+text-transform:uppercase;
+color:rgba(255,232,208,0.66);
+}
+
+.panel-brand-title{
+margin-top:14px;
+font-size:2.4rem;
+line-height:1;
+}
+
+.panel-brand-copy{
+margin-top:10px;
+font-size:.95rem;
+line-height:1.7;
+color:rgba(255,239,224,0.78);
+}
+
+.panel-nav{
+position:relative;
+z-index:1;
+margin-top:22px;
+display:grid;
+gap:8px;
+}
+
+.panel-link{
+display:block;
+padding:13px 16px;
+border-radius:18px;
+color:rgba(255,241,227,0.86);
+font-size:.96rem;
+font-weight:700;
+text-decoration:none;
+border:1px solid transparent;
+}
+
+.panel-link:hover{
+background:rgba(255,247,238,0.09);
+border-color:rgba(255,241,227,0.14);
+color:#fff7f0;
+transform:translateX(3px);
+}
+
+.panel-account{
+position:relative;
+z-index:1;
+margin-top:24px;
+padding:18px;
+border-radius:22px;
+background:rgba(255,248,242,0.08);
+border:1px solid rgba(255,243,230,0.12);
+}
+
+.panel-account-label{
+font-size:.72rem;
+letter-spacing:.28em;
+text-transform:uppercase;
+color:rgba(255,232,208,0.56);
+}
+
+.panel-account-name{
+margin-top:10px;
+font-size:1rem;
+font-weight:800;
+color:#fff7ee;
+}
+
+.panel-account-role{
+margin-top:6px;
+font-size:.92rem;
+color:rgba(255,239,224,0.72);
+}
+
+.panel-note{
+position:relative;
+z-index:1;
+margin-top:18px;
+padding:16px 18px;
+border-radius:20px;
+background:linear-gradient(135deg, rgba(201,141,82,0.16), rgba(255,249,242,0.06));
+border:1px solid rgba(214,177,140,0.16);
+font-size:.88rem;
+line-height:1.7;
+color:rgba(255,240,225,0.78);
+}
+
+.panel-actions{
+position:relative;
+z-index:1;
+margin-top:20px;
+display:grid;
+gap:12px;
+}
+
+.theme-toggle,
+.logout-link{
 display:inline-flex;
 align-items:center;
 justify-content:center;
-width:100%;
-margin-top:16px;
+min-height:50px;
 padding:12px 16px;
-border-radius:12px;
-border:1px solid rgba(148,163,184,0.25);
-background:#0f172a;
-color:#f8fafc;
-font-weight:700;
+border-radius:16px;
+font-weight:800;
+text-decoration:none;
 cursor:pointer;
 }
 
+.theme-toggle{
+border:1px solid rgba(255,243,229,0.16);
+background:rgba(255,249,242,0.08);
+color:#fff5e9;
+}
+
+.theme-toggle:hover{
+background:rgba(255,249,242,0.14);
+}
+
+.logout-link{
+background:linear-gradient(135deg, rgba(201,141,82,0.95), rgba(171,111,56,0.94));
+color:#fff8f1;
+box-shadow:0 18px 28px rgba(68,36,18,0.22);
+}
+
+.logout-link:hover{
+transform:translateY(-1px);
+box-shadow:0 22px 32px rgba(68,36,18,0.26);
+}
+
+.panel-main{
+flex:1;
+min-width:0;
+padding:26px;
+overflow:auto;
+}
+
+.panel-main-inner{
+min-height:calc(100vh - 52px);
+padding:26px;
+border-radius:34px;
+background:linear-gradient(180deg, rgba(255,251,247,0.76), rgba(248,238,226,0.84));
+border:1px solid rgba(136,95,62,0.12);
+box-shadow:0 24px 80px rgba(121,85,57,0.08);
+backdrop-filter:blur(8px);
+}
+
+.flash-stack{
+display:grid;
+gap:12px;
+margin-bottom:24px;
+}
+
+.flash-item{
+padding:14px 16px;
+border-radius:18px;
+border:1px solid transparent;
+font-size:.94rem;
+font-weight:700;
+}
+
+.flash-item.success{
+border-color:rgba(47,122,85,0.18);
+background:rgba(47,122,85,0.08);
+color:#245a40;
+}
+
+.flash-item.error{
+border-color:rgba(162,77,67,0.16);
+background:rgba(162,77,67,0.08);
+color:#8a4038;
+}
+
+.panel-main .bg-white,
+.panel-main .bg-slate-50{
+background:var(--panel-surface) !important;
+border:1px solid var(--panel-line);
+box-shadow:0 16px 40px rgba(126,92,62,0.08);
+}
+
+.panel-main .text-slate-900{
+color:var(--panel-ink) !important;
+}
+
+.panel-main .text-slate-700,
+.panel-main .text-slate-600,
+.panel-main .text-slate-500,
+.panel-main .text-gray-500,
+.panel-main .text-gray-400{
+color:var(--panel-muted) !important;
+}
+
+.panel-main .border-slate-300,
+.panel-main .border-slate-200{
+border-color:rgba(161,125,92,0.2) !important;
+}
+
+.panel-main input,
+.panel-main select,
+.panel-main textarea{
+border-color:rgba(161,125,92,0.22) !important;
+background:#fffaf4 !important;
+color:var(--panel-ink) !important;
+box-shadow:none !important;
+}
+
+.panel-main input:focus,
+.panel-main select:focus,
+.panel-main textarea:focus{
+outline:none;
+border-color:rgba(171,111,56,0.62) !important;
+box-shadow:0 0 0 4px rgba(201,141,82,0.16) !important;
+}
+
+.panel-main .bg-slate-100{
+background:#f1e4d4 !important;
+}
+
+.panel-main .bg-slate-950,
+.panel-main .bg-slate-900,
+.panel-main .bg-slate-800,
+.panel-main .bg-slate-700{
+background:linear-gradient(135deg, #5e3a24, #3c2417) !important;
+color:#fff7ef !important;
+}
+
+.panel-main .bg-blue-500,
+.panel-main .bg-blue-600{
+background:linear-gradient(135deg, var(--panel-caramel), var(--panel-caramel-deep)) !important;
+color:#fff8f1 !important;
+box-shadow:0 14px 28px rgba(129,79,38,0.22);
+}
+
+.panel-main .hover\:bg-blue-500:hover,
+.panel-main .hover\:bg-blue-600:hover,
+.panel-main .hover\:bg-blue-700:hover{
+background:linear-gradient(135deg, #d59b60, #b87639) !important;
+}
+
+.panel-main .hover\:bg-slate-100:hover{
+background:#ead8c3 !important;
+}
+
+.panel-main .hover\:bg-slate-600:hover,
+.panel-main .hover\:bg-slate-700:hover,
+.panel-main .hover\:bg-slate-800:hover{
+filter:brightness(1.08);
+}
+
 body.theme-dark{
-background:#020617 !important;
-color:#e2e8f0 !important;
+background:
+radial-gradient(circle at top left, rgba(176,122,74,0.22), transparent 28%),
+linear-gradient(180deg, #21140e 0%, #150c08 100%);
+color:#f3e7da;
 }
 
-body.theme-dark .bg-slate-100{
-background:#020617 !important;
+body.theme-dark .panel-main-inner{
+background:linear-gradient(180deg, rgba(47,29,20,0.9), rgba(31,19,13,0.94));
+border-color:rgba(214,177,140,0.12);
+box-shadow:0 24px 80px rgba(0,0,0,0.28);
 }
 
-body.theme-dark .bg-white{
-background:#0f172a !important;
-color:#e2e8f0 !important;
-border-color:#1e293b !important;
+body.theme-dark .panel-sidebar{
+background:linear-gradient(180deg, rgba(28,16,11,0.98) 0%, rgba(18,10,7,1) 100%);
 }
 
-body.theme-dark .text-slate-900,
-body.theme-dark .text-gray-500,
-body.theme-dark .text-gray-400{
-color:#94a3b8 !important;
+body.theme-dark .panel-main .bg-white,
+body.theme-dark .panel-main .bg-slate-50{
+background:rgba(63,39,27,0.92) !important;
+border-color:rgba(214,177,140,0.12) !important;
+box-shadow:none;
 }
 
-body.theme-dark input,
-body.theme-dark select,
-body.theme-dark textarea{
-background:#0f172a !important;
-color:#e2e8f0 !important;
-border-color:#334155 !important;
+body.theme-dark .panel-main .text-slate-900{
+color:#f8eadc !important;
+}
+
+body.theme-dark .panel-main .text-slate-700,
+body.theme-dark .panel-main .text-slate-600,
+body.theme-dark .panel-main .text-slate-500,
+body.theme-dark .panel-main .text-gray-500,
+body.theme-dark .panel-main .text-gray-400{
+color:#d2b69b !important;
+}
+
+body.theme-dark .panel-main input,
+body.theme-dark .panel-main select,
+body.theme-dark .panel-main textarea{
+background:#2d1c14 !important;
+color:#f7eada !important;
+border-color:rgba(214,177,140,0.2) !important;
+}
+
+body.theme-dark .panel-main .bg-slate-100{
+background:#2d1c14 !important;
+}
+
+@media (max-width:1024px){
+.panel-shell{
+flex-direction:column;
+}
+
+.panel-sidebar{
+width:auto;
+}
+
+.panel-main{
+padding:18px;
+}
+
+.panel-main-inner{
+min-height:auto;
+padding:20px;
+border-radius:28px;
+}
+}
+
+@media (max-width:640px){
+.panel-sidebar{
+padding:18px 16px;
+}
+
+.panel-brand{
+padding:18px;
+border-radius:24px;
+}
+
+.panel-main{
+padding:12px;
+}
+
+.panel-main-inner{
+padding:16px;
+border-radius:24px;
+}
 }
 </style>
 </head>
-
-<body class="bg-slate-100 text-slate-900" data-default-theme="light">
-
-<div class="flex h-screen">
-
-<aside class="w-72 bg-slate-950 px-6 py-7 text-white shadow-2xl">
-<div class="mb-10">
-<div class="text-xs uppercase tracking-[0.35em] text-slate-500">Manna Bakery and Cafe Panel</div>
-<h1 class="mt-3 text-3xl font-extrabold tracking-wide">MANNA</h1>
+<body data-default-theme="light">
+<div class="panel-shell">
+<aside class="panel-sidebar">
+<div class="panel-brand">
+<div class="panel-brand-kicker">Manna Bakery and Cafe</div>
+<div class="panel-brand-title">MANNA</div>
+<div class="panel-brand-copy">Panel operasional dengan nuansa bakery hangat untuk memantau reservasi, kitchen, dan stok harian.</div>
 </div>
 
-<nav class="space-y-2 text-[15px]">
+<nav class="panel-nav">
 {% if current_user.role == "admin" %}
-<a href="{{ url_for('home') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Dashboard</a>
-<a href="{{ url_for('admin_users') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Admin Panel</a>
-<a href="{{ url_for('restaurant_landing') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Public Cafe Page</a>
-<a href="/create_reservation" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Create Reservation</a>
-<a href="/reservations" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Reservations</a>
-<a href="{{ url_for('booking_settings') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Booking Settings</a>
-<a href="/dashboard" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Kitchen Dashboard</a>
-<a href="/kitchen_live" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Kitchen Checklist</a>
-<a href="/calculate" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Calculate</a>
+<a href="{{ url_for('home') }}" class="panel-link">Dashboard</a>
+<a href="{{ url_for('admin_users') }}" class="panel-link">Admin Panel</a>
+<a href="{{ url_for('restaurant_landing') }}" class="panel-link">Public Cafe Page</a>
+<a href="/create_reservation" class="panel-link">Create Reservation</a>
+<a href="/reservations" class="panel-link">Reservations</a>
+<a href="{{ url_for('booking_settings') }}" class="panel-link">Booking Settings</a>
+<a href="/dashboard" class="panel-link">Kitchen Dashboard</a>
+<a href="/kitchen_live" class="panel-link">Kitchen Checklist</a>
+<a href="/calculate" class="panel-link">Calculate</a>
 {% endif %}
 {% if current_user.role in ["admin", "kitchen"] %}
-<a href="{{ url_for('stock_overview') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Stock</a>
+<a href="{{ url_for('stock_overview') }}" class="panel-link">Stock</a>
 {% endif %}
 {% if current_user.role == "admin" %}
-<a href="/update_stock" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Update Stock</a>
+<a href="/update_stock" class="panel-link">Update Stock</a>
 {% endif %}
 {% if current_user.role == "user" %}
-<a href="{{ url_for('user_dashboard') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">User Dashboard</a>
+<a href="{{ url_for('user_dashboard') }}" class="panel-link">User Dashboard</a>
 {% endif %}
-<a href="{{ url_for('profile') }}" class="block rounded-xl px-4 py-3 transition hover:bg-slate-900 hover:text-amber-300">Profile</a>
+<a href="{{ url_for('profile') }}" class="panel-link">Profile</a>
 </nav>
 
-<div class="mt-10 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-4 text-sm text-slate-400">
-Login sebagai: {{ current_user.display_name }}<br>
-Role: {{ current_user.role }}
+<div class="panel-account">
+<div class="panel-account-label">Login Saat Ini</div>
+<div class="panel-account-name">{{ current_user.display_name }}</div>
+<div class="panel-account-role">Role: {{ current_user.role }}</div>
 </div>
 
-<button type="button" class="theme-toggle" data-theme-toggle>
-Night Mode
-</button>
+<div class="panel-note">
+Gunakan mode terang untuk kerja cepat di siang hari, lalu pindah ke mode malam saat shift panjang agar mata lebih nyaman.
+</div>
 
-<a href="/logout" class="mt-6 inline-flex rounded-xl px-4 py-3 text-rose-400 transition hover:bg-slate-900 hover:text-rose-300">
-Logout
-</a>
+<div class="panel-actions">
+<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
+<a href="/logout" class="logout-link">Logout</a>
+</div>
 </aside>
 
-<main class="flex-1 overflow-y-auto p-8">
+<main class="panel-main">
+<div class="panel-main-inner">
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-<div class="mb-6 space-y-3">
+<div class="flash-stack">
 {% for category, message in messages %}
-<div class="rounded-2xl border px-4 py-3 text-sm font-semibold {% if category == 'success' %}border-emerald-300/50 bg-emerald-500/10 text-emerald-700{% else %}border-rose-300/50 bg-rose-500/10 text-rose-700{% endif %}">
+<div class="flash-item {{ 'success' if category == 'success' else 'error' }}">
 {{ message }}
 </div>
 {% endfor %}
@@ -116,8 +488,8 @@ Logout
 {% endif %}
 {% endwith %}
 {% block content %}{% endblock %}
+</div>
 </main>
-
 </div>
 
 <script>
@@ -152,6 +524,5 @@ document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
 syncButtons();
 })();
 </script>
-
 </body>
 </html>

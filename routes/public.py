@@ -8,9 +8,7 @@ from flask_login import current_user
 from auth import admin_required, redirect_authenticated_user
 from db import get_db_connection
 from services.public_booking import (
-    BOOKING_TABLE_AREA,
     RESTAURANT_PROFILE,
-    VIP_MAX_GUESTS,
     build_booking_resource_sections,
     build_guest_booking_rules,
     build_public_availability_payload,
@@ -32,7 +30,6 @@ from services.public_booking import (
     prepare_public_menu_catalog,
     resolve_booking_end,
     serialize_resource_selection,
-    serialize_resource_label,
 )
 
 
@@ -215,6 +212,9 @@ def register_public_routes(app):
             primary_resource = selected_resources[0]
             serialized_table_label = serialize_resource_selection(selected_resources, extra_chairs=booking_extra_chairs)
             booking_setup_value = None if is_main_table_area(resolved_area) else primary_resource.get("setup_key")
+            booking_notes = notes
+            if booking_extra_chairs > 0:
+                booking_notes = f"{booking_notes} | Tambahan kursi: {booking_extra_chairs}" if booking_notes else f"Tambahan kursi: {booking_extra_chairs}"
 
             cursor.execute(
                 """
@@ -235,7 +235,7 @@ def register_public_routes(app):
                     build_public_booking_description(
                         whatsapp_number,
                         serialized_table_label,
-                        f"{notes} | Tambahan kursi: {booking_extra_chairs}" if booking_extra_chairs > 0 else notes,
+                        booking_notes,
                         selected_menus=selected_menu_summary,
                     ),
                     "public_web",
