@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from flask import redirect, render_template, request, url_for
+from flask import jsonify, redirect, render_template, request, url_for
 from flask_login import current_user
 
 from auth import admin_required
@@ -15,6 +15,17 @@ from services.menu_options import (
     get_effective_selected_options,
     get_payload_display_name,
     resolve_menu_submission,
+)
+from services.reservation_floor import (
+    DEFAULT_RESERVATION_DURATION_MINUTES,
+    create_floor_reservation,
+    ensure_reservation_floor_schema,
+    get_floor_map_default_datetime,
+    get_floor_map_payload,
+    get_floor_menu_catalog,
+    get_floor_tables,
+    get_table_detail_payload,
+    parse_floor_order_items,
 )
 from services.public_booking import (
     build_booking_summary,
@@ -37,20 +48,23 @@ def register_reservations_routes(app):
     @app.route("/create_reservation")
     @admin_required
     def create_reservation():
-
-        selected_date = request.args.get("date")
-
+        selected_date = (request.args.get("date") or "").strip()
         if not selected_date:
             selected_date = date.today().strftime("%Y-%m-%d")
 
+        default_start = get_floor_map_default_datetime(selected_date)
+        if default_start.strftime("%Y-%m-%d") != selected_date:
+            default_start = datetime.strptime(f"{selected_date} 18:00", "%Y-%m-%d %H:%M")
+        default_duration = DEFAULT_RESERVATION_DURATION_MINUTES
+
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        ensure_public_booking_tables(cursor)
+        ensure_reservation_floor_schema(cursor)
 
-        menus, nila_sizes, sea_fish = get_stock_context(cursor, selected_date)
-        tuna_stock_menus, tuna_piece_stock, rahang_tuna_stock = get_special_tuna_stock_context(cursor, selected_date)
-
-        nila_size_options = [row["size_category"] for row in nila_sizes]
+        menus, nila_sizes, sea_fish = get_floor_menu_catalog(cursor, selected_date)
+        _, tuna_piece_stock, rahang_tuna_stock = get_special_tuna_stock_context(cursor, selected_date)
+        floor_map = get_floor_map_payload(cursor, default_start, default_duration)
+        floor_tables = get_floor_tables(cursor)
 
         for fish in sea_fish:
             fish["display_weight"] = format_weight_display(fish["weight_ons"], fish.get("weight_unit"))
@@ -62,12 +76,78 @@ def register_reservations_routes(app):
         return render_template(
             "create_reservation.html",
             menus=menus,
-            nila_sizes=nila_size_options,
+            nila_sizes=[row["size_category"] for row in nila_sizes],
             sea_fish=sea_fish,
             tuna_piece_stock=tuna_piece_stock,
             rahang_tuna_stock=rahang_tuna_stock,
-            selected_date=selected_date
+            floor_map=floor_map,
+            floor_tables=floor_tables,
+            selected_date=selected_date,
+            suggested_datetime=default_start.strftime("%Y-%m-%dT%H:%M"),
+            default_duration_minutes=default_duration,
+            seasoning_choices=[],
         )
+
+    @app.route("/reservations/floor/availability")
+    @admin_required
+    def reservation_floor_availability():
+        reservation_datetime_raw = (request.args.get("reservation_datetime") or "").strip()
+        duration_minutes_raw = (request.args.get("duration_minutes") or "").strip()
+
+        try:
+            reservation_datetime = datetime.strptime(reservation_datetime_raw, "%Y-%m-%dT%H:%M")
+        except ValueError:
+            return jsonify({"error": "Format tanggal reservasi tidak valid."}), 400
+
+        try:
+            duration_minutes = int(duration_minutes_raw or DEFAULT_RESERVATION_DURATION_MINUTES)
+            if duration_minutes <= 0:
+                raise ValueError
+        except ValueError:
+            return jsonify({"error": "Durasi reservasi harus berupa angka lebih dari 0."}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            ensure_reservation_floor_schema(cursor)
+            payload = get_floor_map_payload(cursor, reservation_datetime, duration_minutes)
+        finally:
+            cursor.close()
+            conn.close()
+
+        return jsonify(payload)
+
+    @app.route("/reservations/floor/table/<resource_code>")
+    @admin_required
+    def reservation_floor_table_detail(resource_code):
+        reservation_datetime_raw = (request.args.get("reservation_datetime") or "").strip()
+        duration_minutes_raw = (request.args.get("duration_minutes") or "").strip()
+
+        try:
+            reservation_datetime = datetime.strptime(reservation_datetime_raw, "%Y-%m-%dT%H:%M")
+        except ValueError:
+            return jsonify({"error": "Format tanggal reservasi tidak valid."}), 400
+
+        try:
+            duration_minutes = int(duration_minutes_raw or DEFAULT_RESERVATION_DURATION_MINUTES)
+            if duration_minutes <= 0:
+                raise ValueError
+        except ValueError:
+            return jsonify({"error": "Durasi reservasi harus berupa angka lebih dari 0."}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            ensure_reservation_floor_schema(cursor)
+            payload = get_table_detail_payload(cursor, resource_code, reservation_datetime, duration_minutes)
+        finally:
+            cursor.close()
+            conn.close()
+
+        if not payload:
+            return jsonify({"error": "Meja tidak ditemukan."}), 404
+
+        return jsonify(payload)
 
 
     # ================= ADD RESERVATION =================
@@ -77,165 +157,83 @@ def register_reservations_routes(app):
     @app.route("/add_reservation", methods=["POST"])
     @admin_required
     def add_reservation():
+        reservation_datetime_raw = (request.form.get("reservation_datetime") or "").strip()
+        duration_minutes_raw = (request.form.get("duration_minutes") or "").strip()
+        selected_table_code = (request.form.get("selected_table_code") or "").strip()
+        order_items_payload = request.form.get("order_items_payload") or ""
+        selected_date = reservation_datetime_raw.split("T")[0] if "T" in reservation_datetime_raw else date.today().strftime("%Y-%m-%d")
+
+        try:
+            reservation_datetime = datetime.strptime(reservation_datetime_raw, "%Y-%m-%dT%H:%M")
+        except ValueError:
+            return render_notice_page(
+                "Tanggal Reservasi Tidak Valid",
+                "Format tanggal dan jam reservasi tidak valid.",
+                back_url=url_for("create_reservation", date=selected_date),
+                back_label="Kembali",
+                status_code=400,
+            )
+
+        try:
+            duration_minutes = int(duration_minutes_raw or DEFAULT_RESERVATION_DURATION_MINUTES)
+            if duration_minutes <= 0:
+                raise ValueError
+        except ValueError:
+            return render_notice_page(
+                "Durasi Tidak Valid",
+                "Durasi reservasi harus berupa angka lebih dari 0 menit.",
+                back_url=url_for("create_reservation", date=selected_date),
+                back_label="Kembali",
+                status_code=400,
+            )
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        ensure_reservation_floor_schema(cursor)
         ensure_additional_stock_tables(cursor)
-        ensure_public_booking_tables(cursor)
 
-        name = request.form["customer_name"]
-        table = request.form["table_number"]
-        people = request.form["people_count"]
-        datetime_res = request.form["reservation_datetime"]
-        description = request.form["description"]
-        reservation_date = datetime_res.split("T")[0] if "T" in datetime_res else datetime_res.split(" ")[0]
-    
-
-        cursor.execute("""
-            INSERT INTO reservations
-            (customer_name, table_number, people_count, reservation_datetime, description)
-            VALUES (%s,%s,%s,%s,%s)
-        """,(name,table,people,datetime_res,description))
-
-        reservation_id = cursor.lastrowid
-        log_reservation_history(
-            cursor,
-            reservation_id,
-            "create",
-            "reservation",
-            f"Reservasi dibuat untuk {name}, meja {table}, pax {people}.",
-            actor=getattr(current_user, "id", "system")
-        )
-
-        menu_ids = request.form.getlist("menu_id[]")
-        display_menu_ids = request.form.getlist("display_menu_id[]")
-        fish_types = request.form.getlist("fish_type[]")
-        fish_sizes = request.form.getlist("fish_size[]")
-        fish_weights = request.form.getlist("fish_weight[]")
-        fish_stock_ids = request.form.getlist("fish_stock_id[]")
-        special_stock_ids = request.form.getlist("special_stock_id[]")
-        qtys = request.form.getlist("qty[]")
-        special_requests = request.form.getlist("special_request[]")
-        dish_descriptions = request.form.getlist("dish_description[]")
-        menu_options_json_list = request.form.getlist("menu_options_json[]")
-        menu_catalog, _, _ = get_stock_context(cursor, reservation_date)
-
-        for menu_id, display_menu_id, qty, special, dish_desc, menu_options_json, fish_type, size, weight, fish_stock_id, special_stock_id in zip(
-    menu_ids, display_menu_ids, qtys, special_requests, dish_descriptions, menu_options_json_list, fish_types, fish_sizes, fish_weights, fish_stock_ids, special_stock_ids):
-
-            resolved_menu_id = resolve_menu_submission(
+        try:
+            menu_catalog, _, _ = get_floor_menu_catalog(cursor, reservation_datetime.strftime("%Y-%m-%d"))
+            order_items = parse_floor_order_items(order_items_payload)
+            selected_table = next((row for row in get_floor_tables(cursor) if row["resource_code"] == selected_table_code), None)
+            reservation_id = create_floor_reservation(
+                conn,
+                cursor,
+                {
+                    "customer_name": request.form.get("customer_name"),
+                    "whatsapp_number": request.form.get("whatsapp_number"),
+                    "people_count": request.form.get("people_count"),
+                    "reservation_datetime": reservation_datetime,
+                    "duration_minutes": duration_minutes,
+                    "description": request.form.get("description"),
+                    "status": request.form.get("status") or "confirmed",
+                    "items": order_items,
+                },
                 menu_catalog,
-                menu_id,
-                display_menu_id=display_menu_id,
-                menu_options_json=menu_options_json
-            )
-            if resolved_menu_id is None:
-                conn.rollback()
-                cursor.close()
-                conn.close()
-                return render_notice_page(
-                    "Menu Tidak Valid",
-                    "Pilihan menu belum lengkap. Silakan pilih ulang menu yang ingin disimpan.",
-                    back_url=url_for("create_reservation", date=reservation_date),
-                    back_label="Kembali",
-                    status_code=400
-                )
-
-            if special == "with_special":
-                special_request = dish_desc
-            else:
-                special_request = None
-
-            if fish_type in ("", "none"):
-                fish_type = None
-
-            if size == "":
-                size = None
-
-            if weight in ("", "0", "0.0"):
-                weight = None
-
-            resolved_fish_stock_id, resolved_special_stock_id = resolve_selected_stock_refs(
-                cursor,
-                reservation_date,
-                resolved_menu_id,
-                fish_type=fish_type,
-                fish_weight=weight,
-                fish_stock_id=fish_stock_id,
-                special_stock_id=special_stock_id
-            )
-
-            is_valid_stock, stock_message = validate_stock_request(
-                cursor,
-                reservation_date,
-                resolved_menu_id,
-                qty,
-                fish_type=fish_type,
-                fish_size=size,
-                fish_weight=weight,
-                fish_stock_id=resolved_fish_stock_id,
-                special_stock_id=resolved_special_stock_id,
-                menu_options_json=menu_options_json
-            )
-            if not is_valid_stock:
-                conn.rollback()
-                cursor.close()
-                conn.close()
-                return render_notice_page(
-                    "Stock Tidak Cukup",
-                    stock_message,
-                    back_url=url_for("create_reservation", date=reservation_date),
-                    back_label="Kembali",
-                    status_code=400
-                )
-
-            cursor.execute("""
-                INSERT INTO reservation_items
-                (reservation_id, menu_id, quantity,
-                special_request, dish_description,
-                fish_type, fish_size, fish_weight, fish_stock_ref_id, special_stock_ref_id, menu_options_json)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-            """,(
-                reservation_id,
-                resolved_menu_id,
-                qty,
-                special_request,
-                dish_desc,
-                fish_type,
-                size,
-                weight,
-                resolved_fish_stock_id,
-                resolved_special_stock_id,
-                menu_options_json or None
-            ))
-            log_reservation_history(
-                cursor,
-                reservation_id,
-                "create",
-                "menu",
-                build_menu_history_summary(
-                    "create",
-                    get_menu_label_for_history(cursor, resolved_menu_id, menu_options_json=menu_options_json),
-                    qty=qty,
-                    note=build_menu_display_note(menu_options_json, dish_desc)
-                ),
+                selected_table,
                 actor=getattr(current_user, "id", "system"),
-                reservation_item_id=cursor.lastrowid
             )
-
-            reduce_stock_after_order(
-                cursor,
-                fish_stock_id=resolved_fish_stock_id,
-                special_stock_id=resolved_special_stock_id,
-                qty=int(qty)
+        except ValueError as error:
+            conn.rollback()
+            cursor.close()
+            conn.close()
+            return render_notice_page(
+                "Reservasi Gagal Disimpan",
+                str(error),
+                back_url=url_for("create_reservation", date=selected_date),
+                back_label="Kembali",
+                status_code=400,
             )
-
-        conn.commit()
+        except Exception:
+            conn.rollback()
+            cursor.close()
+            conn.close()
+            raise
 
         cursor.close()
         conn.close()
 
-        return redirect("/reservations")
+        return redirect(url_for("reservation_menu", reservation_id=reservation_id))
 
 
     @app.route("/reservation_menu/<int:reservation_id>")

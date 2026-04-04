@@ -1,1632 +1,516 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Create Reservation</title>
-<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reservation Floor Flow</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{
-font-family:Arial, Helvetica, sans-serif;
-background:radial-gradient(circle at top, #0f274d 0%, #081120 55%, #050b16 100%);
-margin:0;
-padding:32px;
-color:#e5e7eb;
-transition:background-color .2s ease,color .2s ease;
-}
-
-.page{
-max-width:1700px;
-margin:0 auto;
-}
-
-.hero{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:16px;
-margin-bottom:24px;
-flex-wrap:wrap;
-}
-
-.hero h1{
-margin:0;
-font-size:34px;
-}
-
-.badge{
-padding:10px 14px;
-border-radius:999px;
-background:rgba(59,130,246,0.16);
-color:#bfdbfe;
-font-weight:700;
-}
-
-.layout{
-display:grid;
-grid-template-columns:minmax(300px,0.9fr) minmax(360px,1.05fr) minmax(760px,1.8fr);
-gap:24px;
-align-items:start;
-}
-
-.card{
-background:rgba(30,41,59,0.94);
-border:1px solid rgba(148,163,184,0.18);
-padding:30px;
-border-radius:20px;
-box-shadow:0 25px 50px rgba(2,6,23,0.45);
-}
-
-.card h2{
-margin:0 0 18px;
-font-size:28px;
-}
-
-label{
-display:block;
-font-size:13px;
-color:#94a3b8;
-margin-bottom:8px;
-}
-
-input,select,textarea{
-width:100%;
-padding:12px 14px;
-border:1px solid #334155;
-background:#0f172a;
-color:white;
-border-radius:12px;
-box-sizing:border-box;
-}
-
-textarea{
-resize:vertical;
-min-height:110px;
-}
-
-.field{
-margin-bottom:16px;
-}
-
-.actions{
-display:flex;
-gap:12px;
-margin-top:18px;
-flex-wrap:wrap;
-}
-
-.btn{
-border:none;
-padding:12px 18px;
-border-radius:12px;
-cursor:pointer;
-font-weight:700;
-text-decoration:none;
-display:inline-flex;
-justify-content:center;
-align-items:center;
-}
-
-.btn-primary{
-background:#2563eb;
-color:white;
-flex:1;
-}
-
-.btn-secondary{
-background:#334155;
-color:white;
-}
-
-.menu-scroll{
-flex:1;
-min-height:360px;
-max-height:840px;
-overflow-y:auto;
-overflow-x:hidden;
-padding-right:10px;
-}
-
-.menu-card{
-display:flex;
-flex-direction:column;
-min-height:920px;
-}
-
-.menu-row{
-background:#111c30;
-border:1px solid rgba(148,163,184,0.16);
-border-radius:18px;
-padding:18px;
-margin-bottom:14px;
-overflow:hidden;
-}
-
-.ts-wrapper,
-.ts-control,
-.ts-dropdown{
-width:100%;
-}
-
-.row-grid{
-display:grid;
-grid-template-columns:minmax(240px,1.6fr) repeat(3,minmax(150px,1fr)) 64px;
-gap:14px;
-align-items:start;
-}
-
-.row-grid > div{
-min-width:0;
-}
-
-.stock-warning{
-margin-top:10px;
-font-size:13px;
-font-weight:600;
-display:none;
-}
-
-.stock-warning.pending{
-display:block;
-color:#facc15;
-}
-
-.stock-warning.blocked{
-display:block;
-color:#f87171;
-}
-
-.row-actions{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-top:14px;
-gap:12px;
-flex-wrap:wrap;
-}
-
-.special-grid{
-display:grid;
-grid-template-columns:220px minmax(240px,1fr);
-gap:14px;
-align-items:center;
-flex:1;
-}
-
-.menu-options-wrap{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-gap:14px;
-grid-column:1 / -1;
-padding:16px;
-border:1px solid rgba(148,163,184,0.12);
-border-radius:14px;
-background:rgba(15,23,42,0.45);
-}
-
-.menu-options-wrap .field{
-margin-bottom:0;
-}
-
-.option-helper{
-margin-top:8px;
-font-size:12px;
-color:#94a3b8;
-}
-
-.option-check-list{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-gap:12px;
-margin-top:8px;
-}
-
-.option-check{
-display:flex;
-align-items:center;
-gap:10px;
-padding:10px 12px;
-border-radius:12px;
-border:1px solid rgba(148,163,184,0.18);
-background:rgba(2,6,23,0.72);
-color:#e5e7eb;
-font-size:14px;
-cursor:pointer;
-}
-
-.option-check input{
-width:16px;
-height:16px;
-accent-color:#f59e0b;
-}
-
-.option-check.disabled{
-opacity:0.55;
-cursor:not-allowed;
-}
-
-.option-summary{
-margin-top:8px;
-padding:10px 12px;
-border-radius:10px;
-border:1px solid rgba(245, 158, 11, 0.2);
-background:rgba(15, 23, 42, 0.75);
-color:#fcd34d;
-font-size:13px;
-line-height:1.5;
-}
-
-.hidden{
-display:none;
-}
-
-.remove-btn{
-background:#dc2626;
-color:white;
-padding:10px 12px;
-}
-
-.add-btn{
-background:#16a34a;
-color:white;
-margin-top:8px;
-}
-
-.helper{
-font-size:13px;
-color:#94a3b8;
-margin-top:-6px;
-margin-bottom:18px;
-}
-
-.assistant-card{
-background:#0b1427;
-border:1px solid rgba(148,163,184,0.16);
-border-radius:18px;
-padding:16px;
-margin-bottom:16px;
-}
-
-.assistant-actions{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin-top:12px;
-}
-
-.assistant-preview{
-margin-top:16px;
-padding:14px;
-border-radius:16px;
-background:#08101f;
-border:1px solid rgba(148,163,184,0.12);
-}
-
-.assistant-preview h4{
-margin:0 0 10px;
-font-size:14px;
-color:#cbd5e1;
-}
-
-.assistant-preview ul{
-margin:0;
-padding-left:18px;
-color:#cbd5e1;
-}
-
-.assistant-preview li{
-margin-bottom:6px;
-}
-
-.assistant-feedback{
-margin-top:10px;
-font-size:13px;
-color:#93c5fd;
-}
-
-.assistant-feedback.error{
-color:#fdba74;
-}
-
-.assistant-feedback.success{
-color:#86efac;
-}
-
-.assistant-feedback.info{
-color:#93c5fd;
-}
-
-.theme-toggle{
-border:none;
-padding:12px 18px;
-border-radius:12px;
-cursor:pointer;
-font-weight:700;
-background:#0f172a;
-color:white;
-}
-
-body.theme-light{
-background:linear-gradient(180deg,#f8fafc 0%, #e2e8f0 100%);
-color:#0f172a;
-}
-
-body.theme-light .card,
-body.theme-light .menu-row{
-background:white;
-border-color:#cbd5e1;
-box-shadow:0 20px 40px rgba(15,23,42,0.08);
-}
-
-body.theme-light .assistant-card,
-body.theme-light .assistant-preview{
-background:#f8fafc;
-border-color:#cbd5e1;
-}
-
-body.theme-light label,
-body.theme-light .helper{
-color:#475569;
-}
-
-body.theme-light input,
-body.theme-light select,
-body.theme-light textarea{
-background:#f8fafc;
-color:#0f172a;
-border-color:#cbd5e1;
-}
-
-body.theme-light .badge{
-background:#dbeafe;
-color:#1d4ed8;
-}
-
-@media (max-width: 960px){
-body{
-padding:18px;
-}
-
-.layout{
-grid-template-columns:1fr;
-}
-
-.row-grid{
-grid-template-columns:repeat(2,minmax(0,1fr));
-}
-
-.special-grid{
-grid-template-columns:1fr;
-}
-
-.menu-options-wrap{
-grid-template-columns:repeat(2,minmax(0,1fr));
-grid-column:1 / -1;
-}
-}
-
-@media (max-width: 640px){
-body{
-padding:12px;
-}
-
-.card{
-padding:18px;
-border-radius:16px;
-}
-
-.hero h1{
-font-size:28px;
-}
-
-.row-grid{
-grid-template-columns:1fr;
-}
-
-.menu-options-wrap{
-grid-template-columns:1fr;
-}
-
-.option-check-list{
-grid-template-columns:1fr;
-}
-
-.actions .btn,
-.assistant-actions .btn{
-width:100%;
-}
-
-.remove-btn{
-width:100%;
-padding:12px 14px;
-}
-}
+  :root{--available:#16a34a;--reserved:#d97706;--occupied:#dc2626;--selected:#38bdf8;--line:rgba(148,163,184,.18);}
+  body{background:radial-gradient(circle at top left, rgba(56,189,248,.12), transparent 28%),radial-gradient(circle at top right, rgba(249,115,22,.08), transparent 24%),linear-gradient(180deg,#04101c 0%,#07131f 48%,#091724 100%);}
+  .glass-panel{background:linear-gradient(180deg,rgba(8,18,31,.96),rgba(10,24,40,.98));border:1px solid var(--line);box-shadow:0 28px 60px rgba(2,6,23,.32);}
+  .floor-shell{background:linear-gradient(180deg,rgba(232,241,248,.96),rgba(218,230,240,.96));border:1px solid rgba(148,163,184,.25);}
+  .table-shape{cursor:pointer;transition:transform .18s ease,filter .18s ease,stroke-width .18s ease;}
+  .table-group[data-status="available"] .table-shape{fill:rgba(22,163,74,.88);}
+  .table-group[data-status="reserved"] .table-shape{fill:rgba(217,119,6,.88);}
+  .table-group[data-status="occupied"] .table-shape,.table-group[data-status="unavailable"] .table-shape{fill:rgba(220,38,38,.9);}
+  .table-group:hover .table-shape{transform:translateY(-2px);filter:brightness(1.06);}
+  .table-group.is-selected .table-shape{stroke:var(--selected);stroke-width:5;filter:drop-shadow(0 0 14px rgba(56,189,248,.38));}
+  .table-label,.table-capacity{pointer-events:none;user-select:none;fill:#f8fafc;text-anchor:middle;}
+  .table-label{font-size:16px;font-weight:800;}
+  .table-capacity{font-size:11px;fill:rgba(255,255,255,.82);}
+  .non-bookable{fill:rgba(15,23,42,.12);stroke:rgba(15,23,42,.28);stroke-width:2;}
+  .non-bookable-label{fill:#334155;font-size:14px;font-weight:700;text-anchor:middle;}
+  .helper-chip,.option-pill{border:1px solid rgba(148,163,184,.14);background:rgba(15,23,42,.4);}
+  .status-dot{width:.7rem;height:.7rem;border-radius:999px;}
+  .status-dot.available{background:var(--available);} .status-dot.reserved{background:var(--reserved);} .status-dot.occupied,.status-dot.unavailable{background:var(--occupied);}
+  @media (max-width:1024px){.desktop-sticky{position:static !important;}}
 </style>
 </head>
-
-<body data-default-theme="dark">
-
-<div class="page">
-
-<div class="hero">
-<div>
-<h1>Create Reservation</h1>
-<p class="helper">Stock menu, nila, ikan laut, Rahang Tuna, dan Paket Dada Tuna mengambil data update stock tanggal {{ selected_date }}.</p>
-</div>
-<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-<button type="button" class="theme-toggle" data-theme-toggle>Night Mode</button>
-<a href="{{ url_for('home') }}" class="btn btn-secondary">Home</a>
-<div class="badge">Stock Date: {{ selected_date }}</div>
-</div>
-</div>
-
-<form action="/add_reservation" method="POST" id="reservation-form">
-<div class="layout">
-
-<div class="card">
-<h2>Reservation Info</h2>
-
-<div class="field">
-<label>Customer Name</label>
-<input type="text" name="customer_name" required>
-</div>
-
-<div class="field">
-<label>Table Number</label>
-<input type="text" name="table_number" placeholder="Example: 1-3 or VIP-1" required>
-</div>
-
-<div class="field">
-<label>People Count</label>
-<input type="number" name="people_count" min="1" required>
-</div>
-
-<div class="field">
-<label>Reservation Time</label>
-<input type="datetime-local" name="reservation_datetime" required>
-</div>
-
-<div class="field">
-<label>Reservation Description</label>
-<textarea name="description" placeholder="Example: Birthday party, VIP guest, special request..."></textarea>
-</div>
-
-<div class="actions">
-<button type="submit" class="btn btn-primary">Create Reservation</button>
-<a href="/reservations?date={{ selected_date }}" class="btn btn-secondary">Back</a>
-</div>
-</div>
-
-<div class="card">
-<h2>Smart Paste Assistant</h2>
-<p class="helper">Paste list menu bebas, lalu Smart Assistant lokal akan merapikan dish, minuman, dessert, dan jumlahnya.</p>
-
-<div class="assistant-card" style="margin-bottom:0;">
-<h3 style="margin:0 0 10px;font-size:18px;">Smart Paste Assistant</h3>
-<p class="helper" style="margin:0 0 12px;">Paste list menu mentah, lalu helper lokal ini akan merapikan qty dan mengelompokkan dish, minuman, serta dessert sebelum dimasukkan ke menu order.</p>
-<textarea id="bulk-menu-input" placeholder="Contoh:
-2 ayam crispy
-nasi goreng kampung x3
-es teh 4
-pudding coklat 2"></textarea>
-<div class="assistant-actions">
-<button type="button" class="btn btn-secondary" id="bulk-parse-btn">Rapikan List</button>
-<button type="button" class="btn add-btn" id="bulk-apply-btn" disabled>Tambahkan ke Menu Order</button>
-</div>
-<div id="bulk-menu-feedback" class="assistant-feedback"></div>
-<div id="bulk-menu-preview" class="assistant-preview hidden"></div>
-</div>
-</div>
-
-<div class="card menu-card">
-<h2>Menu Order</h2>
-<p class="helper">Menu `pending` dan `not ready` akan menampilkan pengingat saat dipilih.</p>
-
-<div class="menu-scroll">
-<div id="menu-list"></div>
-</div>
-
-<div class="actions" style="margin-top:16px;">
-<button type="button" class="btn add-btn" onclick="addMenuRow()">+ Add Menu</button>
-</div>
-</div>
-
-</div>
-</form>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-<script>
-(function(){
-const storageKey = "moca_theme";
-const body = document.body;
-const defaultTheme = body.dataset.defaultTheme || "dark";
-const savedTheme = localStorage.getItem(storageKey);
-const theme = savedTheme || defaultTheme;
-
-body.classList.remove("theme-light", "theme-dark");
-body.classList.add(`theme-${theme}`);
-
-function syncButtons(){
-  document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
-    button.textContent = body.classList.contains("theme-dark") ? "Light Mode" : "Night Mode";
-  });
-}
-
-document.querySelectorAll("[data-theme-toggle]").forEach(function(button){
-  button.addEventListener("click", function(){
-    const nextTheme = body.classList.contains("theme-dark") ? "light" : "dark";
-    body.classList.remove("theme-light", "theme-dark");
-    body.classList.add(`theme-${nextTheme}`);
-    localStorage.setItem(storageKey, nextTheme);
-    syncButtons();
-  });
-});
-
-syncButtons();
-})();
-</script>
-<script id="reservation-bootstrap" type="application/json">
-{{ {
-  "menus": menus,
-  "nila_sizes": nila_sizes,
-  "sea_fish": sea_fish,
-  "tuna_piece_stock": tuna_piece_stock,
-  "rahang_tuna_stock": rahang_tuna_stock,
-  "selected_date": selected_date
-}|tojson }}
-</script>
-<script>
-const reservationBootstrap = JSON.parse(document.getElementById("reservation-bootstrap").textContent || "{}");
-const menuCatalog = reservationBootstrap.menus || [];
-const nilaSizes = reservationBootstrap.nila_sizes || [];
-const seaFishStock = reservationBootstrap.sea_fish || [];
-const tunaPieceStock = reservationBootstrap.tuna_piece_stock || {};
-const rahangTunaStock = reservationBootstrap.rahang_tuna_stock || {};
-let parsedBulkMenuState = [];
-
-function escapeHtml(value){
-return String(value)
-  .replace(/&/g, "&amp;")
-  .replace(/</g, "&lt;")
-  .replace(/>/g, "&gt;")
-  .replace(/"/g, "&quot;");
-}
-
-function getMenuDisplayLabel(menu){
-if(!menu){
-  return "";
-}
-
-const servingType = String(menu.serving_type || "").trim().toLowerCase();
-const servingLabels = {
-  paket: "Paket",
-  pcs: "PCS",
-  porsi: "Porsi",
-  dish: "Dish"
-};
-const suffix = servingLabels[servingType];
-
-if(!suffix){
-  return menu.name || "";
-}
-
-const label = String(menu.name || "");
-return label.toLowerCase().includes(`(${suffix.toLowerCase()})`) ? label : `${label} (${suffix})`;
-}
-
-function menuOptionsMarkup(){
-return menuCatalog.map(function(menu){
-  const status = menu.status || "ready";
-  let label = getMenuDisplayLabel(menu);
-
-  if(status === "pending"){
-    label += " - PENDING";
-  }else if(status === "not_ready" || status === "out"){
-    label += " - NOT READY";
-  }
-
-  return `<option value="${menu.id}" data-stock-source="${menu.stock_source || menu.stock_type}" data-status="${status}">${escapeHtml(label)}</option>`;
-}).join("");
-}
-
-function serializeComboKey(optionValues, comboKeys){
-if(!(comboKeys || []).length){
-  return "__default__";
-}
-
-return comboKeys.map(function(key){
-  return `${key}=${String(optionValues[key] || "").toLowerCase()}`;
-}).join("|");
-}
-
-function resolveMenuChoice(menu, optionValues){
-if(!menu){
-  return null;
-}
-
-if((menu.combo_keys || []).length){
-  const comboKey = serializeComboKey(optionValues || {}, menu.combo_keys || []);
-  const comboMap = menu.combo_map || {};
-  return comboMap[comboKey] || Object.values(comboMap)[0] || null;
-}
-
-return {
-  menu_id: menu.menu_id,
-  menu_name: menu.actual_menu_name || menu.name,
-  serving_type: menu.serving_type || "",
-  stock_source: menu.stock_source || menu.stock_type || "",
-  status: menu.status || "ready"
-};
-}
-
-function normalizeGroupSelection(group, rawValue){
-const choices = group.choices || [];
-const fallbackValue = group.default !== undefined ? group.default : ((choices[0] || {}).value || "");
-
-if(group.multiple){
-  const sourceValues = Array.isArray(rawValue)
-    ? rawValue
-    : (rawValue === undefined || rawValue === null || rawValue === "" ? fallbackValue : [rawValue]);
-  return (Array.isArray(sourceValues) ? sourceValues : [sourceValues])
-    .map(function(value){
-      return String(value || "").trim();
-    })
-    .filter(Boolean);
-}
-
-if(Array.isArray(rawValue)){
-  return rawValue[0] || fallbackValue;
-}
-
-return rawValue || fallbackValue;
-}
-
-function getSelectControlValue(select){
-if(!select){
-  return "";
-}
-
-if(select.multiple){
-  return Array.from(select.selectedOptions).map(function(option){
-    return option.value;
-  });
-}
-
-return select.value;
-}
-
-function getCheckedOptionValues(menuOptionsWrap, optionKey){
-return Array.from(menuOptionsWrap.querySelectorAll(`.menu-option-checkbox[data-option-key="${optionKey}"]:checked`)).map(function(input){
-  return input.value;
-});
-}
-
-function formatSelectedOptionText(values, group){
-const selectedValues = Array.isArray(values) ? values : [];
-if(!selectedValues.length){
-  return "Belum ada pilihan dipilih";
-}
-
-const labelMap = new Map((group.choices || []).map(function(choice){
-  return [String(choice.value), choice.label];
-}));
-
-return selectedValues.map(function(value){
-  return labelMap.get(String(value)) || value;
-}).join(", ");
-}
-
-function buildOptionsPayload(menu, optionValues){
-if(!menu || !(menu.option_groups || []).length){
-  return "";
-}
-
-const payload = {
-  display_menu_id: menu.id,
-  display_name: getMenuDisplayLabel(menu),
-  selected_options: {}
-};
-
-(menu.option_groups || []).forEach(function(group){
-  const groupChoices = group.choices || [];
-  const normalizedValue = normalizeGroupSelection(group, optionValues[group.key]);
-
-  if(group.multiple){
-    const selectedChoices = groupChoices.filter(function(choice){
-      return normalizedValue.includes(String(choice.value));
-    });
-
-    if(!selectedChoices.length){
-      return;
-    }
-
-    payload.selected_options[group.key] = {
-      label: group.label,
-      value: selectedChoices.map(function(choice){ return choice.value; }),
-      display: selectedChoices.map(function(choice){ return choice.label; })
-    };
-    return;
-  }
-
-  const selectedChoice = groupChoices.find(function(choice){
-    return String(choice.value) === String(normalizedValue);
-  }) || groupChoices[0];
-
-  if(!selectedChoice){
-    return;
-  }
-
-  payload.selected_options[group.key] = {
-    label: group.label,
-    value: selectedChoice.value,
-    display: selectedChoice.label
-  };
-});
-
-return JSON.stringify(payload);
-}
-
-function nilaOptionsMarkup(selectedValue){
-if(!nilaSizes.length){
-  return `<option value="">Stock nila belum ready</option>`;
-}
-
-return `<option value="">Pilih ukuran nila</option>` + nilaSizes.map(function(size){
-  const selected = String(size) === String(selectedValue || "") ? "selected" : "";
-  return `<option value="${size}" ${selected}>${escapeHtml(size.replace(/_/g, " "))}</option>`;
-}).join("");
-}
-
-function shouldUseNilaSize(menu, resolvedChoice, stockSource){
-  const menuName = String((resolvedChoice && resolvedChoice.actual_menu_name) || (menu && menu.name) || "").toLowerCase();
-  const menuCategory = String((menu && menu.category) || "").toLowerCase();
-  return stockSource === "size" || menuCategory === "ikan nila" || menuName.includes("nila");
-}
-
-function seaOptionsMarkup(){
-if(!seaFishStock.length){
-  return `<option value="">Stock ikan laut belum ready</option>`;
-}
-
-return `<option value="">Pilih jenis ikan laut</option>` + seaFishStock.map(function(fish){
-  return `<option value="${fish.id}" data-fish-type="${fish.name}" data-weight="${fish.weight_ons}" data-max-qty="${fish.fish_count}">${escapeHtml(fish.label)}</option>`;
-}).join("");
-}
-
-function rahangOptionsMarkup(){
-const rows = rahangTunaStock.rows || [];
-
-if(!rows.length){
-  return `<option value="">Stock Rahang Tuna belum ready</option>`;
-}
-
-return `<option value="">Pilih Rahang Tuna</option>` + rows.map(function(row){
-  return `<option value="${row.id}" data-fish-type="rahang tuna" data-weight="${row.weight_ons}" data-max-qty="${row.available_qty}">${escapeHtml(row.label)}</option>`;
-}).join("");
-}
-
-function normalizeText(value){
-return String(value || "")
-  .toLowerCase()
-  .replace(/[()]/g, " ")
-  .replace(/[^\w\s/-]/g, " ")
-  .replace(/\s+/g, " ")
-  .trim();
-}
-
-function normalizeAssistantText(value){
-const aliasMap = {
-  "alpokat": "alpukat",
-  "alvokat": "alpukat",
-  "chilin": "chilin",
-  "chilliin": "chilin",
-  "chillin": "chilin",
-  "bbq": "barbeque",
-  "barbequee": "barbeque",
-  "saos": "saus",
-  "sauss": "saus",
-  "sapo": "sapo",
-  "tahuu": "tahu",
-  "teh maniss": "teh manis"
-};
-
-let normalized = normalizeText(value)
-  .replace(/\b(\d+)\.(?=\s|$)/g, " ")
-  .replace(/\bnovel\b|\bathirah\b|\blana\b|\bguest\b|\btamu\b/g, " ")
-  .replace(/\bpcs\b/g, " pcs ")
-  .replace(/\bporsi\b/g, " porsi ")
-  .replace(/\bpaket nasi\b/g, " paket ")
-  .replace(/\bjus alpokat\b/g, " jus alpukat ");
-
-Object.keys(aliasMap).forEach(function(key){
-  normalized = normalized.replace(new RegExp(`\\b${key}\\b`, "g"), aliasMap[key]);
-});
-
-return normalized.replace(/\s+/g, " ").trim();
-}
-
-function tokenizeText(value){
-return normalizeAssistantText(value).split(" ").filter(Boolean);
-}
-
-function buildMenuLookup(){
-const lookup = {};
-menuCatalog.forEach(function(menu){
-  lookup[normalizeAssistantText(menu.name)] = menu;
-  lookup[normalizeAssistantText(`${menu.name} ${menu.serving_type || ""}`)] = menu;
-});
-return lookup;
-}
-
-const menuLookup = buildMenuLookup();
-
-function inferGroupLabel(menu){
-const category = normalizeText(menu.category);
-const divisi = normalizeText(menu.divisi);
-
-if(category.includes("dessert") || divisi.includes("dessert")){
-  return "Dessert";
-}
-if(divisi.includes("bar") || divisi.includes("jus") || category.includes("minuman") || category.includes("drink")){
-  return "Minuman";
-}
-return "Dish";
-}
-
-function titleGroupLabel(group){
-const normalized = normalizeText(group);
-if(normalized === "minuman"){
-  return "Minuman";
-}
-if(normalized === "dessert"){
-  return "Dessert";
-}
-if(normalized === "dish"){
-  return "Dish";
-}
-return "Tidak Cocok";
-}
-
-function setBulkFeedback(message, type){
-const feedback = document.getElementById("bulk-menu-feedback");
-feedback.className = "assistant-feedback";
-if(type){
-  feedback.classList.add(type);
-}
-feedback.textContent = message || "";
-}
-
-function levenshteinDistance(a, b){
-const source = normalizeAssistantText(a);
-const target = normalizeAssistantText(b);
-
-if(source === target){
-  return 0;
-}
-if(!source.length){
-  return target.length;
-}
-if(!target.length){
-  return source.length;
-}
-
-const matrix = Array.from({ length: source.length + 1 }, function(_, rowIndex){
-  return Array.from({ length: target.length + 1 }, function(__, columnIndex){
-    if(rowIndex === 0){
-      return columnIndex;
-    }
-    if(columnIndex === 0){
-      return rowIndex;
-    }
-    return 0;
-  });
-});
-
-for(let i = 1; i <= source.length; i += 1){
-  for(let j = 1; j <= target.length; j += 1){
-    const cost = source[i - 1] === target[j - 1] ? 0 : 1;
-    matrix[i][j] = Math.min(
-      matrix[i - 1][j] + 1,
-      matrix[i][j - 1] + 1,
-      matrix[i - 1][j - 1] + cost
-    );
-  }
-}
-
-return matrix[source.length][target.length];
-}
-
-function cleanSegmentText(text){
-return String(text || "")
-  .replace(/\([^)]*\d[^)]*\)/g, " ")
-  .replace(/\b(?:rp|idr)\s*[\d.,]+\b/gi, " ")
-  .replace(/\b(?:harga|price|total)\b.*$/gi, " ")
-  .replace(/\s+/g, " ")
-  .trim();
-}
-
-function stripGuestPrefix(line){
-let text = String(line || "").trim();
-text = text.replace(/^\s*\d+\s*[.)-]?\s*/g, "").trim();
-text = text.replace(/^\s*[-*]\s*/g, "").trim();
-
-if(text.includes(":")){
-  const parts = text.split(":");
-  const tail = parts.slice(1).join(":").trim();
-  if(tail){
-    return tail;
-  }
-}
-
-return text;
-}
-
-function splitCompoundLine(line){
-const cleaned = cleanSegmentText(stripGuestPrefix(line));
-if(!cleaned){
-  return [];
-}
-
-return cleaned
-  .split(/\s+(?:\+|dan|&)\s+|,/gi)
-  .map(function(part){ return part.trim(); })
-  .filter(Boolean);
-}
-
-function extractQuantity(segment){
-const trimmed = String(segment || "").trim();
-if(!trimmed){
-  return null;
-}
-
-const patterns = [
-  /^(\d+)\s*(?:x|pcs|porsi)?\s+(.+)$/i,
-  /^(.+?)\s+(?:x\s*)?(\d+)$/i,
-  /^(.+?)\s*\((\d+)\)$/i,
-  /^(.+?)\s*qty\s*(\d+)$/i
-];
-
-for(const pattern of patterns){
-  const match = trimmed.match(pattern);
-  if(match){
-    if(pattern === patterns[0]){
-      return { qty: Number(match[1]) || 1, rawName: match[2].trim() };
-    }
-    return { qty: Number(match[2]) || 1, rawName: match[1].trim() };
-  }
-}
-
-return { qty: 1, rawName: trimmed };
-}
-
-function scoreMenuMatch(rawName, menu){
-const inputTokens = tokenizeText(rawName);
-const menuTokens = tokenizeText(menu.name);
-const inputSet = new Set(inputTokens);
-const menuSet = new Set(menuTokens);
-
-let overlap = 0;
-menuSet.forEach(function(token){
-  if(inputSet.has(token)){
-    overlap += 1;
-  }
-});
-
-const tokenCoverage = menuSet.size ? overlap / menuSet.size : 0;
-const inputCoverage = inputSet.size ? overlap / inputSet.size : 0;
-const normalizedInput = normalizeAssistantText(rawName);
-const normalizedMenu = normalizeAssistantText(menu.name);
-const directHit = normalizedInput === normalizedMenu ? 1 : 0;
-const containment = normalizedMenu.includes(normalizedInput) || normalizedInput.includes(normalizedMenu) ? 1 : 0;
-const distance = levenshteinDistance(normalizedInput, normalizedMenu);
-const maxLength = Math.max(normalizedInput.length, normalizedMenu.length, 1);
-const similarity = 1 - (distance / maxLength);
-
-return (
-    (directHit * 5)
-  + (containment * 2)
-  + (tokenCoverage * 4)
-  + (inputCoverage * 3)
-  + similarity
-);
-}
-
-function findMenuMatch(rawName){
-const normalized = normalizeAssistantText(rawName);
-if(!normalized){
-  return null;
-}
-
-if(menuLookup[normalized]){
-  return menuLookup[normalized];
-}
-
-const scoredCandidates = menuCatalog.map(function(menu){
-  return {
-    menu: menu,
-    score: scoreMenuMatch(rawName, menu)
-  };
-}).sort(function(a, b){
-  return b.score - a.score;
-});
-
-if(!scoredCandidates.length || scoredCandidates[0].score < 2.2){
-  return null;
-}
-
-return scoredCandidates[0].menu;
-}
-
-function renderBulkPreview(entries, sourceLabel){
-const preview = document.getElementById("bulk-menu-preview");
-const applyButton = document.getElementById("bulk-apply-btn");
-
-if(!entries.length){
-  parsedBulkMenuState = [];
-  preview.classList.add("hidden");
-  preview.innerHTML = "";
-  setBulkFeedback("Belum ada list yang bisa diproses.", "");
-  applyButton.disabled = true;
-  return;
-}
-
-parsedBulkMenuState = entries.filter(function(entry){ return Boolean(entry.menu); });
-applyButton.disabled = !parsedBulkMenuState.length;
-
-const groups = { Dish: [], Minuman: [], Dessert: [], "Tidak Cocok": [] };
-entries.forEach(function(entry){
-  if(entry.menu){
-    const groupName = titleGroupLabel(entry.group);
-    groups[groupName].push(entry);
-  }else{
-    groups["Tidak Cocok"].push(entry);
-  }
-});
-
-let html = "";
-["Dish", "Minuman", "Dessert", "Tidak Cocok"].forEach(function(groupName){
-  const items = groups[groupName];
-  if(!items.length){
-    return;
-  }
-  html += `<div style="margin-bottom:14px;"><h4>${groupName}</h4><ul>`;
-  items.forEach(function(entry){
-    if(entry.menu){
-      const noteSuffix = entry.notes ? ` <span style="color:#fcd34d;">- ${escapeHtml(entry.notes)}</span>` : "";
-      html += `<li><strong>${entry.qty}x</strong> ${escapeHtml(getMenuDisplayLabel(entry.menu))}${noteSuffix}</li>`;
-    }else{
-      html += `<li><strong>${entry.qty}x</strong> ${escapeHtml(entry.rawName)} <span style="color:#fca5a5;">(menu tidak ditemukan)</span></li>`;
-    }
-  });
-  html += "</ul></div>";
-});
-
-preview.innerHTML = html;
-preview.classList.remove("hidden");
-
-const matchedCount = parsedBulkMenuState.length;
-const unmatchedCount = entries.length - matchedCount;
-setBulkFeedback(`${sourceLabel}: ${matchedCount} item cocok${unmatchedCount ? `, ${unmatchedCount} item belum dikenali` : ""}.`, matchedCount ? "success" : "error");
-}
-
-function fallbackParseBulkMenuEntries(rawText){
-const aggregateMap = {};
-
-rawText.split(/\r?\n/).forEach(function(line){
-  splitCompoundLine(line).forEach(function(segment){
-    const parsed = extractQuantity(segment);
-    if(!parsed || !parsed.rawName){
-      return;
-    }
-
-    const menu = findMenuMatch(parsed.rawName);
-    const aggregateKey = menu
-      ? `menu:${menu.id}`
-      : `raw:${normalizeAssistantText(parsed.rawName)}`;
-
-    if(!aggregateMap[aggregateKey]){
-      aggregateMap[aggregateKey] = {
-        rawName: parsed.rawName,
-        qty: 0,
-        menu: menu,
-        group: menu ? inferGroupLabel(menu).toLowerCase() : "unknown",
-        notes: ""
-      };
-    }
-
-    aggregateMap[aggregateKey].qty += parsed.qty;
-    if(menu){
-      aggregateMap[aggregateKey].menu = menu;
-      aggregateMap[aggregateKey].group = inferGroupLabel(menu).toLowerCase();
-      aggregateMap[aggregateKey].rawName = menu.name;
-    }
-  });
-});
-
-return Object.values(aggregateMap).sort(function(a, b){
-  if(Boolean(b.menu) !== Boolean(a.menu)){
-    return Boolean(b.menu) - Boolean(a.menu);
-  }
-  if(a.menu && b.menu){
-    return a.menu.name.localeCompare(b.menu.name);
-  }
-  return a.rawName.localeCompare(b.rawName);
-});
-}
-
-function parseBulkMenu(){
-const rawText = document.getElementById("bulk-menu-input").value || "";
-const parseButton = document.getElementById("bulk-parse-btn");
-
-if(!rawText.trim()){
-  renderBulkPreview([], "Smart Assistant");
-  return;
-}
-
-parseButton.disabled = true;
-setBulkFeedback("Mode lokal pintar sedang merapikan list menu...", "info");
-
-const localEntries = fallbackParseBulkMenuEntries(rawText);
-renderBulkPreview(localEntries, "Mode Lokal Pintar");
-setBulkFeedback(`Mode lokal pintar aktif. ${localEntries.length} item berhasil dianalisis.`, localEntries.length ? "success" : "info");
-parseButton.disabled = false;
-}
-
-function initTomSelect(select){
-if(!select || typeof TomSelect !== "function"){
-  return null;
-}
-if(select.tomselect){
-  return select.tomselect;
-}
-
-return new TomSelect(select,{
-  create:false,
-  sortField:{ field:"text", direction:"asc" },
-  searchField:["text"],
-  maxOptions:null,
-  placeholder:"Cari menu...",
-  dropdownParent:"body"
-});
-}
-
-function buildRowMarkup(){
-return `
-<div class="menu-row">
-  <div class="row-grid">
-    <div>
-      <label>Menu</label>
-      <select class="menu-select" name="display_menu_id[]">
-        ${menuOptionsMarkup()}
-      </select>
-    </div>
-
-    <div class="menu-options-wrap hidden"></div>
-
-    <div class="nila-wrapper hidden">
-      <label>Size Nila</label>
-      <select name="fish_size[]" class="nila-select">
-        ${nilaOptionsMarkup()}
-      </select>
-    </div>
-
-    <div class="sea-wrapper hidden">
-      <label>Ikan Laut</label>
-      <select class="sea-select">
-        ${seaOptionsMarkup()}
-      </select>
-    </div>
-
-    <div class="piece-wrapper hidden">
-      <label>Stock Paket Dada Tuna</label>
-      <select class="piece-select">
-        <option value="">Pilih stok menu</option>
-      </select>
-    </div>
-
-    <div>
-      <label>Qty</label>
-      <input type="number" name="qty[]" class="qty-input" min="1" required>
-    </div>
-
-    <button type="button" class="btn remove-btn">x</button>
-  </div>
-
-  <div class="stock-warning"></div>
-
-  <div class="row-actions">
-    <div class="special-grid">
-      <div>
-        <label>Special Request</label>
-        <select name="special_request[]" class="special-select">
-          <option value="no_special">No Special Req</option>
-          <option value="with_special">With Special Req</option>
-        </select>
+<body class="min-h-screen text-slate-100">
+  <div class="mx-auto max-w-[1800px] px-4 py-5 lg:px-6 lg:py-6">
+    <div class="glass-panel rounded-[28px] p-5 lg:p-7">
+      <div class="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
+        <div class="space-y-2">
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-300">Reservation Workspace</p>
+          <h1 class="text-3xl font-black tracking-tight text-white lg:text-5xl">Denah Ruang Utama + Menu Wajib</h1>
+          <p class="max-w-4xl text-sm text-slate-300 lg:text-base">Pilih meja dari denah SVG, isi data reservasi, lalu tambahkan minimal 1 menu sebelum reservasi bisa disimpan.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="{{ url_for('reservations', date=selected_date) }}" class="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800">List Reservasi</a>
+          <a href="{{ url_for('home', date=selected_date) }}" class="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm font-semibold text-sky-100 hover:bg-sky-500/20">Home Dashboard</a>
+        </div>
       </div>
 
-      <div class="special-desc-wrapper hidden">
-        <label>Dish Description</label>
-        <input type="text" name="dish_description[]" class="special-desc" placeholder="Dish description">
+      <div class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_420px]">
+        <section class="glass-panel rounded-[26px] p-4 lg:p-5">
+          <div class="mb-4 flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold text-white lg:text-2xl">Floor Map Ruang Utama</h2>
+              <p class="mt-1 text-sm text-slate-300">Availability berubah mengikuti tanggal, jam reservasi, dan durasi yang dipilih staf.</p>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs font-semibold text-slate-200">
+              <div class="helper-chip flex items-center gap-2 rounded-full px-3 py-2"><span class="status-dot available"></span>Available</div>
+              <div class="helper-chip flex items-center gap-2 rounded-full px-3 py-2"><span class="status-dot reserved"></span>Reserved</div>
+              <div class="helper-chip flex items-center gap-2 rounded-full px-3 py-2"><span class="status-dot occupied"></span>Occupied / Unavailable</div>
+            </div>
+          </div>
+          <div class="floor-shell overflow-hidden rounded-[24px] p-3 lg:p-5">
+            <svg id="floor-map" viewBox="0 0 1000 680" class="h-auto w-full">
+              <rect x="24" y="24" width="952" height="632" rx="34" fill="#edf5fb" stroke="#cbd5e1" stroke-width="3"></rect>
+              <rect class="non-bookable" x="180" y="36" width="520" height="54" rx="18"></rect>
+              <text class="non-bookable-label" x="440" y="70">Area AC</text>
+              <rect class="non-bookable" x="40" y="48" width="116" height="106" rx="24"></rect>
+              <text class="non-bookable-label" x="98" y="106">Live Music</text>
+              <rect class="non-bookable" x="784" y="50" width="138" height="94" rx="22"></rect>
+              <text class="non-bookable-label" x="853" y="98">Toilet</text>
+              <rect class="non-bookable" x="786" y="168" width="112" height="54" rx="18"></rect>
+              <text class="non-bookable-label" x="842" y="200">Wastafel</text>
+              <rect class="non-bookable" x="38" y="536" width="192" height="94" rx="22"></rect>
+              <text class="non-bookable-label" x="134" y="588">Area Bar</text>
+              <rect class="non-bookable" x="388" y="582" width="194" height="58" rx="18"></rect>
+              <text class="non-bookable-label" x="485" y="617">Kasir</text>
+              <rect class="non-bookable" x="742" y="486" width="198" height="128" rx="28"></rect>
+              <text class="non-bookable-label" x="841" y="542">Sofa / Waiting Area</text>
+              <rect class="non-bookable" x="758" y="286" width="176" height="134" rx="28"></rect>
+              <text class="non-bookable-label" x="846" y="338">No Customer Area</text>
+              {% for table in floor_map.tables %}
+              <g class="table-group" id="table-{{ table.resource_code }}" data-resource-code="{{ table.resource_code }}" data-status="{{ table.status }}">
+                {% if table.shape == "circle" %}
+                <circle class="table-shape" cx="{{ table.x_position + (table.width / 2) }}" cy="{{ table.y_position + (table.height / 2) }}" r="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></circle>
+                {% else %}
+                <rect class="table-shape" x="{{ table.x_position }}" y="{{ table.y_position }}" width="{{ table.width }}" height="{{ table.height }}" rx="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></rect>
+                {% endif %}
+                <text class="table-label" x="{{ table.x_position + (table.width / 2) }}" y="{{ table.y_position + (table.height / 2) - 2 }}">{{ table.table_label }}</text>
+                <text class="table-capacity" x="{{ table.x_position + (table.width / 2) }}" y="{{ table.y_position + (table.height / 2) + 16 }}">{{ table.capacity }} pax</text>
+              </g>
+              {% endfor %}
+            </svg>
+          </div>
+        </section>
+
+        <aside class="desktop-sticky top-4 space-y-5 self-start">
+          <section class="glass-panel rounded-[26px] p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">Selected Table</p>
+                <h2 id="table-panel-name" class="mt-2 text-2xl font-black text-white">Belum ada meja dipilih</h2>
+              </div>
+              <div id="table-status-badge" class="rounded-full border border-white/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">-</div>
+            </div>
+            <p id="table-panel-description" class="mt-3 text-sm leading-6 text-slate-300">Klik meja pada denah untuk melihat detail area, kapasitas, dan status booking.</p>
+            <div class="mt-4 grid gap-3 text-sm text-slate-200">
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-3"><div class="text-xs uppercase tracking-[0.2em] text-slate-400">Kapasitas</div><div id="table-panel-capacity" class="mt-1 text-lg font-bold text-white">-</div></div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-3"><div class="text-xs uppercase tracking-[0.2em] text-slate-400">Area / Zone</div><div id="table-panel-zone" class="mt-1 text-lg font-bold text-white">-</div></div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-3"><div class="text-xs uppercase tracking-[0.2em] text-slate-400">Konflik Slot</div><div id="table-panel-conflict" class="mt-1 text-sm leading-6 text-slate-300">Belum ada konflik.</div></div>
+            </div>
+          </section>
+
+          <section class="glass-panel rounded-[26px] p-5">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">Current Order</p>
+            <div class="mt-2 flex items-end justify-between gap-3">
+              <h2 class="text-2xl font-black text-white">Menu Terpilih</h2>
+              <div class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200"><span id="order-count">0</span> item</div>
+            </div>
+            <div id="order-empty" class="mt-4 rounded-2xl border border-dashed border-white/15 bg-white/5 px-4 py-8 text-center text-sm text-slate-300">Minimal 1 menu wajib ditambahkan sebelum reservasi bisa disimpan.</div>
+            <div id="order-list" class="mt-4 space-y-3"></div>
+          </section>
+        </aside>
       </div>
+
+      <form id="reservation-form" class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_430px]" action="{{ url_for('add_reservation') }}" method="post">
+        <input type="hidden" name="selected_table_code" id="selected-table-code">
+        <input type="hidden" name="order_items_payload" id="order-items-payload">
+        <section class="space-y-5">
+          <div class="glass-panel rounded-[26px] p-5 lg:p-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">Step 2</p>
+                <h2 class="mt-2 text-2xl font-black text-white">Data Reservasi</h2>
+              </div>
+              <div id="form-availability-note" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200">Availability mengikuti slot terpilih.</div>
+            </div>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Customer Name</span><input name="customer_name" required class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white placeholder:text-slate-500" placeholder="Nama customer"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">WhatsApp</span><input name="whatsapp_number" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white placeholder:text-slate-500" placeholder="08xxxxxxxxxx"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">People Count</span><input type="number" min="1" name="people_count" id="people-count" required class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white" placeholder="Jumlah tamu"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Reservation Datetime</span><input type="datetime-local" name="reservation_datetime" id="reservation-datetime" value="{{ suggested_datetime }}" required class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Duration Minutes</span><input type="number" min="30" step="15" name="duration_minutes" id="duration-minutes" value="{{ default_duration_minutes }}" required class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Status</span><select name="status" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"><option value="confirmed">Confirmed</option><option value="pending">Pending</option><option value="occupied">Occupied</option></select></label>
+            </div>
+            <label class="mt-4 block"><span class="mb-2 block text-sm font-semibold text-slate-200">Description / Notes</span><textarea name="description" rows="4" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white placeholder:text-slate-500" placeholder="Catatan reservasi, request setup, atau informasi tamu"></textarea></label>
+          </div>
+
+          <div class="glass-panel rounded-[26px] p-5 lg:p-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">Step 3</p>
+                <h2 class="mt-2 text-2xl font-black text-white">Tambah Menu</h2>
+                <p class="mt-1 text-sm text-slate-300">Dropdown bumbu akan muncul otomatis untuk menu Taiwan snack yang membutuhkannya.</p>
+              </div>
+              <div class="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs font-semibold text-amber-100">Submit otomatis terkunci jika order masih kosong</div>
+            </div>
+
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              <label class="block md:col-span-2">
+                <span class="mb-2 block text-sm font-semibold text-slate-200">Menu</span>
+                <select id="menu-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white">
+                  <option value="">Pilih menu</option>
+                  {% for menu in menus %}
+                  <option value="{{ menu.id }}">{{ menu.name }}{% if menu.serving_type %} ({{ menu.serving_type|upper }}){% endif %}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <div id="generic-options" class="md:col-span-2 grid gap-4"></div>
+              <label id="seasoning-wrapper" class="hidden"><span class="mb-2 block text-sm font-semibold text-slate-200">Bumbu</span><select id="seasoning-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"><option value="">Pilih bumbu</option></select></label>
+              <label id="nila-size-wrapper" class="hidden"><span class="mb-2 block text-sm font-semibold text-slate-200">Size Nila</span><select id="nila-size-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></select></label>
+              <label id="sea-stock-wrapper" class="hidden"><span class="mb-2 block text-sm font-semibold text-slate-200">Ikan Laut</span><select id="sea-stock-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></select></label>
+              <label id="tuna-stock-wrapper" class="hidden"><span class="mb-2 block text-sm font-semibold text-slate-200">Stock Rahang Tuna</span><select id="tuna-stock-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></select></label>
+              <label id="piece-stock-wrapper" class="hidden"><span class="mb-2 block text-sm font-semibold text-slate-200">Stock Paket Dada Tuna</span><select id="piece-stock-select" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></select></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Quantity</span><input type="number" min="1" step="1" value="1" id="menu-qty" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white"></label>
+              <label class="block"><span class="mb-2 block text-sm font-semibold text-slate-200">Special Request</span><input id="menu-special-request" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white placeholder:text-slate-500" placeholder="Optional"></label>
+            </div>
+
+            <div id="menu-helper" class="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">Pilih menu dulu untuk melihat opsi tambahan, bumbu, atau pilihan stok yang dibutuhkan.</div>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button type="button" id="add-menu-button" class="rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-400">Tambah Menu ke Current Order</button>
+              <button type="button" id="clear-menu-button" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-slate-100 hover:bg-white/10">Reset Input Menu</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-5">
+          <div class="glass-panel rounded-[26px] p-5 lg:p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">Step 4</p>
+            <h2 class="mt-2 text-2xl font-black text-white">Submit Reservasi</h2>
+            <div class="mt-5 space-y-3 text-sm text-slate-200">
+              <div class="helper-chip rounded-2xl p-4">1. Meja harus dipilih dari denah.</div>
+              <div class="helper-chip rounded-2xl p-4">2. Data reservasi wajib lengkap dan jumlah tamu valid.</div>
+              <div class="helper-chip rounded-2xl p-4">3. Minimal 1 menu wajib ada di current order.</div>
+              <div class="helper-chip rounded-2xl p-4">4. Server akan cek ulang overlap meja dan stok sebelum commit transaksi.</div>
+            </div>
+            <div id="submit-warning" class="mt-5 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">Pilih meja dan tambahkan minimal 1 menu untuk mengaktifkan tombol simpan.</div>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button id="submit-button" type="submit" disabled class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400">Simpan Reservasi + Menu</button>
+              <a href="{{ url_for('reservations', date=selected_date) }}" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-slate-100 hover:bg-white/10">Batal</a>
+            </div>
+          </div>
+        </section>
+      </form>
     </div>
   </div>
 
-  <input type="hidden" name="fish_type[]" class="fish-type-hidden">
-  <input type="hidden" name="fish_weight[]" class="fish-weight-hidden">
-  <input type="hidden" name="fish_stock_id[]" class="fish-stock-id-hidden">
-  <input type="hidden" name="special_stock_id[]" class="special-stock-id-hidden">
-  <input type="hidden" name="menu_id[]" class="menu-id-hidden">
-  <input type="hidden" name="menu_options_json[]" class="menu-options-json-hidden">
-</div>
-`;
-}
+  <script id="reservation-floor-bootstrap" type="application/json">
+    {{ {"menus": menus, "nila_sizes": nila_sizes, "sea_fish": sea_fish, "tuna_piece_stock": tuna_piece_stock, "rahang_tuna_stock": rahang_tuna_stock, "floor_map": floor_map, "selected_date": selected_date, "suggested_datetime": suggested_datetime, "default_duration_minutes": default_duration_minutes}|tojson }}
+  </script>
+  <script>
+    const bootstrap = JSON.parse(document.getElementById("reservation-floor-bootstrap").textContent || "{}");
+    const state = { tables: bootstrap.floor_map?.tables || [], selectedTableCode: "", orderItems: [], availabilityRequestId: 0 };
+    const menuLookup = new Map((bootstrap.menus || []).map(menu => [String(menu.id), menu]));
+    const tableLookup = new Map((state.tables || []).map(table => [table.resource_code, table]));
+    const form = document.getElementById("reservation-form");
+    const selectedTableInput = document.getElementById("selected-table-code");
+    const orderItemsInput = document.getElementById("order-items-payload");
+    const submitButton = document.getElementById("submit-button");
+    const submitWarning = document.getElementById("submit-warning");
+    const availabilityNote = document.getElementById("form-availability-note");
 
-function applyMenuBehavior(row, defaults){
-const menuSelect = row.querySelector(".menu-select");
-const menuOptionsWrap = row.querySelector(".menu-options-wrap");
-const nilaWrapper = row.querySelector(".nila-wrapper");
-const nilaSelect = row.querySelector(".nila-select");
-const seaWrapper = row.querySelector(".sea-wrapper");
-const seaSelect = row.querySelector(".sea-select");
-const pieceWrapper = row.querySelector(".piece-wrapper");
-const pieceSelect = row.querySelector(".piece-select");
-const fishTypeHidden = row.querySelector(".fish-type-hidden");
-const fishWeightHidden = row.querySelector(".fish-weight-hidden");
-const fishStockIdHidden = row.querySelector(".fish-stock-id-hidden");
-const specialStockIdHidden = row.querySelector(".special-stock-id-hidden");
-const menuIdHidden = row.querySelector(".menu-id-hidden");
-const menuOptionsJsonHidden = row.querySelector(".menu-options-json-hidden");
-const warning = row.querySelector(".stock-warning");
-const qtyInput = row.querySelector(".qty-input");
-let optionDefaults = Object.assign({}, (defaults && defaults.optionValues) || {});
+    const escapeHtml = (value) => String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    const getCurrentMenu = () => menuLookup.get(document.getElementById("menu-select").value) || null;
+    const getTable = (code) => tableLookup.get(code) || null;
+    const getStatusTone = (status) => status === "available" ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-100" : status === "reserved" ? "border-amber-400/20 bg-amber-400/10 text-amber-100" : "border-rose-400/20 bg-rose-400/10 text-rose-100";
 
-function getSelectedMenu(){
-  return menuCatalog.find(function(menu){
-    return String(menu.id) === String(menuSelect.value);
-  }) || null;
-}
-
-function refreshMultiSelectSummaries(){
-  const selectedMenu = getSelectedMenu() || {};
-  ((selectedMenu.option_groups) || []).filter(function(group){
-    return group.multiple;
-  }).forEach(function(group){
-    const summary = menuOptionsWrap.querySelector(`[data-option-summary="${group.key}"]`);
-    if(!summary){
-      return;
+    function serializeComboKey(optionValues, comboKeys){
+      if(!(comboKeys || []).length){ return "__default__"; }
+      return comboKeys.map(key => `${key}=${String(optionValues[key] || "").toLowerCase()}`).join("|");
     }
-    summary.textContent = `Terpilih: ${formatSelectedOptionText(getCheckedOptionValues(menuOptionsWrap, group.key), group)}`;
-  });
-}
 
-function renderOptionGroups(menu, presetValues){
-  const existingOptionValues = presetValues !== undefined ? presetValues : collectCurrentOptionValues();
-  if(!menu || !(menu.option_groups || []).length){
-    menuOptionsWrap.classList.add("hidden");
-    menuOptionsWrap.innerHTML = "";
-    return;
-  }
-
-  menuOptionsWrap.innerHTML = (menu.option_groups || []).map(function(group){
-    const selectedValue = normalizeGroupSelection(
-      group,
-      existingOptionValues[group.key] !== undefined ? existingOptionValues[group.key] : optionDefaults[group.key]
-    );
-    const choicesMarkup = (group.choices || []).map(function(choice){
-      const selected = group.multiple
-        ? selectedValue.includes(String(choice.value))
-        : String(choice.value) === String(selectedValue);
-      const choiceStatus = choice.status || "ready";
-      const statusSuffix = choiceStatus === "ready" ? "" : " - NOT READY";
-      const disabled = choiceStatus !== "ready" && !selected ? "disabled" : "";
-      if(group.multiple){
-        const wrapperClass = disabled ? "option-check disabled" : "option-check";
-        return `
-          <label class="${wrapperClass}">
-            <input type="checkbox" class="menu-option-checkbox" data-option-key="${group.key}" value="${choice.value}" ${selected ? "checked" : ""} ${disabled}>
-            <span>${escapeHtml(choice.label + statusSuffix)}</span>
-          </label>
-        `;
+    function resolveMenuChoice(menu, optionValues){
+      if(!menu){ return null; }
+      if((menu.combo_keys || []).length){
+        const comboMap = menu.combo_map || {};
+        return comboMap[serializeComboKey(optionValues || {}, menu.combo_keys || [])] || Object.values(comboMap)[0] || null;
       }
-      return `<option value="${choice.value}" ${selected} ${disabled}>${escapeHtml(choice.label + statusSuffix)}</option>`;
-    }).join("");
-    const labelText = group.multiple ? `${group.label} (centang bisa lebih dari 1)` : group.label;
-    const helperMarkup = group.multiple ? `
-        <div class="option-check-list">${choicesMarkup}</div>
-        <div class="option-helper">Centang satu atau lebih pilihan, lalu lihat ringkasan di bawah.</div>
-        <div class="option-summary" data-option-summary="${group.key}"></div>
-      ` : "";
+      return { menu_id: menu.menu_id, menu_name: menu.actual_menu_name || menu.name, serving_type: menu.serving_type || "" };
+    }
 
-    return `
-      <div class="field">
-        <label>${escapeHtml(labelText)}</label>
-        ${group.multiple ? "" : `
-        <select class="menu-option-select" data-option-key="${group.key}">
-          ${choicesMarkup}
-        </select>`}
-        ${helperMarkup}
-      </div>
-    `;
-  }).join("");
+    function syncOrderPayload(){
+      orderItemsInput.value = JSON.stringify(state.orderItems);
+      document.getElementById("order-count").textContent = String(state.orderItems.length);
+      document.getElementById("order-empty").classList.toggle("hidden", state.orderItems.length > 0);
+      const orderList = document.getElementById("order-list");
+      orderList.innerHTML = state.orderItems.map((item, index) => `
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-base font-bold text-white">${escapeHtml(item.display_name)}</div>
+              <div class="mt-1 text-sm text-slate-300">Qty ${item.qty}${item.seasoning_label ? ` - Bumbu: ${escapeHtml(item.seasoning_label)}` : ""}</div>
+              ${item.option_summary ? `<div class="mt-2 text-sm text-sky-200">${escapeHtml(item.option_summary)}</div>` : ""}
+              ${item.special_request_text ? `<div class="mt-2 text-sm text-amber-100">${escapeHtml(item.special_request_text)}</div>` : ""}
+            </div>
+            <button type="button" data-remove-index="${index}" class="rounded-xl bg-rose-500 px-3 py-2 text-xs font-bold text-white hover:bg-rose-400">Hapus</button>
+          </div>
+        </div>
+      `).join("");
+      orderList.querySelectorAll("[data-remove-index]").forEach(button => button.addEventListener("click", () => {
+        state.orderItems.splice(Number(button.dataset.removeIndex), 1);
+        syncOrderPayload();
+        syncSubmitState();
+      }));
+    }
 
-  menuOptionsWrap.classList.remove("hidden");
-  refreshMultiSelectSummaries();
-  menuOptionsWrap.querySelectorAll(".menu-option-select, .menu-option-checkbox").forEach(function(control){
-    control.addEventListener("change", function(){
-      refreshMultiSelectSummaries();
-      syncMenuState(false, false);
+    function renderTablePanel(table){
+      const name = document.getElementById("table-panel-name");
+      const badge = document.getElementById("table-status-badge");
+      const description = document.getElementById("table-panel-description");
+      const capacity = document.getElementById("table-panel-capacity");
+      const zone = document.getElementById("table-panel-zone");
+      const conflict = document.getElementById("table-panel-conflict");
+      if(!table){
+        name.textContent = "Belum ada meja dipilih";
+        badge.textContent = "-";
+        badge.className = "rounded-full border border-white/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200";
+        description.textContent = "Klik meja pada denah untuk melihat detail area, kapasitas, dan status booking.";
+        capacity.textContent = "-";
+        zone.textContent = "-";
+        conflict.textContent = "Belum ada konflik.";
+        return;
+      }
+      name.textContent = table.name;
+      badge.textContent = table.status_label || table.status || "-";
+      badge.className = `rounded-full border px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] ${getStatusTone(table.status)}`;
+      description.textContent = table.description || "Tanpa deskripsi tambahan.";
+      capacity.textContent = `${table.capacity || 0} pax`;
+      zone.textContent = `${table.area || "-"} / ${table.sub_zone || "-"}`;
+      conflict.innerHTML = (table.conflicts || []).length ? table.conflicts.map(item => `${escapeHtml(item.customer_name || "Reservasi")} - ${escapeHtml(item.status || "")}`).join("<br>") : "Belum ada konflik.";
+    }
+
+    function renderFloorSelection(){
+      document.querySelectorAll(".table-group").forEach(group => group.classList.toggle("is-selected", group.dataset.resourceCode === state.selectedTableCode));
+      renderTablePanel(getTable(state.selectedTableCode));
+    }
+
+    function syncSubmitState(){
+      const selectedTable = getTable(state.selectedTableCode);
+      const hasRequiredFormValues = Boolean(form.customer_name.value.trim() && form.people_count.value && form.reservation_datetime.value && form.duration_minutes.value);
+      const tableReady = Boolean(selectedTable && selectedTable.status === "available");
+      const orderReady = state.orderItems.length > 0;
+      submitButton.disabled = !(hasRequiredFormValues && tableReady && orderReady);
+      if(!state.selectedTableCode){ submitWarning.textContent = "Pilih meja dari denah untuk melanjutkan."; }
+      else if(!tableReady){ submitWarning.textContent = "Meja yang dipilih belum available untuk slot ini."; }
+      else if(!orderReady){ submitWarning.textContent = "Tambahkan minimal 1 menu sebelum menyimpan reservasi."; }
+      else if(!hasRequiredFormValues){ submitWarning.textContent = "Lengkapi data reservasi terlebih dahulu."; }
+      else{ submitWarning.textContent = "Semua valid. Reservasi akan disimpan bersama item menu dalam satu transaksi."; }
+    }
+
+    function updateTableAvailability(tables){
+      state.tables = tables || [];
+      tableLookup.clear();
+      state.tables.forEach(table => tableLookup.set(table.resource_code, table));
+      document.querySelectorAll(".table-group").forEach(group => {
+        const table = getTable(group.dataset.resourceCode);
+        if(table){ group.dataset.status = table.status; }
+      });
+      renderFloorSelection();
+      syncSubmitState();
+    }
+
+    async function fetchAvailability(){
+      if(!document.getElementById("reservation-datetime").value){ return; }
+      const requestId = ++state.availabilityRequestId;
+      availabilityNote.textContent = "Memeriksa availability meja...";
+      const params = new URLSearchParams({ reservation_datetime: document.getElementById("reservation-datetime").value, duration_minutes: document.getElementById("duration-minutes").value || "{{ default_duration_minutes }}" });
+      const response = await fetch(`{{ url_for('reservation_floor_availability') }}?${params.toString()}`);
+      const payload = await response.json();
+      if(requestId !== state.availabilityRequestId){ return; }
+      if(!response.ok){ availabilityNote.textContent = payload.error || "Availability belum bisa diperiksa."; return; }
+      updateTableAvailability(payload.tables || []);
+      availabilityNote.textContent = "Availability meja sudah di-refresh sesuai slot terbaru.";
+    }
+
+    function buildSelectOptions(options, placeholder){
+      return [`<option value="">${placeholder}</option>`].concat(options.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`)).join("");
+    }
+
+    function collectOptionValues(){
+      const values = {};
+      document.querySelectorAll("[data-option-key]").forEach(field => {
+        if(field.type === "checkbox"){
+          if(field.checked){
+            if(!Array.isArray(values[field.dataset.optionKey])){ values[field.dataset.optionKey] = []; }
+            values[field.dataset.optionKey].push(field.value);
+          }
+        }else{
+          values[field.dataset.optionKey] = field.value;
+        }
+      });
+      return values;
+    }
+
+    function updateStockFields(){
+      const menu = getCurrentMenu();
+      const resolvedChoice = resolveMenuChoice(menu, collectOptionValues()) || {};
+      const stockSource = menu ? (menu.stock_source || menu.stock_type) : "";
+      const show = (id, visible) => document.getElementById(id).classList.toggle("hidden", !visible);
+      show("seasoning-wrapper", false); show("nila-size-wrapper", false); show("sea-stock-wrapper", false); show("tuna-stock-wrapper", false); show("piece-stock-wrapper", false);
+      if(!menu){
+        document.getElementById("menu-helper").textContent = "Pilih menu dulu untuk melihat opsi tambahan, bumbu, atau pilihan stok yang dibutuhkan.";
+        return;
+      }
+      document.getElementById("menu-helper").textContent = "Lengkapi opsi menu yang muncul, lalu tekan Tambah Menu ke Current Order.";
+      if(menu.has_seasoning){
+        show("seasoning-wrapper", true);
+        document.getElementById("seasoning-select").innerHTML = buildSelectOptions((menu.seasoning_choices || []).map(choice => ({ value: choice.value, label: choice.label })), "Pilih bumbu");
+      }
+      if(stockSource === "size"){
+        show("nila-size-wrapper", true);
+        document.getElementById("nila-size-select").innerHTML = buildSelectOptions((bootstrap.nila_sizes || []).map(size => ({ value: size, label: size.replaceAll("_"," ") })), "Pilih ukuran nila");
+      } else if(stockSource === "weight"){
+        show("sea-stock-wrapper", true);
+        const select = document.getElementById("sea-stock-select");
+        select.innerHTML = buildSelectOptions((bootstrap.sea_fish || []).map(row => ({ value: row.id, label: row.label })), "Pilih stock ikan laut");
+        Array.from(select.options).forEach((option, index) => {
+          const source = (bootstrap.sea_fish || [])[index - 1];
+          if(source){ option.dataset.fishType = source.name; option.dataset.weight = source.weight_ons; }
+        });
+      } else if(stockSource === "tuna_weight"){
+        show("tuna-stock-wrapper", true);
+        const select = document.getElementById("tuna-stock-select");
+        select.innerHTML = buildSelectOptions((((bootstrap.rahang_tuna_stock || {}).rows) || []).map(row => ({ value: row.id, label: row.label })), "Pilih stock rahang tuna");
+        Array.from(select.options).forEach((option, index) => {
+          const source = (((bootstrap.rahang_tuna_stock || {}).rows) || [])[index - 1];
+          if(source){ option.dataset.weight = source.weight_ons; }
+        });
+      } else if(stockSource === "menu_piece"){
+        show("piece-stock-wrapper", true);
+        const stockRow = (bootstrap.tuna_piece_stock || {})[String(resolvedChoice.menu_id || "")];
+        document.getElementById("piece-stock-select").innerHTML = buildSelectOptions(stockRow ? [{ value: stockRow.id, label: `${stockRow.display_name || "Paket Dada Tuna"} - ${stockRow.available_qty} stok` }] : [], "Pilih stock paket dada tuna");
+      }
+    }
+
+    function renderMenuOptions(){
+      const menu = getCurrentMenu();
+      const container = document.getElementById("generic-options");
+      if(!menu){ container.innerHTML = ""; updateStockFields(); return; }
+      container.innerHTML = (menu.generic_option_groups || []).map(group => group.multiple ? `
+        <div class="md:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div class="mb-3 text-sm font-semibold text-slate-100">${escapeHtml(group.label)}</div>
+          <div class="grid gap-2 md:grid-cols-2">
+            ${(group.choices || []).map(choice => `<label class="option-pill flex items-center gap-3 rounded-2xl px-3 py-3 text-sm text-slate-200"><input type="checkbox" value="${escapeHtml(choice.value)}" data-option-key="${escapeHtml(group.key)}" class="h-4 w-4"><span>${escapeHtml(choice.label)}</span></label>`).join("")}
+          </div>
+        </div>
+      ` : `
+        <label class="block">
+          <span class="mb-2 block text-sm font-semibold text-slate-200">${escapeHtml(group.label)}</span>
+          <select data-option-key="${escapeHtml(group.key)}" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white">
+            ${(group.choices || []).map(choice => `<option value="${escapeHtml(choice.value)}">${escapeHtml(choice.label)}</option>`).join("")}
+          </select>
+        </label>
+      `).join("");
+      container.querySelectorAll("[data-option-key]").forEach(field => field.addEventListener("change", updateStockFields));
+      updateStockFields();
+    }
+
+    function resetMenuInput(keepMenuSelection = true){
+      const menuSelect = document.getElementById("menu-select");
+      const currentMenuValue = menuSelect.value;
+      document.getElementById("menu-qty").value = 1;
+      document.getElementById("menu-special-request").value = "";
+      if(!keepMenuSelection){ menuSelect.value = ""; }
+      else{ menuSelect.value = currentMenuValue; }
+      renderMenuOptions();
+    }
+
+    function addMenuToOrder(){
+      const menu = getCurrentMenu();
+      if(!menu){ alert("Pilih menu terlebih dahulu."); return; }
+      const optionValues = collectOptionValues();
+      const resolvedChoice = resolveMenuChoice(menu, optionValues) || {};
+      const qty = Number(document.getElementById("menu-qty").value || 0);
+      const stockSource = menu.stock_source || menu.stock_type;
+      const seasoningValue = document.getElementById("seasoning-wrapper").classList.contains("hidden") ? "" : document.getElementById("seasoning-select").value;
+      if(qty < 1){ alert("Quantity minimal 1."); return; }
+      if(menu.has_seasoning && !seasoningValue){ alert(`Bumbu wajib dipilih untuk ${menu.name}.`); return; }
+
+      const item = { display_menu_id: String(menu.id), menu_id: String(resolvedChoice.menu_id || menu.menu_id || ""), qty, seasoning: seasoningValue, option_values: optionValues, special_request_text: document.getElementById("menu-special-request").value.trim() };
+      if(stockSource === "size"){
+        item.fish_size = document.getElementById("nila-size-select").value;
+        if(!item.fish_size){ alert("Pilih ukuran nila terlebih dahulu."); return; }
+      } else if(stockSource === "weight"){
+        const select = document.getElementById("sea-stock-select");
+        const option = select.selectedOptions[0];
+        item.fish_stock_id = select.value;
+        item.fish_type = option?.dataset?.fishType || "";
+        item.fish_weight = option?.dataset?.weight || "";
+        if(!item.fish_stock_id){ alert("Pilih stock ikan laut terlebih dahulu."); return; }
+      } else if(stockSource === "tuna_weight"){
+        const select = document.getElementById("tuna-stock-select");
+        const option = select.selectedOptions[0];
+        item.special_stock_id = select.value;
+        item.fish_type = "rahang tuna";
+        item.fish_weight = option?.dataset?.weight || "";
+        if(!item.special_stock_id){ alert("Pilih stock rahang tuna terlebih dahulu."); return; }
+      } else if(stockSource === "menu_piece"){
+        item.special_stock_id = document.getElementById("piece-stock-select").value;
+        if(!item.special_stock_id){ alert("Pilih stock paket dada tuna terlebih dahulu."); return; }
+      }
+
+      const seasoningLabel = (menu.seasoning_choices || []).find(choice => choice.value === seasoningValue)?.label || "";
+      const optionSummary = (menu.generic_option_groups || []).map(group => {
+        const selectedValue = optionValues[group.key];
+        if(group.multiple){
+          const values = Array.isArray(selectedValue) ? selectedValue : [];
+          const labels = (group.choices || []).filter(choice => values.includes(choice.value)).map(choice => choice.label);
+          return labels.length ? `${group.label}: ${labels.join(", ")}` : "";
+        }
+        const choice = (group.choices || []).find(row => String(row.value) === String(selectedValue));
+        return choice ? `${group.label}: ${choice.label}` : "";
+      }).filter(Boolean).join(" | ");
+
+      item.display_name = `${menu.name}${menu.serving_type ? ` (${String(menu.serving_type).toUpperCase()})` : ""}`;
+      item.seasoning_label = seasoningLabel;
+      item.option_summary = optionSummary;
+      state.orderItems.push(item);
+      syncOrderPayload();
+      resetMenuInput(true);
+      syncSubmitState();
+    }
+
+    document.querySelectorAll(".table-group").forEach(group => group.addEventListener("click", () => {
+      state.selectedTableCode = group.dataset.resourceCode;
+      selectedTableInput.value = state.selectedTableCode;
+      renderFloorSelection();
+      syncSubmitState();
+    }));
+
+    document.getElementById("menu-select").addEventListener("change", renderMenuOptions);
+    document.getElementById("add-menu-button").addEventListener("click", addMenuToOrder);
+    document.getElementById("clear-menu-button").addEventListener("click", () => resetMenuInput(false));
+    document.getElementById("reservation-datetime").addEventListener("change", fetchAvailability);
+    document.getElementById("duration-minutes").addEventListener("input", fetchAvailability);
+    ["customer_name", "people_count", "reservation_datetime", "duration_minutes"].forEach(name => {
+      form[name].addEventListener("input", syncSubmitState);
+      form[name].addEventListener("change", syncSubmitState);
     });
-  });
-}
 
-function collectCurrentOptionValues(){
-  const values = {};
-  menuOptionsWrap.querySelectorAll(".menu-option-select").forEach(function(select){
-    values[select.dataset.optionKey] = getSelectControlValue(select);
-  });
-  menuOptionsWrap.querySelectorAll(".menu-option-checkbox:checked").forEach(function(input){
-    if(!Array.isArray(values[input.dataset.optionKey])){
-      values[input.dataset.optionKey] = [];
-    }
-    values[input.dataset.optionKey].push(input.value);
-  });
-  return values;
-}
-
-function getSelectedOptionValues(menu){
-  const optionValues = {};
-  if(!menu){
-    return optionValues;
-  }
-
-  const currentValues = collectCurrentOptionValues();
-  (menu.option_groups || []).forEach(function(group){
-    const fallbackValue = currentValues[group.key] !== undefined ? currentValues[group.key] : optionDefaults[group.key];
-    optionValues[group.key] = normalizeGroupSelection(
-      group,
-      group.multiple ? getCheckedOptionValues(menuOptionsWrap, group.key) : (menuOptionsWrap.querySelector(`[data-option-key="${group.key}"]`) ? getSelectControlValue(menuOptionsWrap.querySelector(`[data-option-key="${group.key}"]`)) : fallbackValue)
-    );
-  });
-
-  return optionValues;
-}
-
-function syncSeaSelection(){
-  const selected = seaSelect.selectedOptions[0];
-  if(!selected || !selected.dataset.fishType){
-    fishTypeHidden.value = "";
-    fishWeightHidden.value = "";
-    fishStockIdHidden.value = "";
-    qtyInput.max = "";
-    return;
-  }
-
-  fishTypeHidden.value = selected.dataset.fishType;
-  fishWeightHidden.value = selected.dataset.weight || "";
-  fishStockIdHidden.value = selected.value || "";
-  specialStockIdHidden.value = "";
-  qtyInput.max = selected.dataset.maxQty || "";
-}
-
-function syncPieceSelection(){
-  const selected = pieceSelect.selectedOptions[0];
-  if(!selected || !selected.value){
-    specialStockIdHidden.value = "";
-    qtyInput.max = "";
-    return;
-  }
-
-  specialStockIdHidden.value = selected.value;
-  fishStockIdHidden.value = "";
-  fishTypeHidden.value = "";
-  fishWeightHidden.value = "";
-  qtyInput.max = selected.dataset.maxQty || "";
-}
-
-function syncMenuState(showAlert){
-  const selectedMenu = getSelectedMenu();
-  const shouldRenderOptions = arguments.length > 1 ? Boolean(arguments[1]) : true;
-  const currentOptionValues = collectCurrentOptionValues();
-  optionDefaults = Object.assign({}, optionDefaults, currentOptionValues);
-  if(shouldRenderOptions){
-    renderOptionGroups(selectedMenu, currentOptionValues);
-  }
-  const optionValues = getSelectedOptionValues(selectedMenu);
-  const resolvedChoice = resolveMenuChoice(selectedMenu, optionValues) || {};
-  const stockSource = resolvedChoice.stock_source || (selectedMenu ? (selectedMenu.stock_source || selectedMenu.stock_type) : "");
-  const status = resolvedChoice.status || (selectedMenu ? selectedMenu.status : "ready");
-                const menuId =
-                    resolvedChoice.menu_id !== undefined && resolvedChoice.menu_id !== null
-                        ? String(resolvedChoice.menu_id)
-                        : "";
-
-  const previousNilaValue = nilaSelect.value || "";
-  const previousSeaValue = seaSelect.value || fishStockIdHidden.value || specialStockIdHidden.value || "";
-  const previousPieceValue = pieceSelect.value || specialStockIdHidden.value || "";
-  nilaWrapper.classList.add("hidden");
-  seaWrapper.classList.add("hidden");
-  pieceWrapper.classList.add("hidden");
-  nilaSelect.value = "";
-  seaSelect.value = "";
-  pieceSelect.innerHTML = `<option value="">Pilih stok menu</option>`;
-  fishTypeHidden.value = "";
-  fishWeightHidden.value = "";
-  fishStockIdHidden.value = "";
-  specialStockIdHidden.value = "";
-  menuIdHidden.value = menuId;
-  menuOptionsJsonHidden.value = buildOptionsPayload(selectedMenu, optionValues);
-  qtyInput.max = "";
-  warning.className = "stock-warning";
-  warning.textContent = "";
-
-  if(status === "pending"){
-    warning.className = "stock-warning pending";
-    warning.textContent = "Menu ini statusnya masih pending di update stock.";
-  }else if(status === "not_ready" || status === "out"){
-    warning.className = "stock-warning blocked";
-    warning.textContent = "Menu ini sedang not ready di update stock.";
-  }
-
-  if(shouldUseNilaSize(selectedMenu, resolvedChoice, stockSource)){
-    nilaWrapper.classList.remove("hidden");
-    nilaSelect.innerHTML = nilaOptionsMarkup(previousNilaValue);
-    nilaSelect.value = previousNilaValue;
-  }else if(stockSource === "weight"){
-    seaWrapper.classList.remove("hidden");
-    seaSelect.innerHTML = seaOptionsMarkup();
-    if(previousSeaValue && Array.from(seaSelect.options).some(function(option){
-      return String(option.value) === String(previousSeaValue);
-    })){
-      seaSelect.value = previousSeaValue;
-    }
-    syncSeaSelection();
-  }else if(stockSource === "tuna_weight"){
-    seaWrapper.classList.remove("hidden");
-    seaSelect.innerHTML = rahangOptionsMarkup();
-    if(previousSeaValue && Array.from(seaSelect.options).some(function(option){
-      return String(option.value) === String(previousSeaValue);
-    })){
-      seaSelect.value = previousSeaValue;
-    }
-    syncSeaSelection();
-  }else if(stockSource === "menu_piece"){
-    pieceWrapper.classList.remove("hidden");
-    const stockInfo = tunaPieceStock[String(menuId)];
-    if(stockInfo && stockInfo.available_qty > 0 && stockInfo.status === "ready"){
-      pieceSelect.innerHTML = `<option value="${stockInfo.id}" data-max-qty="${stockInfo.available_qty}" selected>${escapeHtml(stockInfo.display_name || "Paket Dada Tuna")} - ${stockInfo.available_qty} stok</option>`;
-      if(previousPieceValue && Array.from(pieceSelect.options).some(function(option){
-        return String(option.value) === String(previousPieceValue);
-      })){
-        pieceSelect.value = previousPieceValue;
+    form.addEventListener("submit", (event) => {
+      syncSubmitState();
+      if(submitButton.disabled){
+        event.preventDefault();
+        alert("Pilih meja yang available dan pastikan current order berisi minimal 1 menu.");
+        return;
       }
-      syncPieceSelection();
-    }else{
-      pieceSelect.innerHTML = `<option value="">Stock Paket Dada Tuna belum ready</option>`;
-    }
-  }
+      if(!form.reportValidity()){
+        event.preventDefault();
+      }
+    });
 
-  if(showAlert && status === "pending"){
-    alert("Menu ini masih pending di update stock.");
-  }else if(showAlert && (status === "not_ready" || status === "out")){
-    alert("Menu ini sedang not ready di update stock.");
-  }
-
-  optionDefaults = optionValues;
-  return optionValues;
-}
-
-row.__syncMenuState = function(){
-  syncMenuState(false, false);
-};
-
-menuSelect.addEventListener("change", function(){
-  syncMenuState(true, true);
-});
-
-seaSelect.addEventListener("change", syncSeaSelection);
-pieceSelect.addEventListener("change", syncPieceSelection);
-
-syncMenuState(false, true);
-}
-
-function applySpecialRequestBehavior(row){
-const specialSelect = row.querySelector(".special-select");
-const descWrapper = row.querySelector(".special-desc-wrapper");
-const descInput = row.querySelector(".special-desc");
-
-function sync(){
-  if(specialSelect.value === "with_special"){
-    descWrapper.classList.remove("hidden");
-  }else{
-    descWrapper.classList.add("hidden");
-    descInput.value = "";
-  }
-}
-
-specialSelect.addEventListener("change", sync);
-sync();
-}
-
-function attachRowEvents(row, defaults){
- const menuSelect = row.querySelector(".menu-select");
- const qtyInput = row.querySelector(".qty-input");
- defaults = defaults || {};
-
- initTomSelect(menuSelect);
-
- if(defaults.menuId){
-   if(menuSelect.tomselect){
-     menuSelect.tomselect.setValue(String(defaults.menuId), true);
-   }else{
-     menuSelect.value = String(defaults.menuId);
-   }
- }
-
- qtyInput.value = defaults.qty || 1;
-
- applyMenuBehavior(row, defaults);
- applySpecialRequestBehavior(row);
-
- row.querySelector(".remove-btn").addEventListener("click", function(){
-   const list = document.getElementById("menu-list");
-  if(list.children.length > 1){
-    row.remove();
-  }
- });
-}
-
-function addMenuRow(defaults){
-const row = document.createElement("div");
-row.innerHTML = buildRowMarkup().trim();
-const element = row.firstElementChild;
-document.getElementById("menu-list").appendChild(element);
-attachRowEvents(element, defaults);
-}
-
-function applyBulkMenuToRows(){
-if(!parsedBulkMenuState.length){
-  return;
-}
-
-parsedBulkMenuState.forEach(function(entry){
-  addMenuRow({
-    menuId: entry.menu.id,
-    qty: entry.qty
-  });
-});
-
-setBulkFeedback(`${parsedBulkMenuState.length} item berhasil ditambahkan ke Menu Order.`, "success");
-document.getElementById("bulk-menu-input").value = "";
-document.getElementById("bulk-menu-preview").innerHTML = "";
-document.getElementById("bulk-menu-preview").classList.add("hidden");
-document.getElementById("bulk-apply-btn").disabled = true;
-parsedBulkMenuState = [];
-}
-
-document.addEventListener("DOMContentLoaded", function(){
- const reservationForm = document.getElementById("reservation-form");
- document.getElementById("bulk-parse-btn").addEventListener("click", parseBulkMenu);
- document.getElementById("bulk-apply-btn").addEventListener("click", applyBulkMenuToRows);
-addMenuRow();
- reservationForm.addEventListener("submit", function(event){
-  const rows = Array.from(document.querySelectorAll("#menu-list .menu-row"));
-  let invalidRow = false;
-  rows.forEach(function(row){
-    if(typeof row.__syncMenuState === "function"){
-      row.__syncMenuState();
-    }
-    const resolvedMenuId = row.querySelector(".menu-id-hidden");
-    if(!String((resolvedMenuId && resolvedMenuId.value) || "").trim()){
-      invalidRow = true;
-    }
-  });
-  if(invalidRow){
-    event.preventDefault();
-    alert("Masih ada menu yang belum valid. Silakan cek pilihan menu pada form order.");
-  }
- });
-});
-</script>
-
+    renderFloorSelection();
+    renderMenuOptions();
+    syncOrderPayload();
+    syncSubmitState();
+    fetchAvailability();
+  </script>
 </body>
 </html>

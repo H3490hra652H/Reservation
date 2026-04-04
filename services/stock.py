@@ -27,6 +27,10 @@ PACKAGE_TUNA_MENU_NAMES = (
 SPECIAL_TUNA_MENU_NAMES = PACKAGE_TUNA_MENU_NAMES + ("rahang tuna",)
 
 
+def format_size_category_label(size_key):
+    return str(size_key or "").replace("_", " ").title()
+
+
 def apply_special_stock_statuses(menus, piece_stock_map, special_tuna_stock):
     package_stock = special_tuna_stock.get("package_stock") or {}
     package_status = effective_stock_status(package_stock.get("status"), package_stock.get("available_qty"))
@@ -58,6 +62,9 @@ def get_stock_context(cursor, selected_date):
         m.category,
         m.divisi,
         m.price,
+        COALESCE(m.has_options, 0) AS has_options,
+        COALESCE(m.has_seasoning, 0) AS has_seasoning,
+        COALESCE(m.is_active, 1) AS is_active,
         m.stock_type,
         CASE
             WHEN LOWER(m.name) = 'rahang tuna' THEN 'tuna_weight'
@@ -78,7 +85,10 @@ def get_stock_context(cursor, selected_date):
 
     latest_nila_status_map = get_latest_nila_status_map(cursor, selected_date)
     nila_sizes = [
-        {"size_category": size_key}
+        {
+            "size_category": size_key,
+            "label": format_size_category_label(size_key),
+        }
         for size_key in ["kecil", "sedang", "besar", "jumbo", "super_jumbo"]
         if effective_stock_status(row_value(latest_nila_status_map.get(size_key), "status", 2, "ready")) == "ready"
     ]
@@ -100,6 +110,27 @@ def get_stock_context(cursor, selected_date):
 
 
 def ensure_additional_stock_tables(cursor):
+    cursor.execute(
+        """
+    ALTER TABLE menus
+    ADD COLUMN IF NOT EXISTS has_options TINYINT(1) NOT NULL DEFAULT 0
+    """
+    )
+
+    cursor.execute(
+        """
+    ALTER TABLE menus
+    ADD COLUMN IF NOT EXISTS has_seasoning TINYINT(1) NOT NULL DEFAULT 0
+    """
+    )
+
+    cursor.execute(
+        """
+    ALTER TABLE menus
+    ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1
+    """
+    )
+
     cursor.execute(
         """
     CREATE TABLE IF NOT EXISTS daily_item_stock (

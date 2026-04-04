@@ -139,6 +139,12 @@ def init_database():
             ensure_public_booking_tables(cursor)
         except Exception:
             pass
+        try:
+            from services.reservation_floor import ensure_reservation_floor_schema
+
+            ensure_reservation_floor_schema(cursor)
+        except Exception:
+            pass
         conn.commit()
     finally:
         cursor.close()
