@@ -16,11 +16,18 @@
   .table-group[data-status="occupied"] .table-shape,.table-group[data-status="unavailable"] .table-shape{fill:rgba(220,38,38,.9);}
   .table-group:hover .table-shape{transform:translateY(-2px);filter:brightness(1.06);}
   .table-group.is-selected .table-shape{stroke:var(--selected);stroke-width:5;filter:drop-shadow(0 0 14px rgba(56,189,248,.38));}
-  .table-label,.table-capacity{pointer-events:none;user-select:none;fill:#f8fafc;text-anchor:middle;}
-  .table-label{font-size:16px;font-weight:800;}
-  .table-capacity{font-size:11px;fill:rgba(255,255,255,.82);}
+  .table-tag,.table-tag-text{pointer-events:none;user-select:none;}
+  .table-tag{fill:rgba(255,255,255,.96);stroke:rgba(15,23,42,.18);stroke-width:1.5;}
+  .table-tag-text{fill:#111827;font-size:10px;font-weight:800;text-anchor:middle;}
   .non-bookable{fill:rgba(15,23,42,.12);stroke:rgba(15,23,42,.28);stroke-width:2;}
   .non-bookable-label{fill:#334155;font-size:14px;font-weight:700;text-anchor:middle;}
+  .soft-wall{fill:#ece6dd;}
+  .accent-floor{fill:#ded8cf;}
+  .cashier-block{fill:#6b2028;stroke:#552028;stroke-width:2;}
+  .cashier-top{fill:#f2a33b;}
+  .sofa-block{fill:#334155;stroke:#1e293b;stroke-width:2;}
+  .stage-fill{fill:#111827;}
+  .fixture-label{fill:#475569;font-size:11px;font-weight:700;text-anchor:middle;}
   .helper-chip,.option-pill{border:1px solid rgba(148,163,184,.14);background:rgba(15,23,42,.4);}
   .status-dot{width:.7rem;height:.7rem;border-radius:999px;}
   .status-dot.available{background:var(--available);} .status-dot.reserved{background:var(--reserved);} .status-dot.occupied,.status-dot.unavailable{background:var(--occupied);}
@@ -56,33 +63,51 @@
             </div>
           </div>
           <div class="floor-shell overflow-hidden rounded-[24px] p-3 lg:p-5">
-            <svg id="floor-map" viewBox="0 0 1000 680" class="h-auto w-full">
-              <rect x="24" y="24" width="952" height="632" rx="34" fill="#edf5fb" stroke="#cbd5e1" stroke-width="3"></rect>
-              <rect class="non-bookable" x="180" y="36" width="520" height="54" rx="18"></rect>
-              <text class="non-bookable-label" x="440" y="70">Area AC</text>
-              <rect class="non-bookable" x="40" y="48" width="116" height="106" rx="24"></rect>
-              <text class="non-bookable-label" x="98" y="106">Live Music</text>
-              <rect class="non-bookable" x="784" y="50" width="138" height="94" rx="22"></rect>
-              <text class="non-bookable-label" x="853" y="98">Toilet</text>
-              <rect class="non-bookable" x="786" y="168" width="112" height="54" rx="18"></rect>
-              <text class="non-bookable-label" x="842" y="200">Wastafel</text>
-              <rect class="non-bookable" x="38" y="536" width="192" height="94" rx="22"></rect>
-              <text class="non-bookable-label" x="134" y="588">Area Bar</text>
-              <rect class="non-bookable" x="388" y="582" width="194" height="58" rx="18"></rect>
-              <text class="non-bookable-label" x="485" y="617">Kasir</text>
-              <rect class="non-bookable" x="742" y="486" width="198" height="128" rx="28"></rect>
-              <text class="non-bookable-label" x="841" y="542">Sofa / Waiting Area</text>
-              <rect class="non-bookable" x="758" y="286" width="176" height="134" rx="28"></rect>
-              <text class="non-bookable-label" x="846" y="338">No Customer Area</text>
+            <svg id="floor-map" viewBox="0 0 860 760" class="h-auto w-full">
+              <rect x="18" y="18" width="824" height="724" rx="24" class="soft-wall" stroke="#94a3b8" stroke-width="3"></rect>
+              <rect x="28" y="28" width="804" height="704" rx="18" class="accent-floor" opacity="0.42"></rect>
+
+              <rect x="196" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
+              <rect x="280" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
+              <rect x="364" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
+              <rect x="448" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
+              <text class="fixture-label" x="340" y="44">Area AC</text>
+
+              <path class="stage-fill" d="M28 34 H132 V152 C78 152 42 118 28 34 Z"></path>
+              <text x="84" y="110" fill="#ffffff" font-size="20" font-weight="700" text-anchor="middle" transform="rotate(-38 84 110)">Live Music</text>
+
+              <rect class="non-bookable" x="746" y="54" width="46" height="140" rx="10"></rect>
+              <text class="fixture-label" x="769" y="128" transform="rotate(90 769 128)">Toilet</text>
+              <rect class="non-bookable" x="708" y="72" width="24" height="92" rx="8"></rect>
+              <text class="fixture-label" x="720" y="118" transform="rotate(90 720 118)">Wastafel</text>
+
+              <rect class="cashier-block" x="472" y="366" width="188" height="240" rx="12"></rect>
+              <rect class="cashier-top" x="546" y="518" width="54" height="72" rx="6"></rect>
+              <rect class="cashier-top" x="546" y="606" width="54" height="72" rx="6"></rect>
+              <rect x="516" y="410" width="84" height="28" rx="4" fill="#f8fafc" transform="rotate(-58 558 424)"></rect>
+              <text x="558" y="430" fill="#92400e" font-size="11" font-weight="800" text-anchor="middle" transform="rotate(-58 558 430)">Area Kasir</text>
+
+              <rect class="sofa-block" x="742" y="380" width="56" height="232" rx="10"></rect>
+              <text class="fixture-label" x="770" y="500" transform="rotate(90 770 500)">Sofa</text>
+
+              <rect class="non-bookable" x="112" y="612" width="182" height="72" rx="10"></rect>
+              <text class="non-bookable-label" x="203" y="655">Area Bar</text>
+              <rect x="58" y="642" width="46" height="64" rx="6" fill="#d4c2e8" stroke="#94a3b8" stroke-width="1.5"></rect>
+              <rect x="104" y="642" width="26" height="64" rx="4" fill="#e5d3b3" stroke="#94a3b8" stroke-width="1.5"></rect>
+              <text class="fixture-label" x="455" y="708">No customer area hanya elemen visual.</text>
+
               {% for table in floor_map.tables %}
+              {% set center_x = (table.x_position|float) + ((table.width|float) / 2) %}
+              {% set label_width = 54 if (table.table_label|length) <= 2 else 70 %}
+              {% set label_y = (table.y_position|float) - 22 %}
               <g class="table-group" id="table-{{ table.resource_code }}" data-resource-code="{{ table.resource_code }}" data-status="{{ table.status }}">
                 {% if table.shape == "circle" %}
-                <circle class="table-shape" cx="{{ table.x_position + (table.width / 2) }}" cy="{{ table.y_position + (table.height / 2) }}" r="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></circle>
+                <circle class="table-shape" cx="{{ center_x }}" cy="{{ (table.y_position|float) + ((table.height|float) / 2) }}" r="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></circle>
                 {% else %}
                 <rect class="table-shape" x="{{ table.x_position }}" y="{{ table.y_position }}" width="{{ table.width }}" height="{{ table.height }}" rx="{{ table.radius }}" stroke="rgba(15,23,42,.20)" stroke-width="3"></rect>
                 {% endif %}
-                <text class="table-label" x="{{ table.x_position + (table.width / 2) }}" y="{{ table.y_position + (table.height / 2) - 2 }}">{{ table.table_label }}</text>
-                <text class="table-capacity" x="{{ table.x_position + (table.width / 2) }}" y="{{ table.y_position + (table.height / 2) + 16 }}">{{ table.capacity }} pax</text>
+                <rect class="table-tag" x="{{ center_x - (label_width / 2) }}" y="{{ label_y }}" width="{{ label_width }}" height="18" rx="5"></rect>
+                <text class="table-tag-text" x="{{ center_x }}" y="{{ label_y + 12 }}">Meja {{ table.table_label }}</text>
               </g>
               {% endfor %}
             </svg>
