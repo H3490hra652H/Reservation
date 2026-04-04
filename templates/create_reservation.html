@@ -67,34 +67,38 @@
               <rect x="18" y="18" width="824" height="724" rx="24" class="soft-wall" stroke="#94a3b8" stroke-width="3"></rect>
               <rect x="28" y="28" width="804" height="704" rx="18" class="accent-floor" opacity="0.42"></rect>
 
-              <rect x="196" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
-              <rect x="280" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
-              <rect x="364" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
-              <rect x="448" y="16" width="36" height="11" rx="3" fill="#9ca3af"></rect>
-              <text class="fixture-label" x="340" y="44">Area AC</text>
+              <rect x="270" y="16" width="42" height="11" rx="3" fill="#d1d5db"></rect>
+              <rect x="410" y="16" width="42" height="11" rx="3" fill="#d1d5db"></rect>
+              <rect x="550" y="16" width="42" height="11" rx="3" fill="#d1d5db"></rect>
+              <text class="fixture-label" x="430" y="44">3 AC di atas area Meja 1-4</text>
 
-              <path class="stage-fill" d="M28 34 H132 V152 C78 152 42 118 28 34 Z"></path>
-              <text x="84" y="110" fill="#ffffff" font-size="20" font-weight="700" text-anchor="middle" transform="rotate(-38 84 110)">Live Music</text>
+              <rect x="52" y="56" width="126" height="176" rx="26" class="stage-fill"></rect>
+              <text x="116" y="148" fill="#ffffff" font-size="22" font-weight="700" text-anchor="middle" transform="rotate(-38 116 148)">Live Music</text>
 
-              <rect class="non-bookable" x="746" y="54" width="46" height="140" rx="10"></rect>
-              <text class="fixture-label" x="769" y="128" transform="rotate(90 769 128)">Toilet</text>
-              <rect class="non-bookable" x="708" y="72" width="24" height="92" rx="8"></rect>
-              <text class="fixture-label" x="720" y="118" transform="rotate(90 720 118)">Wastafel</text>
+              <rect x="72" y="262" width="10" height="388" fill="#ffffff" opacity="0.85"></rect>
+              <rect x="72" y="666" width="44" height="10" fill="#ffffff" opacity="0.85"></rect>
+              <text class="fixture-label" x="56" y="466" transform="rotate(-90 56 466)">Jendela</text>
 
-              <rect class="cashier-block" x="472" y="366" width="188" height="240" rx="12"></rect>
-              <rect class="cashier-top" x="546" y="518" width="54" height="72" rx="6"></rect>
-              <rect class="cashier-top" x="546" y="606" width="54" height="72" rx="6"></rect>
-              <rect x="516" y="410" width="84" height="28" rx="4" fill="#f8fafc" transform="rotate(-58 558 424)"></rect>
-              <text x="558" y="430" fill="#92400e" font-size="11" font-weight="800" text-anchor="middle" transform="rotate(-58 558 430)">Area Kasir</text>
+              <path d="M28 608 L28 720 L140 720" fill="none" stroke="#94a3b8" stroke-width="3"></path>
+              <path d="M28 612 A72 72 0 0 1 100 540" fill="none" stroke="#94a3b8" stroke-width="2"></path>
+              <text class="fixture-label" x="116" y="706">Pintu Masuk</text>
 
-              <rect class="sofa-block" x="742" y="380" width="56" height="232" rx="10"></rect>
-              <text class="fixture-label" x="770" y="500" transform="rotate(90 770 500)">Sofa</text>
+              <rect class="non-bookable" x="678" y="72" width="24" height="110" rx="7"></rect>
+              <text class="fixture-label" x="690" y="128" transform="rotate(90 690 128)">Wastafel</text>
+              <rect class="non-bookable" x="716" y="54" width="66" height="150" rx="10"></rect>
+              <text class="fixture-label" x="749" y="130" transform="rotate(90 749 130)">Toilet</text>
 
-              <rect class="non-bookable" x="112" y="612" width="182" height="72" rx="10"></rect>
-              <text class="non-bookable-label" x="203" y="655">Area Bar</text>
-              <rect x="58" y="642" width="46" height="64" rx="6" fill="#d4c2e8" stroke="#94a3b8" stroke-width="1.5"></rect>
-              <rect x="104" y="642" width="26" height="64" rx="4" fill="#e5d3b3" stroke="#94a3b8" stroke-width="1.5"></rect>
-              <text class="fixture-label" x="455" y="708">No customer area hanya elemen visual.</text>
+              <rect x="520" y="356" width="240" height="312" rx="12" class="cashier-block"></rect>
+              <rect x="582" y="418" width="74" height="118" rx="4" class="cashier-top"></rect>
+              <rect x="582" y="558" width="74" height="94" rx="4" class="cashier-top"></rect>
+              <rect x="556" y="442" width="120" height="28" rx="4" fill="#f8fafc" transform="rotate(-58 616 456)"></rect>
+              <text x="616" y="462" fill="#92400e" font-size="12" font-weight="800" text-anchor="middle" transform="rotate(-58 616 462)">Pajangan Roti</text>
+
+              <rect class="non-bookable" x="112" y="620" width="158" height="62" rx="10"></rect>
+              <text class="non-bookable-label" x="191" y="657">Area Bar</text>
+              <rect class="non-bookable" x="274" y="618" width="86" height="40" rx="8"></rect>
+              <text class="fixture-label" x="317" y="643">Area Kasir</text>
+              <text class="fixture-label" x="646" y="700">Blok cokelat besar = area pajangan roti.</text>
 
               {% for table in floor_map.tables %}
               {% set center_x = (table.x_position|float) + ((table.width|float) / 2) %}
